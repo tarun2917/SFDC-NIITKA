@@ -1,0 +1,157 @@
+<apex:page id="pageId"  showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" standardController="Case" extensions="CompensacionController" action="{!iniciaValidados}">
+    
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+     
+    <style type="text/css">
+        .tablesorter-blue .header,
+        .tablesorter-blue .tablesorter-header {
+            /* black (unsorted) double arrow */
+            background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+            /* white (unsorted) double arrow */
+            /* background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAAP///////yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==); */
+            /* image */
+            /* background-image: url(images/black-unsorted.gif); */
+            background-repeat: no-repeat;
+            background-position: center right;
+            padding: 4px 18px 4px 4px;
+            white-space: normal;
+            cursor: pointer;
+        }
+        .tablesorter-blue .headerSortUp,
+        .tablesorter-blue .tablesorter-headerSortUp,
+        .tablesorter-blue .tablesorter-headerAsc {
+            /* black asc arrow */
+            background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+            /* white asc arrow */
+            /* background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7); */
+            /* image */
+            /* background-image: url(images/black-asc.gif); */
+        }
+        .tablesorter-blue .headerSortDown,
+        .tablesorter-blue .tablesorter-headerSortDown,
+        .tablesorter-blue .tablesorter-headerDesc {
+            /* black desc arrow */
+            background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
+            /* white desc arrow */
+            /* background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7); */
+            /* image */
+            /* background-image: url(images/black-desc.gif); */
+        }    
+       .cabecera{
+           background-color:#F2F2F2 !important;
+       }
+       .AzulClaro{
+            border-left: solid lightblue 6px !important; 
+       }
+       .Verde{
+            border-left: solid #81F781 6px !important; 
+        }
+       .Amarillo{
+            border-left: solid #FFFF00 6px !important; 
+       }
+       .Naranja{
+            border-left: solid #FFBF00 6px !important; 
+       }
+       .AzulOscuro{
+            border-left: solid #3104B4 6px !important; 
+       }
+       .Negro{
+            border-left: solid #000000 6px !important; 
+       }
+       .Violeta{
+            border-left: solid #A901DB 6px !important; 
+       }     
+       .Rosa{
+            border-left: solid #FF00FF 6px !important; 
+       }
+       .Rojo{
+            border-left: solid #FF4000 6px !important; 
+       }
+       .VerdeOscuro{
+            border-left: solid #088A08 6px !important; 
+       }
+       .Marron{
+            border-left: solid #886A08 6px !important; 
+       }
+       .Oliva{
+            border-left: solid #688A08 6px !important; 
+       }
+       .Gris{
+            border-left: solid #D8D8D8 6px !important; 
+       } 
+       .Cian{
+            border-left: solid #81F7F3 6px !important; 
+       }                                                                
+       .botonPrimerPlano{
+           position: fixed;
+           z-index: 999;
+       }     
+       
+    </style> 
+    
+    <apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/js/jquery.tablesorter.min.js" />
+    
+    <apex:form id="formEnvio"> 
+    <h3 class="slds-section-title--divider">{!$Label.R2_VF_PagosPedientes}</h3> 
+        <table class = "slds-table slds-table_bordered slds-table_cell-buffer" id="ordenar"> 
+          <thead>        
+            <tr class="slds-text-title_caps cabecera">
+                <th>
+                    {!$Label.R2_VF_Selecionar}
+                </th>
+                <apex:repeat value="{!camposList}" var="campo">
+                    <th>
+                        {!campo}
+                    </th>
+                </apex:repeat>
+            </tr>
+          </thead>
+          <tbody>  
+            <!--Cada pasada de esta tabla crea una tabla con los pagos de un cliente-->        
+            <apex:repeat var="compensaciones" value="{!compensacionesPendientes}">        
+            
+                <!--Cada pasada de este bucle crea una fila con los datos de un pago--> 
+                <apex:repeat var="compen" value="{!compensaciones}"> 
+                  <tr>
+                    <td class="{!compen.formato}">
+                        <apex:inputCheckbox value="{!compen.selected}" disabled="{!!compen.editable}"/>
+                    </td> 
+                    <!--Cada pasada de este bucle crea cada una de las columnas de un pago-->      
+                    <apex:repeat var="campo" value="{!listaCampos}"> 
+                       <!--Controlamos si es el Id del cliente, caso en el que lo sustituiremos por el nombre con link al registro-->
+                       <apex:outputPanel rendered="{!IF(campo = 'R2_COM_LOO_Account__c',true,false)}">
+                           <td><a href="{!'\\'+compen.pago[campo]}" target="_blank">{!mapaNombres[compen.pago[campo]]}</a></td>
+                       </apex:outputPanel>
+                       <apex:outputPanel rendered="{!IF(campo = 'R2_COM_LOO_Account__c',false,true)}">
+                           <td>{!compen.pago[campo]}</td>
+                       </apex:outputPanel>                
+                    </apex:repeat> 
+                  </tr>   
+                </apex:repeat>      
+                   
+            </apex:repeat> 
+          </tbody>           
+        </table>         
+        <apex:outputPanel rendered="{!escalado}">
+            <div class="slds-align_absolute-center">
+                <p>
+                    <H2>
+                        Debido a su cuantía el caso se ha escalado a la cola correspondiente.
+                    </H2>
+                </p>
+            </div>
+        </apex:outputPanel>
+         <div class="slds-p-bottom_small slds-align_absolute-center">
+            <apex:commandLink action="{!crearOp}" target="_self" value="Crear orden de pago" styleClass="slds-button slds-button--neutral" id="CrearOP" reRender="formEnvio" rendered="{!!escalado}"/>
+            <apex:commandButton value="Close" styleClass="slds-button slds-button--neutral" onclick="window.close();return false;"/>﻿
+         </div> 
+         <script>
+          $(document).ready(function()
+          {
+            $("[id$='ordenar']").tablesorter({theme: 'blue', dateFormat : "dd/mm/yyyy"});
+          });
+         </script>   
+    </apex:form>
+ 
+</apex:page>

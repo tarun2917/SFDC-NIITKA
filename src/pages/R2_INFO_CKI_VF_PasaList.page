@@ -1,0 +1,164 @@
+<apex:page showHeader="true" sidebar="true" standardController="R1_Flight__c" extensions="R2_INFO_CKI_PasaList_CTRL">
+    
+      <!---------------------------------------------------------------------------------------------------------------------
+    Author:         Sara Torres Bermúdez
+    Company:        Accenture
+    Description:    VisualForce para mostrar pasajeros de un vuelo y crear incidencias a dichos pasajeros que sean seleccionados
+    IN:             
+    OUT:            
+
+    History: 
+     <Date>                     <Author>                         <Change Description>
+    07/09/2017		           	Sara Torres Bermúdez			   Initial version
+    ---------------------------------------------------------------------------------------------------------------------->
+<!--<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" standardController="R1_Flight__c" applyBodyTag="false" docType="html-5.0" extensions="R2_INFO_CKI_PasaList_CTRL" action="{!initPasajeros}">
+   
+<html>    
+<apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+    <style type="text/css">
+       .btn{
+       		margin-left:auto;
+    		margin-right:auto;
+            text-align:center;
+        }
+        
+    </style>
+    	
+	<head>
+		<title></title>
+    </head>
+    <body>
+        <div class="">
+            <div class = "">
+                <div class="pbHeader">
+                    <table>
+                        <td>
+                            <h3 class = "color-text-action-label"> Pasajeros</h3>
+                        </td>
+                        <td>
+                        	<button class = "btn"  type="button" onClick="crearIncidencia()">Crear Incidencia</button>
+                        </td>
+                    </table>
+                </div>
+                <div class = "pbBody">
+                    <apex:outputpanel style="margin: 0 0 0 0; padding: 0 0 0 0;min-width: 100%;size: 100%;" layout="block">
+                             <table class = "list" border = "0" cellsoacing = "0" cellpadding = "0">
+                                 <apex:repeat value="{!$ObjectType.R2_CKI_info__c.FieldSets.R2_FS_Campos_Info_CKI_RT_Pasajeros_Vuelo}" var="f"> 
+                                        <tr scope="col" class = "">  
+                                            {!f.Label}
+                                        </tr>
+                                     	<td>
+                                        </td>                                     	
+                                 </apex:repeat>
+                            </table>
+                    </apex:outputpanel>
+                </div>
+           
+        	</div>
+     	</div>
+    </body>
+</html>
+-->
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+    
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+    <apex:includeScript value="/xdomain/xdomain.js"/>
+    <apex:includeScript value="/soap/ajax/33.0/connection.js"/>
+    <apex:includeScript value="/support/console/40.0/integration.js"/>
+    <apex:includeScript value="/soap/ajax/33.0/apex.js"/>
+    <script type="text/javascript">
+    	function checkAll(obj,receivedInputID){
+            var inputElem = document.getElementsByTagName("input");
+            for(var i=0; i<inputElem.length; i++){
+                if(inputElem[i].id.indexOf(receivedInputID)!=-1){
+                    inputElem[i].checked = obj.checked;
+				}
+            }
+		}
+    </script> 
+     <style type="text/css">
+         .customPopup {
+         	background-color: white;
+			border-style: solid;
+            border-width: 2px;
+			left: 20%;
+			padding: 10px;
+			position: absolute;
+       		z-index: 9999;
+        	width: 500px;
+			top: 20%;
+         }
+         .closeButton {
+			float: right;
+		}
+    </style>
+
+    <apex:form id="formId"> 
+        <!--                                             PASAJEROS                                            -->        
+        <apex:outputPanel id="content">
+             <apex:pageBlock id="pasajeros" title="{!nombre}" rendered="{!!mostrarInc}"> 
+        		<apex:pageBlockButtons location="top"> 
+                	<apex:commandButton style="padding: 2px 10px;" reRender="formId" value="Crear Incidencia" action="{!crearIncidencia}" />
+            	</apex:pageBlockButtons>
+                
+                <apex:outputPanel id="popup">
+                    <apex:outputPanel id="popInnerOutputPnl" styleClass="customPopup" layout="block" rendered="{!displayPopUp}">
+                        <!-- <apex:commandButton value="X" title="Close the popup" action="{!closePopup}" styleClass="closeButton" rerender="popup">
+                     	</apex:commandButton> -->
+                         <apex:commandButton value="Ok" action="{!redirectPopup}" styleClass="closeButton" rerender="popup">
+                  		</apex:commandButton>
+                    	<apex:outputLabel value="No se ha seleccionado ningún pasajero para crear la incidencia"></apex:outputLabel>
+                	</apex:outputPanel>
+                </apex:outputPanel>
+                 
+            	<apex:outputpanel >
+                        <apex:commandButton action="{!Beginning}" title="Beginning" value="<<" disabled="{!disablePrevious}" reRender="formId"/>
+                        <apex:commandButton action="{!Previous}" title="Previous" value="<" disabled="{!disablePrevious}" reRender="formId"/>       
+                        <apex:commandButton action="{!Next}" title="Next" value=">" disabled="{!disableNext}" reRender="formId"/>
+                        <apex:commandButton action="{!End}" title="End" value=">>" disabled="{!disableNext}" reRender="formId"/> 
+                	<!-- <apex:pageBlockTable styleclass="slds-table slds-table_resizable-cols slds-table_fixed-layout" value="{!lst_Pasajeros}" var="Pasajero" style="overflow: auto !important; max-height: 200px !important"> -->
+                    <apex:pageBlockTable styleclass="slds-table slds-table_resizable-cols slds-table_fixed-layout" value="{!pasajerosListParcial}" var="Pasajero" style="overflow: auto !important; max-height: 200px !important; font-size: 11.36px !important;">
+
+                        <apex:column >
+                            <apex:facet name="header"> 
+                                <apex:inputCheckbox onclick="checkAll(this,'inputId')"/>
+                             </apex:facet>
+                                <!-- <apex:inputCheckbox value="{!pasajeroSelectedMap[Pasajero.Id]}" id="inputId"> -->
+                                <apex:inputCheckbox value="{!Pasajero.selected}" id="inputId"/>
+                            	<!-- <apex:inputCheckbox value="{!if(idPasajeroSet.contains(Pasajero.Id),true, false)}" id="inputId"> -->
+                                <!-- <apex:param value="{!Pasajero.Id}"/> -->
+                                <!-- </apex:inputCheckbox> -->
+                        </apex:column>
+                    	<apex:repeat value="{!$ObjectType.R2_CKI_info__c.FieldSets.R2_FS_Campos_Info_CKI_RT_Pasajeros_Vuelo}" var="f">
+                            <apex:column headerValue="{!f.Label}" rendered="{!f.Label != "Account Name"}">
+								<apex:outputfield value="{!Pasajero.pasajeros[f]}" />
+                        	</apex:column>
+                            <apex:column headerValue="Cliente" rendered="{!f.Label == "Account Name"}">
+                                <apex:facet name="header">Cliente</apex:facet>
+                                <apex:outputfield value="{!Pasajero.pasajeros[f]}" />
+                            </apex:column> 
+                        </apex:repeat>
+                        <!-- <apex:facet name="footer">Página {!pageNumber} de {!totalPages}</apex:facet> -->
+                    </apex:pageBlockTable>
+                </apex:outputpanel>
+        </apex:pageBlock>
+        </apex:outputPanel>
+       
+                <!--                                   INCIDENCIA                                            -->
+         <apex:outputPanel id="PGB2">
+        <apex:pageBlock id="incidencia" title="{!nombre}" rendered="{!mostrarInc}">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton style="padding: 2px 3px;" value="Save" action="{!saveIncidencia}" rerender="formId" /> 
+                <apex:commandButton style="padding: 2px 3px;" value="Cancel" action="{!cancelIncidencia}" rerender="formId" /> 
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="2">
+                <apex:repeat value="{!$ObjectType.R1_Incident__c.FieldSets.R2_FS_Campos_Incidencia_Masiva_Edicion}" var="in">
+                    <apex:inputField value="{!incident[in.fieldPath]}" rendered="{!in.fieldPath != "RecordTypeId" && in.fieldPath != "R2_INC_LOO_Flight__c" }" />
+                    <apex:outputField value="{!incident[in.fieldPath]}" rendered="{!in.fieldPath == "RecordTypeId" || in.fieldPath == "R2_INC_LOO_Flight__c" }" />
+                 </apex:repeat>
+            </apex:pageBlockSection>
+		</apex:pageBlock>
+        </apex:outputPanel>
+    </apex:form>
+        </html>
+</apex:page>

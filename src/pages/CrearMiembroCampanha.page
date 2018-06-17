@@ -1,0 +1,176 @@
+<apex:page showHeader="false" standardController="CampaignMember" extensions="MiembrosCamapanhaController">
+	
+	
+	<apex:includeScript value="/xdomain/xdomain.js"/>
+    <apex:includeScript value="/soap/ajax/33.0/connection.js"/>
+    <apex:includeScript value="/support/console/40.0/integration.js"/>
+    <apex:includeScript value="/soap/ajax/33.0/apex.js"/>
+    <style type="text/css">
+        .estiloformulario input {width:50%}
+    </style>
+
+    <script type="text/javascript">
+    /*
+    	var callback = function () {
+	             if (result.error) {
+	                alert("Error message is " + result.error);
+	             }
+	    };
+    */	
+        function closeTab() {
+        	sforce.console.getEnclosingTabId(closeSubtab);
+        }
+    
+        var closeSubtab = function closeSubtab(result) {        
+        	var tabId = result.id;
+        	sforce.console.closeTab(tabId);
+        	//sforce.console.closeTab(tabId, callback);
+        };
+   </script>
+   
+   
+   <body>
+            <div class="slds">
+             	<apex:form >
+                    <apex:pagemessages />
+		            <apex:pageBlock >
+			            <apex:pageBlockSection columns="2" title="Miembros de campaña">
+
+						<apex:inputField value="{!campaignmember.ContactId}" required="true" styleClass="estiloformulario"/>
+						<apex:inputField value="{!campaignmember.campaignId}" styleClass="estiloformulario"/><!-- campanha -->
+						<apex:inputField value="{!campaignmember.R1_CMM_TXT_Card_Type__c}" styleClass="estiloformulario"/><!-- Nivel de Tarjeta -->
+						<apex:inputField value="{!campaignmember.R1_CMM_PKL_type__c}" styleClass="estiloformulario"/><!-- tipo -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_card_type__c}" styleClass="estiloformulario"/><!--tipo de tarjeta -->
+						<apex:inputField value="{!campaignmember.status}" styleClass="estiloformulario"/><!-- Estado -->
+						<apex:inputField value="{!campaignmember.R2_CMM_EMA_Email__c}" styleClass="estiloformulario"/><!-- Email de contacto -->
+						<apex:inputField value="{!campaignmember.Description}" styleClass="estiloformulario"/><!-- Descripcion -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TEL_contact_phone__c}" styleClass="estiloformulario"/><!-- tlf1 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TEL_phone2__c}" styleClass="estiloformulario"/><!-- tlf2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_PK_client_country__c}" styleClass="estiloformulario"/><!-- País en el que se encuentra el cliente -->
+ 						<apex:inputField value="{!campaignmember.R2_CMM_PK_Avios_Cash__c}" styleClass="estiloformulario"/><!-- Avios&Cash -->
+ 						<apex:inputField value="{!campaignmember.R1_CMM_PKL_Idioma__c}" styleClass="estiloformulario"/><!-- Idioma -->
+ 						<apex:inputField value="{!campaignmember.R2_CMM_TXT_personal_contact__c}" styleClass="estiloformulario"/><!-- Contacto personal -->
+
+                        </apex:pageBlockSection>
+                        
+                        <apex:pageBlockSection columns="2" title="Estado UPG">
+						<apex:inputField value="{!campaignmember.R2_CMM_PK_answer__c}" styleClass="estiloformulario"/> <!-- Respuesta Segmento 1-->
+						<apex:inputField value="{!campaignmember.R2_CMM_PK_answer_Seg2__c}" styleClass="estiloformulario"/><!-- Respuesta Segmento 2-->
+						<apex:inputField value="{!campaignmember.R2_CMM_PK_result__c}" styleClass="estiloformulario"/><!-- Resultado Segmento 1-->
+						<apex:inputField value="{!campaignmember.R2_CMM_PK_result_Seg2__c}" styleClass="estiloformulario"/><!-- Resultado Segmento 2-->
+						<apex:inputField value="{!campaignmember.R2_CMM_PK_reason__c}" styleClass="estiloformulario"/><!-- Motivo Segmento 1-->
+						<apex:inputField value="{!campaignmember.R2_CMM_PK_reason_Seg2__c}" styleClass="estiloformulario"/><!-- Motivo Segmento 2-->
+                        </apex:pageBlockSection>
+                        
+                        <apex:pageBlockSection columns="2" title="UPG">
+                        <apex:inputField value="{!campaignmember.R2_CMM_DAT_Answer_date__c}" styleClass="estiloformulario"/><!-- Franja y hora de respuesta -->
+						<apex:inputField value="{!campaignmember.R2_CMM_PKL_time_zone__c}" styleClass="estiloformulario"/><!-- Franja horaria de contacto -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_TXT_Resiber_Locator__c}" styleClass="estiloformulario"/><!-- Localizador Resiber -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_TXT_Amadeus_Locator__c}" styleClass="estiloformulario"/><!-- Localizador Amadeus -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_TXT_CLTV__c}" styleClass="estiloformulario"/><!-- CLTV -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_NUM_frustation__c}" styleClass="estiloformulario"/>
+                        </apex:pageBlockSection>
+                        
+                        
+                        <apex:pageBlockSection columns="2" title="Otros UPGs">
+                        <apex:inputField value="{!campaignmember.R2_CMM_NUM_number_upgs__c}" styleClass="estiloformulario"/><!-- Número de otros UPGs Avios -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_NUM_avios_bus_others__c}" styleClass="estiloformulario"/><!-- Precio Avios Otros UPGs -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_NUM_number_upgs_euros__c}" styleClass="estiloformulario"/><!-- Número de otros UPGs € -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_NUM_avios_bus_others__c}" styleClass="estiloformulario"/><!-- Precio Avios Otros UPGs -->
+                        </apex:pageBlockSection>
+                        
+                        
+                        <apex:pageBlockSection columns="2" title="Segmento 1">
+                        <!-- Segmento 1 -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_CHK_Segment1__c}" styleClass="estiloformulario"/><!--Segmento 1 -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_DAT_date_flight_segment1__c}" styleClass="estiloformulario"/><!-- Fecha vuelo Segmento 1 -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_TXT_class_segment1__c}" styleClass="estiloformulario"/><!-- Clase Segmento 1 -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_DAT_time_flight_segment1__c}" styleClass="estiloformulario"/><!-- Hora de salida segmento1 -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_TXT_segment1_origin__c}" styleClass="estiloformulario"/><!-- Origen Segmento 1		 -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_TXT_destination_segment1__c}" styleClass="estiloformulario"/><!-- Destino Segmento 1 -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_CUR_Highest_Price_Cash_Seg1__c}" styleClass="estiloformulario"/><!-- Highest Price Cash Seg1 -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_CUR_Highest_Price_Avios_Seg1__c}" styleClass="estiloformulario"/><!-- Highest Price Avios Seg1	 -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_TXT_company_segment1__c}" styleClass="estiloformulario"/><!-- Compañía Segmento 1 -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_TXT_flight_number_segment1__c}" styleClass="estiloformulario"/><!-- Número vuelo Segmento 1 -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_NUM_number_upgs_bus_euros_S1__c}" styleClass="estiloformulario"/><!-- Número de UPGs Bus € - S1	 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_number_upgs_TP_S1__c}" styleClass="estiloformulario"/><!-- Número de UPGs TP Avios - S1	 -->
+						<!--<apex:inputField value="{!campaignmember.R2_CMM_NUM_cash_bus_seg1__c}" styleClass="estiloformulario"/>--><!-- Precio Dinero Bus S1-->
+                        <apex:inputField value="{!campaignmember.R2_CMM_NUM_cash_bus_seg1__c}" styleClass="estiloformulario"/><!-- Precio Dinero Bus S1 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_avios_TP_seg1__c}" styleClass="estiloformulario"/><!-- Precio Avios TP S1	 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_number_upgs_bus_S1__c}" styleClass="estiloformulario"/><!-- Número de UPGs Bus Avios - S1	 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_number_upgs_TP_euros_S1__c}" styleClass="estiloformulario"/><!-- Número de UPGs TP € - S1	 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_avios_bus_seg1__c}" styleClass="estiloformulario"/><!-- Precio Avios bus -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_cash_TP_seg1__c}" styleClass="estiloformulario"/><!-- Precio Dinero TP S1 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_bus_limit_seg1__c}" styleClass="estiloformulario"/><!--Límite Business S1  -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_TP_limit_seg1__c}" styleClass="estiloformulario"/><!-- Limite TP S1 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_order1__c}" styleClass="estiloformulario"/><!-- Nº de orden 1 -->
+						<!-- ---- -->
+						</apex:pageBlockSection>
+						
+						<!-- Segmento 2 -->
+						<apex:pageBlockSection columns="2" title="Segmento 2">
+                        <apex:inputField value="{!campaignmember.R2_CMM_CHK_Segment2__c}" styleClass="estiloformulario"/><!-- Segmento 2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_DAT_date_flight_segment2__c}" styleClass="estiloformulario"/><!-- Fecha vuelo Segmento 2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_class_segment2__c}" styleClass="estiloformulario"/><!-- Clase Segmento 2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_DAT_time_flight_segment2__c}" styleClass="estiloformulario"/><!-- Hora de salida Segmento 2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_segment2_origin__c}" styleClass="estiloformulario"/><!-- Origen Segmento 2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_destination_segment2__c}" styleClass="estiloformulario"/><!-- Destino Segmento 2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_CUR_Highest_Price_Cash_Seg2__c}" styleClass="estiloformulario"/><!-- Highest Price Cash Seg2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_CUR_Highest_Price_Avios_Seg2__c}" styleClass="estiloformulario"/><!-- Highest Price Avios Seg2	 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_company_segment2__c}" styleClass="estiloformulario"/><!--Compañía Segmento 2  -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_flight_number_segment2__c}" styleClass="estiloformulario"/><!-- Número vuelo Segmento 2	 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_number_upgs_bus_S2__c}" styleClass="estiloformulario"/><!-- Número de UPGs Bus Avios - S2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_number_upgs_TP_S2__c}" styleClass="estiloformulario"/><!-- Número de UPGs TP Avios - S2	 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_avios_bus_seg2__c}" styleClass="estiloformulario"/><!-- Precio Avios Bus S2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_CUR_avios_TP_seg2__c}" styleClass="estiloformulario"/>	<!-- Precio Avios TP S2	 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_number_upgs_bus_euros_S2__c}" styleClass="estiloformulario"/><!-- Número de UPGs Bus € - S2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_number_upgs_TP_euros_S2__c}" styleClass="estiloformulario"/><!-- Número de UPGs TP € - S2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_cash_bus_seg2__c}" styleClass="estiloformulario"/><!-- Precio Dinero Bus S2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_cash_TP_seg2__c}" styleClass="estiloformulario"/><!-- Precio Dinero TP S1 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_bus_limit_seg2__c}" styleClass="estiloformulario"/><!-- Límite Business S2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_TP_limit_seg2__c}" styleClass="estiloformulario"/><!-- Limite TP S2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_order2__c}" styleClass="estiloformulario"/><!-- Nº de orden 2 -->
+						</apex:pageBlockSection>
+						
+						<apex:pageBlockSection columns="2" title="Info Marketing">
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_type_titular__c}" styleClass="estiloformulario"/><!-- Tipo titular -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_origin__c}" styleClass="estiloformulario"/><!-- Origen -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_upg_name__c}" styleClass="estiloformulario"/><!-- Nombre UPG -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_dest__c}" styleClass="estiloformulario"/><!-- Destino -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_TXT_upg_surname__c}" styleClass="estiloformulario"/><!-- Apellido UPG -->
+                        <apex:inputField value="{!campaignmember.R2_CMM_DAT_flight_date__c}" styleClass="estiloformulario"/><!-- Fecha de Salida-->
+                        <apex:inputField value="{!campaignmember.R2_CMM_TXT_iberiacom_number__c}" styleClass="estiloformulario"/><!-- Número Iberia.com	 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_flight_hour__c}" styleClass="estiloformulario"/><!-- Hora de salida -->
+						<apex:inputField value="{!campaignmember.R2_CMM_gender__c}" styleClass="estiloformulario"/><!-- Genero -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_company__c}" styleClass="estiloformulario"/><!-- Companhia -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_Flight_number__c}" styleClass="estiloformulario"/><!-- Nº vuelo -->
+						<apex:inputField value="{!campaignmember.Phone}" styleClass="estiloformulario"/><!-- Telefono -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_class__c}" styleClass="estiloformulario"/><!-- Clase -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_ib_order__c}" styleClass="estiloformulario"/><!-- IB orden -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_segment_number__c}" styleClass="estiloformulario"/><!-- Número de segmentos -->
+						<apex:inputField value="{!campaignmember.R2_CMM_PH_movile_phone__c}" styleClass="estiloformulario"/><!-- Movil -->
+						<apex:inputField value="{!campaignmember.R2_CMM_DAT_flight_date2__c}" styleClass="estiloformulario"/><!-- Fecha de salida -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_ticket__c}" styleClass="estiloformulario"/><!-- Billete -->
+						<apex:inputField value="{!campaignmember.R2_CMM_DAT_flight_date2__c}" styleClass="estiloformulario"/><!-- Fecha de Salida S2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_upg_flag__c}" styleClass="estiloformulario"/><!-- Flag UPG -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_flag_seat_type__c}" styleClass="estiloformulario"/><!-- Flag tipo de butaca -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_upg_flag_seg2__c}" styleClass="estiloformulario"/><!-- Flag UPG2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_NUM_upg_type_seg2__c}" styleClass="estiloformulario"/><!-- Tipo de UPG Segmento2 -->
+						<apex:inputField value="{!campaignmember.R2_CMM_DAT_creation_date__c}" styleClass="estiloformulario"/><!-- Fecha creacion -->
+						<apex:inputField value="{!campaignmember.R2_CMM_TXT_key__c}" styleClass="estiloformulario"/><!-- Key -->
+						
+						</apex:pageBlockSection>
+
+						
+						<apex:pageBlockButtons >
+           					<apex:commandButton action="{!save}" value="Guardar"/>
+	        				<!--<apex:commandButton action="{!cancel}" value="Cancelar"/>-->
+                            <apex:commandButton onclick="closeTab();" value="Cancelar"/>
+            			</apex:pageBlockButtons>
+						</apex:pageBlock>
+						
+				</apex:form>
+			</div>
+	</body>
+
+</apex:page>

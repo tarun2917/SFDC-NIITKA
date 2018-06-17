@@ -1,0 +1,126 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" controller="CaseHistoryController">
+
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+    
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+    <apex:includeScript value="/xdomain/xdomain.js"/>
+    <apex:includeScript value="/soap/ajax/33.0/connection.js"/>
+    <apex:includeScript value="/support/console/40.0/integration.js"/>
+    <apex:includeScript value="/soap/ajax/33.0/apex.js"/>
+    
+    <apex:includeScript value="{!URLFOR($Resource.CaseHistoryResources, 'js/jquery-1.6.4.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CaseHistoryResources, 'js/jquery.tablesorter.min.js')}" />
+   
+<script type="text/javascript">
+$(document).ready(function() 
+    { 
+        $("#sortThis").tablesorter(); 
+    } 
+); 
+</script>
+      <body>
+       <div class="slds">
+ 
+   <div id="caseHeaderImg" style="background: #B7A752 url(/img/sprites/master.png) no-repeat 4px -982px; height:32px; width:100%; padding:8px 4px 0px 40px; font-size:14px; font-weight: bold; color:white;">Case: {!aCase.CaseNumber}</div>
+	     
+     <apex:pageblock tabStyle="Case" ><b>
+       <apex:outputText value="Nombre Cliente:"/>  
+          <apex:outputText ><apex:outputLink onclick="openAccDetail('{!aCase.AccountId}')" id="AccountLink">{!aCase.Account.Name}</apex:outputLink></apex:outputText>
+ </b> </apex:pageblock>
+ 
+     <apex:pageBlock >
+         <apex:form >
+             
+             	<apex:actionFunction name="accionFiltrado" reRender="sortThis"/>
+     			<apex:actionFunction name="accionFiltro" action="{!filtrarTipo}"/>
+     <apex:outputLabel value="Filtrar por tipo:  " for="filtrador"/>
+     
+ <apex:selectList id="filtrador" value="{!tipoSelected}" multiselect="false" size="1" onchange="accionFiltro(); accionFiltrado();">
+                       <apex:selectOptions value="{!lstNombreTipos}"></apex:selectOptions>
+      </apex:selectList>
+     </apex:form> 
+     </apex:pageBlock>
+ <table id="sortThis" class="slds-table slds-table_bordered slds-table_cell-buffer">
+        <thead>
+            <tr class="slds-text-tittle_caps">
+                <th scope="col" class="slds-truncate" nowrap="true">Tipo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                <th scope="col" class="slds-truncate" nowrap="true">Fecha de creación/modificación&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                <th scope="col" class="slds-truncate" nowrap="true">Descripción&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+				<th scope="col" class="slds-truncate" nowrap="true">Cola&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th> 
+                <th scope="col" class="slds-truncate" nowrap="true">Categoría&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                <th scope="col" class="slds-truncate" nowrap="true">Idioma&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                <th scope="col" class="slds-truncate" nowrap="true">Creado por&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                <th scope="col" class="slds-truncate" nowrap="true">Estado&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>     
+            </tr>
+        </thead>
+        <tbody>
+            <apex:repeat value="{!lstChiVisual}" var="list">
+                <tr class="slds-text-tittle_caps" >
+                    <td scope="col" class="slds-truncate"><apex:image id="imageType" style="margin-right: 5%;" url="{!URLFOR($Resource.CaseHistoryResources, 'images/'+list.itemType)}" />{!list.itemTypeName}<apex:image id="image" style="width: 15px; height: 15px; margin-left: 5%;" url="{!URLFOR($Resource.ImagenAdjunto, 'imgAdjunto/adjunto.png')}" rendered="{!list.itemTypeName == 'Email' && list.attach}"/></td>
+                    <td scope="col" class="slds-truncate"><apex:outputText value="{!list.createModifyDateFix}"/></td>
+                    <td scope="col" class="slds-truncate">
+					
+                    <a onclick="openViewDetail('{!list.mainId}')"><apex:outputText value="{!LEFT(list.Subject, 100)}" rendered="{!list.itemTypeName != 'Historial' && list.itemTypeName != 'Historial caso hijo' && list.itemTypeName != 'Comentario'}"/><apex:outputText value="..." rendered="{!LEN(list.Subject)> 100 && (list.itemTypeName != 'Historial' && list.itemTypeName != 'Historial caso hijo' && list.itemTypeName != 'Comentario')}" /></a>
+                    <apex:outputText value="{!LEFT(list.Subject, 100)}" rendered="{!list.itemTypeName == 'Historial' || list.itemTypeName == 'Historial caso hijo' || list.itemTypeName == 'Comentario'}"/><apex:outputText value="..." rendered="{!LEN(list.Subject)> 100 && (list.itemTypeName == 'Historial' || list.itemTypeName == 'Historial caso hijo' || list.itemTypeName == 'Comentario')}" />    
+   
+                    </td>
+                    <td scope="col" class="slds-truncate"><apex:outputText value="{!list.ownerName}" /></td>
+                    <td scope="col" class="slds-truncate"><apex:outputText value="{!list.category}" /></td>
+                    <td scope="col" class="slds-truncate"><apex:outputText value="{!list.language}" /></td>
+                    <td scope="col" class="slds-truncate"><apex:outputText value="{!list.createdName}" /></td>
+                    <td scope="col" class="slds-truncate"><apex:outputText value="{!list.status}" /></td>
+                    
+
+                </tr>
+            </apex:repeat>
+        </tbody> 
+ </table>
+                     
+       </div>
+ </body>
+        <script type="text/javascript">
+                 function openViewDetail(objectId) {
+                    
+                        if (sforce.console.isInConsole()) {
+                                if(objectId === ""){
+                                    
+                                }else{  
+                                   
+                                    // First find the ID of the primary tab to put the new subtab in
+                                    function getPrimaryTabId(){
+                                        sforce.console.getFocusedPrimaryTabId(openSubtab);
+                                    }    
+                                    // Funcion que habre la url en un subtab pasandole la ID del primaryTab
+                                    var openSubtab = function openSubtab(result) {               
+                                        sforce.console.openSubtab(result.id , '/' + objectId, true, '', null);
+                                    };
+                                    getPrimaryTabId();
+                                }
+                        }
+                    
+              };
+   				
+                        
+               function openAccDetail(accId) {
+                    
+                        if (sforce.console.isInConsole()) {
+                                
+                                    // First find the ID of the primary tab to put the new subtab in
+                                    function getPrimaryTabId(){
+                                        sforce.console.getFocusedPrimaryTabId(openSubtab);
+                                    }    
+                                    // Funcion que habre la url en un subtab pasandole la ID del primaryTab
+                                    var openSubtab = function openSubtab(result) {               
+                                        sforce.console.openSubtab(result.id , '/' + accId, true, '', null);
+                                    };
+                                    getPrimaryTabId();
+                                
+                        }
+                    
+              };
+   
+        </script>
+    </html>
+
+</apex:page>

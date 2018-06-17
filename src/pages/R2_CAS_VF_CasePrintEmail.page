@@ -1,0 +1,173 @@
+<apex:page standardController="Case" renderAs="pdf" applyBodyTag="false" extensions="R2_CAS_CaseSendEmail_CTRL" docType="html-5.0">
+     <!---------------------------------------------------------------------------------------------------------------------
+    Author:         Sara Torres Bermúdez
+    Company:        Accenture
+    Description:    Visual que saca en un pdf los emails que esten seleccionados para poderlos imprimir
+    IN:             
+    OUT:            
+
+    History: 
+     <Date>                     <Author>                         <Change Description>
+    07/09/2017                  Sara Torres Bermúdez               Initial version
+    ---------------------------------------------------------------------------------------------------------------------->
+    <head>
+        <script type="text/javascript">
+
+           sforce.connection.sessionId = '{!$Api.Session_ID}';
+   
+       
+        /* window.onload = function() { 
+             window.addEventListener("beforeunload", function(e){
+                           //opener.focus();
+                           opener.sforce.console.focusNavigationTab();
+                        }, false);
+           }*/
+
+        </script>
+        <style>
+           @page {
+              <!-- @top-center {
+                       content: element(header);
+               }-->
+               @bottom-left {
+                     content: element(footer);
+               }
+               @bottom-right {
+                     content: element(contador);
+               }
+           }
+           div.header {
+              padding: 10px;
+              position: running(header);
+           }
+           div.footer {
+              display: block;
+              padding: 5px;
+              position: running(footer);
+          }
+          .pagenumber:before {
+              content: counter(page);
+           }
+          .pagecount:before {
+              content: counter(pages);
+          }
+            .Label { font-weight: bold 20px; color: black;}
+            .Contenido {font-weight: normal; margin-left: 166px}
+            .ContenidoFrom{font-weight: normal; margin-left: 180px}
+            .ContenidoTo{font-weight: normal; margin-left: 196px}
+            .ContenidoDate{font-weight: normal; margin-left: 185px}
+            .ContenidoBody {font-weight: normal; color: #0B4C5F;}
+            .hr{height:5px; background-color:black; border:20px;}
+            #full-size{
+              height:100%;
+              width:100%;
+              overflow:hidden; 
+            }
+        </style>
+    </head>
+    
+       <!--    <div class="header">
+               <apex:image url="{!URLFOR($Resource.Iberia_cabecera)}"/>   
+           </div> -->
+           <div class="footer" id="full-size">
+              <!--  <hr/>
+                <div style="font-size: 50%">IBERIA L.A.E. S.A. Operadora S.U., Zona Industrial nº 2 
+                    Dirección Sistemas/U Seguridad de la Información y Arquitectura de Aplicaciones
+                    28042, Madrid
+                </div>
+                <apex:image url="{!URLFOR($Resource.imprimirpdf, 'pie.png')}"/>-->
+
+                <div style="font-size: 8.5px; font-family:verdana">Page <span class="pagenumber"/> of <span class="pagecount"/></div>
+          </div>
+
+    <body>
+        <apex:messages />
+           <!-- <h1>
+                Emails del caso: <apex:outputLabel value="{!casoId}"> </apex:outputLabel>
+                <br />
+                <hr styleClass="hr" />
+           </h1>-->
+
+                    <apex:outputPanel rendered="{!if(contadorPaginas==0, true, false)}">
+                        <h2>
+                                No ha seleccionado ningún correo para imprimir
+                        </h2>   
+                    </apex:outputPanel>
+                    <apex:variable var="cnt" value="{!1}" /> 
+                    <apex:repeat var="ema" value="{!mensajesMostradosList}">
+                         <apex:outputPanel rendered="{!ema.selected}">
+                            
+                            <table>
+                                <tr>
+                                  <td>
+                                    <apex:outputLabel styleClass="Label">
+                                        From: 
+                                    </apex:outputLabel>   
+                                    <apex:outputLabel styleClass="ContenidoFrom" value="{!ema.emails.FromAddress}" style="font-size: 10px; font-family:verdana">
+                                    </apex:outputLabel>
+                                    <br />                            
+        
+                                    <apex:outputLabel styleClass="Label">
+                                        To: 
+                                    </apex:outputLabel>
+                                    <apex:outputLabel styleClass="ContenidoTo" value="{!ema.emails.ToAddress}" style="font-size: 10px; font-family:verdana">
+                                    </apex:outputLabel>
+                                    <br />
+        
+                                    <apex:outputLabel styleClass="Label">
+                                        Sent: 
+                                    </apex:outputLabel>
+                                    <apex:outputLabel styleClass="ContenidoDate" value="{!ema.emails.MessageDate}" style="font-size: 10px; font-family:verdana">
+                                    </apex:outputLabel>
+                                    <br />
+        
+                                    <apex:outputLabel styleClass="Label">
+                                        Subject: 
+                                    </apex:outputLabel> 
+                                    <apex:outputLabel styleClass="Contenido" value="{!ema.emails.Subject}" style="font-size: 10px; font-family:verdana">
+                                    </apex:outputLabel>
+                                    <br />
+                                </td>
+                                </tr>
+                                <tr>
+                                <td>
+                                    <br />
+                                    <!--<div align="center">-->
+                                    
+                                        <apex:image url="{!URLFOR($Resource.imprimirpdf, 'cabecera.png')}" width="710px" height="170px"/>
+                                    <!--</div>-->
+                                    <br />
+                                    <br />
+                                </td>
+                                </tr>
+                                <tr>
+                                <td width="700px">
+
+                                  <!--  <apex:outputLabel styleClass="ContenidoBody" value="{!ema.emails.TextBody}" style="font-size: 14px; font-family:verdana">
+                                    </apex:outputLabel>        
+                                    <apex:outputText >
+                                       {!ema.emails.TextBody}
+                                    </apex:outputText> --> 
+                                    
+                                   <!-- <apex:outputText  value="{!SUBSTITUTE(JSENCODE(SUBSTITUTE(JSENCODE(ema.emails.TextBody),'\\r\n','\n')),'\\n','<br/>')}" escape="false" style="font-size: 10px; font-family:verdana; white-space: pre-wrap;"/> -->
+                                   <apex:outputText value="{!ema.emails.TextBody}" escape="false" style="font-size: 10px; font-family:verdana; white-space: pre-wrap;"/>
+                                    <br />
+                                    <br /><br />
+                                    <footer>
+                                        <apex:image url="{!URLFOR($Resource.imprimirpdf, 'pie.png')}"/>  
+                                    </footer>
+                                </td>
+                                </tr>
+                            </table>
+                            <div style="{!if(cnt == contadorPaginas, '','page-break-before:always;')}"/>
+                            <apex:variable var="cnt" value="{!if(ema.selected, cnt+1, cnt)}"/>  
+                            <br/>  
+                                             
+                         </apex:outputPanel>
+
+                    </apex:repeat>
+                
+            
+            
+    </body>
+</apex:page>

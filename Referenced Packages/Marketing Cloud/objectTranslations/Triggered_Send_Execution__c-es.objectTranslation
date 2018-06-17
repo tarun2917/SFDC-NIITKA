@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Ejecución de envío desencadenado</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Ejecuciones de envío desencadenado</value>
+    </caseValues>
+    <fields>
+        <label>Id. de la unidad comercial</label>
+        <name>Business_Unit_ID__c</name>
+    </fields>
+    <fields>
+        <label>Nombre del remitente</label>
+        <name>FromName__c</name>
+    </fields>
+    <fields>
+        <label>Mensaje</label>
+        <name>Message__c</name>
+    </fields>
+    <fields>
+        <label>RecipientId</label>
+        <name>RecipientId__c</name>
+    </fields>
+    <fields>
+        <label>Recuento de reintentos</label>
+        <name>Retry_Count__c</name>
+    </fields>
+    <fields>
+        <label>Fecha y hora programadas</label>
+        <name>Scheduled_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label>Estado</label>
+        <name>Status__c</name>
+        <picklistValues>
+            <masterLabel>Completed</masterLabel>
+            <translation><!-- Completed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Requeued</masterLabel>
+            <translation><!-- Requeued --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Scheduled</masterLabel>
+            <translation><!-- Scheduled --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label>Envío desencadenado</label>
+        <lookupFilter>
+            <errorMessage><!-- Trggered Send must be active in order to be selected. --></errorMessage>
+        </lookupFilter>
+        <name>Triggered_Send__c</name>
+        <relationshipLabel>Ejecuciones de envío desencadenado</relationshipLabel>
+    </fields>
+    <fields>
+        <label>Objeto desencadenante</label>
+        <name>Triggering_Object__c</name>
+    </fields>
+    <fields>
+        <label>Id. del registro desencadenante</label>
+        <name>Triggering_Record_Id__c</name>
+    </fields>
+    <gender>Masculine</gender>
+    <layouts>
+        <layout>Triggered Send Execution Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <nameFieldLabel>Nombre de ejecución de envío desencadena</nameFieldLabel>
+</CustomObjectTranslation>

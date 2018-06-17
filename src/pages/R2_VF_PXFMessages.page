@@ -1,0 +1,209 @@
+<apex:page standardController="R1_Incident__c" extensions="R2_PXFMessages_CTRL" standardStylesheets="false" showHeader="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+
+	<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="x-ua-compatible" content="ie=edge" />
+	<title>Mensaje PXF</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- Import the Design System style sheet -->
+	<apex:slds />
+
+	<style>
+	body{
+		background: #fff;
+	}
+	.slds-form-element{
+		margin-bottom: 20px;
+	}
+	.slds-form-element__help{
+		opacity: 0.8;
+	}
+	.field-required{
+		color: red !important;
+	}
+	.text-area-custom{
+		min-height: 150px;
+	}
+  .sinMargen{
+    margin: 0;
+    margin-top: 7px; /* revisar */
+    padding: 2px;
+  }
+	</style>
+
+	<script type="text/javascript">
+		function refreshJS(){
+			refresh();
+		}
+		function cerrar(){
+			window.top.close();
+		}
+		function cambiarATTY(){
+			var url = "/apex/R2_VF_TTY_Messages"
+			window.open(url);
+			window.close();
+		}
+
+		function validateFields(){
+
+			var correct = true;
+
+			var txtXF = document.getElementById('{!$Component.form.xfAddress}').value;
+
+			if (txtXF == undefined || txtXF == null || txtXF == '') {
+
+				correct = false;
+				alert('El campo XF debe estar relleno.');
+
+			}else{
+
+				var numSlash = txtXF.split('/').length;
+				if ( numSlash > 5) {
+
+					correct = false;
+					alert('Excedido numero máximo de destinarios. Esperado: 5,  enviados: ' + numSlash);
+				}
+			}
+
+			return correct;
+		}
+		
+	</script>
+</head>
+<body onload="moveTo(0,0); resizeTo(400,300);">
+<!-- REQUIRED SLDS WRAPPER -->
+<div class="slds-scope">
+<apex:form id="form">
+	<div class="slds-box">
+		<div class="slds-box slds-m-bottom_medium">
+      <div class="slds-button-group">
+  			<div class="slds-button-group" role="group">
+  				<apex:commandButton styleClass="slds-button slds-button_brand" action="{!submit}" value="Ejecutar PXF en WT" onclick="return validateFields();"/>
+  				<!-- <apex:commandButton styleClass="slds-button slds-button_neutral" value="Cancelar" onClick="cerrar();return false;"/>
+        </div>
+        <div class="slds-button-group" role="group">
+  				<apex:commandButton styleClass="slds-button slds-button_neutral" value="Ir a enviar un TTY" onClick="cambiarATTY();return false;"/>
+  				<apex:commandButton styleClass="slds-button slds-button_neutral" value="Ir a DSL (Display Station List)"/> -->
+  			</div>
+  		</div>
+    </div>
+
+		<div class="slds-box">
+		<div class="slds-form slds-form_stacked">
+
+		<div class="slds-grid">
+
+			<div class="slds-col slds-m-right_medium slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4">
+							<div class="slds-form-element">
+								<label class="slds-form-element__label field-required" for="xfAddress">XF (Action File Address):</label>
+								<div class="slds-form-element__control">
+									<apex:input required="" type="text" id="xfAddress" value="{!xfAddress}" styleClass="slds-input"/>
+								</div>
+								<div class="slds-form-element__help">Indique hasta 5 destinatarios del mensaje: Estación Código y área del Action File separado por "/" (Ejemplo: MADIBAP/ATLZZAP/HDQZZXX)</div>
+							</div>
+
+							<div class="slds-form-element">
+								<label class="slds-form-element__label" for="id-xtAddress">Tx (Direcciones Telemáticas):</label>
+								<div class="slds-form-element__control">
+									<apex:input type="text" id="id-xtAddress" value="{!xtAddress}" styleClass="slds-input"/>
+								</div>
+								<div class="slds-form-element__help">Indique hasta 5 direcciones telemáticas destinatarias del mensaje separadas por "/" (Ejemplo:FRAKKQQ/)</div>
+							</div>
+
+
+							<div class="slds-form-element">
+								<label class="slds-form-element__label" for="id-delayedPXF">DP (Delayed PXF)</label>
+								<div class="slds-form-element__control">
+									<apex:input type="text" id="id-delayedPXF" value="{!delayedPXF}" styleClass="slds-input"/>
+								</div>
+								<div class="slds-form-element__help">Mensaje diferido. Indique Fecha/Hora GMT en la que el mensaje aparecera en el Action File: Ejemplo: 14DEC/1500</div>
+							</div>
+			</div>
+
+			<div class="slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4">
+            <div class="slds-grid "> <!-- slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 -->
+              <div class="slds-form-element slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 sinMargen">
+                <label class="slds-form-element__label" for="id-copyTo1">Copiar mensaje a PIR nº1:</label>
+                <div class="slds-form-element__control">
+                  <apex:input type="text" id="id-copyTo1" value="{!copyTo1}" styleClass="slds-input"/>
+                </div>       
+              </div>
+              <div class="slds-form-element slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 sinMargen">
+                <label class="slds-form-element__label" for="id-copyTo2">Copiar mensaje a PIR nº2:</label>
+                <div class="slds-form-element__control">
+                  <apex:input type="text" id="id-copyTo2" value="{!copyTo2}" styleClass="slds-input"/>
+                </div>
+              </div>
+            </div>
+          <div class="slds-grid" >
+            <div class="slds-form-element slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 sinMargen">
+              <label class="slds-form-element__label" for="id-copyTo3">Copiar mensaje a PIR nº3:</label>
+              <div class="slds-form-element__control">
+                <apex:input type="text" id="id-copyTo3" value="{!copyTo3}" styleClass="slds-input"/>
+              </div>
+            </div>
+            <div class="slds-form-element slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 sinMargen">
+              <label class="slds-form-element__label" for="id-copyTo4">Copiar mensaje a PIR nº4:</label>
+              <div class="slds-form-element__control">
+                <apex:input type="text" id="id-copyTo4" value="{!copyTo4}" styleClass="slds-input"/>
+              </div>
+            </div>
+          </div>
+          <div class="slds-form-element__help">Indique en los campos correspondientes cada PIR a enviar copia del mensaje. Ejemplos: AHL MADIB1234, OHD BCNIB1234, DDP BILIB1234</div>
+          <!-- <apex:outputPanel id="botonesEdit" >
+            <div style="text-align: center;">
+                <apex:commandButton styleClass="slds-button slds-button_brand slds-m-right_xx-small" action="{!submit}" value="Ejecutar PXF en WT" />
+                <apex:commandButton styleClass="slds-button slds-button_neutral slds-m-left_xx-small" value="Cancelar" onClick="cerrar();return false;"/>
+            </div>
+        </apex:outputPanel> -->
+      <!-- borrado abajo -->
+						<!-- <div class="slds-form-element">
+							<label class="slds-form-element__label" for="id-messageAHL">Copy Message to Files AHL:</label>
+							<div class="slds-form-element__control">
+								<apex:input type="text" id="id-messageAHL" value="{!messageAHL}" styleClass="slds-input"/>
+							</div>
+							<div class="slds-form-element__help">Indique en el campo correspondiente el AHL a enviar copia del mensaje. Utilice el separado "/" paara indicar más de un expediente. Máximo 4 expedientes:</div>
+						</div>
+
+						<div class="slds-form-element">
+							<label class="slds-form-element__label" for="id-messageDPR">Copy Message to Files DPR:</label>
+							<div class="slds-form-element__control">
+								<apex:input type="text" id="id-messageDPR" value="{!messageDPR}" styleClass="slds-input"/>
+							</div>
+							<div class="slds-form-element__help">Indique en el campo correspondiente el DPR a enviar copia del mensaje. Utilice el separado "/" paara indicar más de un expediente. Máximo 4 expedientes:</div>
+						</div>
+
+						<div class="slds-form-element">
+							<label class="slds-form-element__label" for="id-messageOHD">Copy Message to Files OHD:</label>
+							<div class="slds-form-element__control">
+								<apex:input type="text" id="id-messageOHD" value="{!messageOHD}" styleClass="slds-input"/>
+							</div>
+							<div class="slds-form-element__help">Indique en el campo correspondiente el OHD a enviar copia del mensaje. Utilice el separado "/" paara indicar más de un expediente. Máximo 4 expedientes:</div>
+						</div> -->
+		</div>
+		</div>
+
+		<div class="slds-grid">
+			<div class="slds-col">
+					<div class="slds-form-element">
+						<div class="slds-form-element__control">
+							<apex:inputTextarea id="id-messageTextarea" value="{!messageTextarea}" styleClass="slds-textarea text-area-custom"></apex:inputTextarea>
+						</div>
+					</div>
+			</div>
+		</div>
+
+    <div class="slds-form-element__help">Respuesta de World Tracer    
+      <apex:outputText value="{!response}" styleClass="slds-textarea text-area-custom disabledCustom"></apex:outputText>
+    </div>
+
+		</div>
+		</div>
+	</div>
+</apex:form>
+</div>
+</body>
+</html>
+</apex:page>

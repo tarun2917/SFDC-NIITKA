@@ -1,0 +1,6 @@
+<apex:page standardController="Account">
+   <apex:detail inlineEdit="true" rendered="{! If(Account.RecordType.Name !='Cuenta personal' ,true,false) }"/>
+    <apex:outputpanel rendered="{! If(Account.RecordType.Name =='Cuenta personal' ,true,false) }">
+
+    </apex:outputpanel>
+</apex:page>

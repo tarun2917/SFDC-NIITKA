@@ -1,0 +1,85 @@
+<apex:page StandardController="R1_Incident__c" extensions="R2_WT_BaggageHistory_CTRL" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+  <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <head>
+      <meta charset="utf-8"/>
+      <title>Historico Transacciones</title>
+      <apex:slds />
+    </head>
+    <body>
+      <apex:form >
+        <div class="slds-scope">
+          <div class="slds-box">
+            <div class="slds-m-bottom_medium">
+              <label class="slds-form-element__label">
+                <h2 class="slds-form-element__label" style="font-size: 0.8rem; line-height: 1.25;">
+					Historico Transacciones
+				</h2>
+              </label>
+              <apex:commandButton action="{!readRecordId}" styleClass="slds-button slds-button_neutral" value="Cargar Historico" />
+            </div>
+            <apex:variable var="row_index" value="{!0}"/>
+      			<apex:dataTable id="dataTable" value="{!historyTransaction}" var="item" rowClasses="odd,even"
+      							styleClass="slds-table slds-table_bordered slds-table_cell-buffer"
+      							rendered="{! !(ISBLANK(historyTransaction))}">
+      				<!-- <apex:variable var="openned" value="false"/>-->
+      				<apex:column >
+      					<svg onclick="toggleExtraData({!row_index}); return false;" style="{!IF(item.size > 1, '', 'display:none')}" id="svg_section_1" class="slds-button__icon" aria-hidden="true">
+      						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#chevronright')}"/>
+      					</svg>
+      				</apex:column>
+      		        <apex:column >
+      					<div id="extra-data-div-{!row_index}">
+      						<apex:outputText value="{!item[0]}" style="font-size: 0.7rem"/>
+      						<span id="extra-data-{!row_index}" style="display:none">
+      							<apex:repeat value="{!item}" var="line" first="1"> <!--rendered="{! openned == 'true'}"-->
+      								<br/><apex:outputText value="{!line}" style="padding-left: 1.5rem; font-size: 0.7rem"/>
+      							</apex:repeat>
+      						</span>
+      						<apex:variable var="row_index" value="{!row_index+1}"/>
+      					</div>
+      		        </apex:column>
+      		    </apex:dataTable>
+      			<div class="slds-m-vertical_xx-large" style="text-align:center;">
+      				<apex:outputText value="Nothing to Display" rendered="{!ISBLANK(historyTransaction)}"
+      								 styleClass="slds-text-heading_small"
+      								 style="width: 100%"/>
+      			</div>
+      		</div>
+        </div>
+      	</apex:form>
+      </body>
+      	<!-- <apex:form id="trash"></apex:form> -->
+      	<script>
+      	 	// j$ = jQuery.noConflict();
+      		// var urlright = {!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#chevronright')}
+      		// var urldown = {!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#chevrondown')}
+
+      		function toggleExtraData(row_index) {
+      			// console.log(urlright)
+      			// console.log(urldown)
+      			// this.childNodes[0]['xlink:href'] = urldown
+      			var extraDataDiv = document.getElementById(`extra-data-${row_index}`);
+      			extraDataDiv.style.display = extraDataDiv.style.display === 'none' ? '' : 'none'
+      			console.log(row_index)
+      		}
+
+      		function selectRow(div) {
+      			console.log(div.id)
+      			if (document.getElementsByClassName('selectedMatch').length > 0) {
+      				document.getElementsByClassName('selectedMatch')[0].classList.remove("selectedMatch")
+      			}
+      			div.parentNode.parentNode.classList.add("selectedMatch")
+      			theId = div.id.replace('extra-data-div-', '')
+      			console.log(theId)
+      		}
+      	</script>
+      	<style>
+      		.selectedMatch {
+      			background: yellow;
+      		}
+      		.selectedMatch:hover {
+      			background: #CCCC00;
+      		}
+      	</style>
+      </html>
+      </apex:page>

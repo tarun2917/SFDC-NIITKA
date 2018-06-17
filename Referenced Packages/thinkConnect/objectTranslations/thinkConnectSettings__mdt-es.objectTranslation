@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>thinkConnect Settings</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>thinkConnect Settings</value>
+    </caseValues>
+    <fields>
+        <help><!-- CallCenter Id. --></help>
+        <label><!-- CallCenter --></label>
+        <name>CallCenter__c</name>
+    </fields>
+    <fields>
+        <label><!-- ClientId --></label>
+        <name>OAuthClientId__c</name>
+    </fields>
+    <fields>
+        <label><!-- ClientSecret --></label>
+        <name>OAuthClientSecret__c</name>
+    </fields>
+    <fields>
+        <label><!-- OAuthPassword --></label>
+        <name>OAuthPassword__c</name>
+    </fields>
+    <fields>
+        <label><!-- OAuthUser --></label>
+        <name>OAuthUser__c</name>
+    </fields>
+    <gender>Neuter</gender>
+    <layouts>
+        <layout>thinkConnect Settings Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+</CustomObjectTranslation>

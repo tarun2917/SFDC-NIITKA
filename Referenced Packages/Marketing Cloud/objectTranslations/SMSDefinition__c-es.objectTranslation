@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Envío de dispositivo móvil</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Envíos de dispositivo móvil</value>
+    </caseValues>
+    <fields>
+        <label>AllSources</label>
+        <name>AllSources__c</name>
+    </fields>
+    <fields>
+        <label>Fecha/hora del flujo de trabajo de copia de seguridad</label>
+        <name>BackupWorkflow__c</name>
+    </fields>
+    <fields>
+        <help><!-- The percentage of bounces versus the emails that were sent --></help>
+        <label>Índice de devoluciones</label>
+        <name>Bounce_Rate_del__c</name>
+    </fields>
+    <fields>
+        <label>Unidad comercial</label>
+        <name>Business_Unit__c</name>
+        <relationshipLabel><!-- Mobile Sends --></relationshipLabel>
+    </fields>
+    <fields>
+        <label>Unidad comercial guardada</label>
+        <name>Business_Unit_saved__c</name>
+    </fields>
+    <fields>
+        <label>Campaña</label>
+        <name>Campaign__c</name>
+        <relationshipLabel><!-- Mobile Sends (Campaign) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label>Campañas</label>
+        <name>Campaigns__c</name>
+    </fields>
+    <fields>
+        <help><!-- The percentage of unique clicks versus the emails that were sent (excluding bounces) --></help>
+        <label>Índice de clics</label>
+        <name>Click_Through_Rate__c</name>
+    </fields>
+    <fields>
+        <label>Contacto</label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Mobile Sends --></relationshipLabel>
+    </fields>
+    <fields>
+        <label>Id. de conversación</label>
+        <name>ConversationId__c</name>
+    </fields>
+    <fields>
+        <label>Id. de conversación</label>
+        <name>ConversationId_old__c</name>
+    </fields>
+    <fields>
+        <label>Código de país</label>
+        <name>Country_Code__c</name>
+    </fields>
+    <fields>
+        <label>Fecha/hora de creación</label>
+        <name>Created_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label>DataExtensionId</label>
+        <name>DataExtensionId__c</name>
+    </fields>
+    <fields>
+        <help><!-- The date and time the send was actually sent by Marketing Cloud --></help>
+        <label>Fecha de envío</label>
+        <name>DateSent__c</name>
+    </fields>
+    <fields>
+        <label>Eliminar entradas duplicadas de suscriptores</label>
+        <name>DedupeSubscribers__c</name>
+    </fields>
+    <fields>
+        <help><!-- The percentage of emails that were successfully delivered versus the emails that bounced --></help>
+        <label>Índice de entrega</label>
+        <name>Deliverability_Rate__c</name>
+    </fields>
+    <fields>
+        <label>sendDef</label>
+        <name>ETSendDef__c</name>
+    </fields>
+    <fields>
+        <label>ExclusionCampaign</label>
+        <name>ExclusionCampaign__c</name>
+        <relationshipLabel><!-- Mobile Sends (ExclusionCampaign) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label>Listas de exclusión</label>
+        <name>ExclusionLists__c</name>
+    </fields>
+    <fields>
+        <label>Campañas de exclusión</label>
+        <name>Exclusion_Campaigns__c</name>
+    </fields>
+    <fields>
+        <label>Informes de exclusión</label>
+        <name>Exclusion_Reports__c</name>
+    </fields>
+    <fields>
+        <label>Dirección del remitente</label>
+        <name>FromAddress__c</name>
+    </fields>
+    <fields>
+        <label>Correo electrónico del remitente</label>
+        <name>FromEmail__c</name>
+    </fields>
+    <fields>
+        <label>Nombre del remitente</label>
+        <name>FromName__c</name>
+    </fields>
+    <fields>
+        <label>HasBeenQueued</label>
+        <name>HasBeenQueued__c</name>
+    </fields>
+    <fields>
+        <help><!-- This job was retried at some point in the process. A job will be mainly retried due to connectivity issues. --></help>
+        <label>Reintentado</label>
+        <name>HasEnteredRetry__c</name>
+    </fields>
+    <fields>
+        <label>InitiatedDate</label>
+        <name>InitiatedDate__c</name>
+    </fields>
+    <fields>
+        <label>JobId</label>
+        <name>JobId__c</name>
+    </fields>
+    <fields>
+        <label>JobStarted</label>
+        <name>JobStarted__c</name>
+    </fields>
+    <fields>
+        <label>JobStatus</label>
+        <name>JobStatus__c</name>
+        <picklistValues>
+            <masterLabel>Complete</masterLabel>
+            <translation><!-- Complete --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Error</masterLabel>
+            <translation><!-- Error --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label>Palabra clave</label>
+        <name>Keyword__c</name>
+    </fields>
+    <fields>
+        <label>Candidato</label>
+        <name>Lead__c</name>
+        <relationshipLabel><!-- Mobile Sends --></relationshipLabel>
+    </fields>
+    <fields>
+        <label>MemberID</label>
+        <name>MemberID__c</name>
+    </fields>
+    <fields>
+        <label>Texto del mensaje</label>
+        <name>Message_Text__c</name>
+    </fields>
+    <fields>
+        <label>Mensajes</label>
+        <name>Messages__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of subscribers who did not perform any action on the email (i.e.: did not click on any link) --></help>
+        <label>Número de correos electrónicos no seleccionados</label>
+        <name>NumberNotClicked__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of email messages sent. This value is the number of subscribers that were targeted for this send, minus any excluded subscribers. --></help>
+        <label>Número de envíos</label>
+        <name>NumberSent__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of subscribers who unsubscribed from the send --></help>
+        <label>Número de cancelaciones de suscripción</label>
+        <name>NumberUnsubscribed__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of email messages that bounced regardless of whether it was a soft or hard bounce --></help>
+        <label>Número de correos electrónicos devueltos</label>
+        <name>Number_Bounced__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of email messages that did not bounce --></help>
+        <label>Número de correos electrónicos entregados</label>
+        <name>Number_Delivered__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of subscribers who did not open the email --></help>
+        <label>Número de correos electrónicos no abiertos</label>
+        <name>Number_Not_Opened__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of subscribers to whom the message could not be delivered --></help>
+        <label>Número de no aptos para entrega existentes</label>
+        <name>NumberofExistingUndeliverables__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of subscribers who had unsubscribed or opted out prior to the time the email was sent --></help>
+        <label>Número de cancelaciones de suscripción existentes</label>
+        <name>NumberofExistingUnsubscribes__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of email messages that were not delivered due to permanent errors --></help>
+        <label>Número de devoluciones permanentes</label>
+        <name>NumberofHardBounces__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of email messages that were not delivered due to non-permanent errors --></help>
+        <label>Número de devoluciones temporales</label>
+        <name>NumberofSoftBounces__c</name>
+    </fields>
+    <fields>
+        <help><!-- The total number of subscribers who clicked on the Forward link --></help>
+        <label>Número de reenvíos de suscriptores</label>
+        <name>NumberofSubscribersForwardingEmail__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of actions taken on an email (i.e.: by clicking on any link). This value includes multiple actions by the same subscriber --></help>
+        <label>Número total de clics</label>
+        <name>NumberofTotalClicks__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of times the message was opened. This value includes multiple opens by the same subscriber. --></help>
+        <label>Número total de aperturas</label>
+        <name>NumberofTotalOpens__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of subscribers who performed an action on the email (i.e.: by clicking on any link) --></help>
+        <label>Número de clics únicos</label>
+        <name>NumberofUniqueClicks__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of unique email messages that were opened. This value includes only one open per subscriber. --></help>
+        <label>Número de aperturas únicas</label>
+        <name>NumberofUniqueOpens__c</name>
+    </fields>
+    <fields>
+        <help><!-- The percentage of emails that were opened versus the emails that were sent (excluding bounces) --></help>
+        <label>Índice de apertura</label>
+        <name>Open_Rate__c</name>
+    </fields>
+    <fields>
+        <label>Fecha/hora de certificación de suscripción</label>
+        <name>Opt_in_Certification_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label>Usuario de certificación de suscripción</label>
+        <name>Opt_in_Certification_User__c</name>
+        <relationshipLabel><!-- Mobile Sends --></relationshipLabel>
+    </fields>
+    <fields>
+        <label>Destinatarios que se han suscrito</label>
+        <name>RecipientsOptedIn__c</name>
+    </fields>
+    <fields>
+        <label>Id. de informe</label>
+        <name>ReportId__c</name>
+    </fields>
+    <fields>
+        <label>Nombre del informe</label>
+        <name>ReportName__c</name>
+    </fields>
+    <fields>
+        <label>Informes</label>
+        <name>Reports__c</name>
+    </fields>
+    <fields>
+        <label>Fecha y hora programadas</label>
+        <name>Scheduled_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label>Id. de clasificación del envío</label>
+        <name>SendClassificationId__c</name>
+    </fields>
+    <fields>
+        <label>Estado del envío</label>
+        <name>SendStatus__c</name>
+        <picklistValues>
+            <masterLabel>Completed</masterLabel>
+            <translation><!-- Completed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Failed</masterLabel>
+            <translation><!-- Failed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>New</masterLabel>
+            <translation><!-- New --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Processing</masterLabel>
+            <translation><!-- Processing --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Submitted</masterLabel>
+            <translation><!-- Submitted --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label>Hora de envío</label>
+        <name>SendTime__c</name>
+    </fields>
+    <fields>
+        <help><!-- The Send Status indicates where in the process the send is. --></help>
+        <label>Estado del envío</label>
+        <name>Send_Status_View__c</name>
+    </fields>
+    <fields>
+        <label>SenderProfileId</label>
+        <name>SenderProfileId__c</name>
+    </fields>
+    <fields>
+        <label>Fecha/hora del estado</label>
+        <name>Status_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label>Asunto</label>
+        <name>Subject__c</name>
+    </fields>
+    <fields>
+        <label>Id. de la lista de suscriptores</label>
+        <name>SubscriberListId__c</name>
+    </fields>
+    <fields>
+        <label>Nombre de lista de suscriptores</label>
+        <name>SubscriberListName__c</name>
+    </fields>
+    <fields>
+        <label>SyncComplete</label>
+        <name>SyncComplete__c</name>
+    </fields>
+    <fields>
+        <label>SyncId</label>
+        <name>SyncId__c</name>
+    </fields>
+    <fields>
+        <label>Miniatura</label>
+        <name>Thumbnail__c</name>
+    </fields>
+    <fields>
+        <label>TimeSinceRequest</label>
+        <name>TimeSinceRequest__c</name>
+    </fields>
+    <fields>
+        <label>TrackingLastRequested</label>
+        <name>TrackingLastRequested__c</name>
+    </fields>
+    <fields>
+        <label>TrackingOnly</label>
+        <name>TrackingOnly__c</name>
+    </fields>
+    <fields>
+        <help><!-- The date and time the last tracking update was received --></help>
+        <label>Seguimiento a partir del</label>
+        <name>Tracking_As_Of__c</name>
+    </fields>
+    <fields>
+        <label>TriggerDelayedSend</label>
+        <name>TriggerDelayedSend__c</name>
+    </fields>
+    <fields>
+        <label>Unidad comercial activada por el usuario</label>
+        <name>UEBU__c</name>
+        <relationshipLabel><!-- Mobile Sends --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- The percentage of subscribers who unsubscribed versus the emails that were sent (excluding bounces) --></help>
+        <label>Índice de cancelaciones de suscripción</label>
+        <name>Unsubscribe_Rate__c</name>
+    </fields>
+    <fields>
+        <label>Unidad comercial</label>
+        <name>fBusiness_Unit__c</name>
+    </fields>
+    <fields>
+        <label>Texto del mensaje (descartado 5.31)</label>
+        <name>message__c</name>
+    </fields>
+    <fields>
+        <label>Código corto</label>
+        <name>shortCode__c</name>
+    </fields>
+    <fields>
+        <label>Id. de mensaje</label>
+        <name>smsId__c</name>
+    </fields>
+    <fields>
+        <label>Nombre del mensaje</label>
+        <name>smsName__c</name>
+    </fields>
+    <gender>Masculine</gender>
+    <layouts>
+        <layout>Mobile Send Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Message Info --></label>
+            <section>Message Info</section>
+        </sections>
+        <sections>
+            <label><!-- Message Text --></label>
+            <section>Message Text</section>
+        </sections>
+        <sections>
+            <label><!-- Messages --></label>
+            <section>Messages</section>
+        </sections>
+        <sections>
+            <label><!-- Mobile Send Actions --></label>
+            <section>Mobile Send Actions</section>
+        </sections>
+        <sections>
+            <label><!-- Send Definition Info --></label>
+            <section>Send Definition Info</section>
+        </sections>
+        <sections>
+            <label><!-- System Information --></label>
+            <section>System Information</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Queued Mobile Send Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Message Info --></label>
+            <section>Message Info</section>
+        </sections>
+        <sections>
+            <label><!-- Message Text --></label>
+            <section>Message Text</section>
+        </sections>
+        <sections>
+            <label><!-- Messages --></label>
+            <section>Messages</section>
+        </sections>
+        <sections>
+            <label><!-- Mobile Send Actions --></label>
+            <section>Mobile Send Actions</section>
+        </sections>
+        <sections>
+            <label><!-- Send Definition Info --></label>
+            <section>Send Definition Info</section>
+        </sections>
+        <sections>
+            <label><!-- System Information --></label>
+            <section>System Information</section>
+        </sections>
+    </layouts>
+    <nameFieldLabel>Número de definición de envío de disposi</nameFieldLabel>
+    <recordTypes>
+        <label><!-- Queued SMS Definition --></label>
+        <name>Queued_SMS_Definition</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- SMS Definition --></label>
+        <name>SMS_Definition</name>
+    </recordTypes>
+    <webLinks>
+        <label>Cancelar envío de dispositivo móvil</label>
+        <name>Cancel_Mobile_Send</name>
+    </webLinks>
+</CustomObjectTranslation>

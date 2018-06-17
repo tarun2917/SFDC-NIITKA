@@ -1,0 +1,280 @@
+<apex:page StandardController="Account" extensions="R1_VIP_Lounge_CTRL">
+
+<style>
+    .noEntra {
+        background: rgb(215,25,44) !important;
+    }
+    .entra {
+        background: green !important;
+    }
+    .forzado {
+        background: rgb(252,209,0) !important;
+    }
+</style>    
+    
+<apex:includeScript value="/xdomain/xdomain.js"/>
+<apex:includeScript value="/soap/ajax/33.0/connection.js"/>
+<apex:includeScript value="/support/console/40.0/integration.js"/>
+<apex:includeScript value="/soap/ajax/33.0/apex.js"/>
+<apex:includeScript value="{!$Resource.cometd}"/>
+<apex:includeScript value="{!$Resource.jquery}"/>
+<apex:includeScript value="{!$Resource.json2_js}"/>
+<apex:includeScript value="{!$Resource.jquery_cometd}"/>
+ 
+
+<apex:form >
+    <apex:actionFunction name="idC" reRender="cActual,botonera,tablaAc,form,tablaCm,formInv,tablaV,popUpAlerta" action="{!refreshidC}" oncomplete="verInvitado('{!idInvEncontrado}')"/>
+
+
+<apex:actionFunction name="limpiarEncontrado" reRender="cActual,botonera,tablaAc,form,tablaCm,formInv,tablaV" action="{!limpiaID}"/>
+    <apex:actionFunction name="actionPopUp" action="{!saltaPopUp}" oncomplete="limpiarEncontrado()"/>
+    <apex:actionFunction name="hidePopUp" action="{!escondePopUp}" oncomplete="limpiarEncontrado()"/>
+<!--<apex:actionFunction name="checkInvitado" oncomplete="verInvitado('{!idInvEncontrado}')"/>-->
+<apex:actionFunction name="cambiaPuesto" reRender="puestoTrabajo,cActual,botonera,tablaAc,form,tablaCm,formInv,tablaV" action="{!puesto}"/>
+<apex:actionFunction name="changeSala" reRender="cActual,botonera,tablaAc,form,tablaCm,formInv,tablaV" action="{!cambiaSala}"/>
+</apex:form>
+<script type="text/javascript">
+
+    function verInvitado(IdInvt){
+        if(sforce.console.isInConsole()){
+            if(IdInvt == '' || IdInvt == null || typeof IdInvt == 'undefined'){
+                
+                         
+            }else if(IdInvt == "NotFound"){
+                 // Popup de invitado no encontrado
+                actionPopUp();
+            }else{
+                sforce.console.openPrimaryTab(null, '/' + IdInvt, true); 
+            }
+            
+        }
+    }
+    
+    function abrirAcceso (id){
+        
+        sforce.console.openPrimaryTab(null,'/'+id, true);
+    }
+
+    $=jQuery.noConflict();
+    (function($) {
+        $(document).ready(function() {
+            $.cometd.init({
+                url: window.location.protocol+'//'+window.location.hostname+'/cometd/24.0/',
+                requestHeaders: { Authorization: 'OAuth {!$Api.Session_ID}'}
+             });
+
+             // Subscribe to a topic. JSON-encoded update will be returned in the callback
+             // In this example we are using this only to track the generated event
+             $.cometd.subscribe('/topic/VipLoungeUpdates', function(message) {
+                //You can use message as it will return you many attributes
+                //We are calling the Action Function here.
+                console.log(message.data.sobject.Id);
+                var vip=message.data.sobject.R1_VLI_PKL_Sala_Vip__c;
+                var puesto=message.data.sobject.R1_VLI_PKL_Vip_lounge_position__c;
+                console.log(vip);
+                console.log(puesto);
+                console.log("{!vip}");
+                console.log("{!puesto}");
+                if(vip=="{!vip}" && puesto=="{!puesto}"){
+                   console.log("entro por aqui");
+                   
+                   idC();
+                }
+            });
+            cambiaPuesto();
+        });
+
+    })
+    (jQuery)
+</script>
+
+<apex:pageblock id="puestoTrabajo" title="Puesto de Trabajo">
+    <apex:form >
+        <apex:selectList value="{!salaSel}" size="1">
+            <apex:selectOptions value="{!objectOptions}"/>
+        </apex:selectList>
+
+    
+        <apex:commandButton value="Cambiar Puesto de Trabajo" action="{!cambiaSala}"> 
+            <apex:param name="salaSel"
+                value="{!objectOptions}"
+                assignTo="{!salaSel}"/>
+        </apex:commandButton>
+    </apex:form>
+</apex:pageblock>
+    
+<apex:pageBlock id="cActual" title="Cliente Actual">
+   <c:R2_COMP_PopUpVIP rendered="{!popUP}"></c:R2_COMP_PopUpVIP>
+    <apex:form >
+         
+
+    <apex:pageBlockTable value="{!idC[0]}" var="vipIs">
+        <apex:column headerValue="Acceso"><apex:commandLink id="accesoLink" onClick="abrirAcceso('{!vipIs.id}')">
+            <apex:outputText value="{!vipIs.Name}"/>
+        </apex:commandLink>
+        </apex:column>
+        <apex:column headerValue="Cliente"><apex:commandLink id="cActualLink" onClick="abrirAcceso('{!vipIs.R1_VLI_LOO_Cliente__c}')">
+            <apex:outputText value="{!vipIs.R1_VLI_LOO_Cliente__r.name}"/>
+        </apex:commandLink>
+        </apex:column>
+        <apex:column value="{!vipIs.R1_VLI_TXT_passenger_name__c}" />
+        <apex:repeat value="{!$ObjectType.R1_VIP_Lounge_Access__c.FieldSets.ClienteActualVIP}" var="f"> 
+            <apex:column headerValue="{!f.Label}" value="{!vipIs[f]}">
+            </apex:Column>
+        </apex:repeat>
+        <apex:column headerValue="Estado del Acceso" styleClass="{!CASE( vipIs.R1_VLI_PKL_Access_status__c, "Aprobado","entra", "Denegado", "noEntra", "Forzado", "forzado","NULL")}"/>
+    </apex:pageBlockTable>
+    <div align="right" id="botonera">
+        <apex:commandButton disabled="{!IF (OR(invitado==true,idC[0].R1_VLI_RUS_Count_Invitees__c==idC[0].R1_VLI_NUM_Guest_number__c,idC[0].R1_VLI_NUM_Guest_number__c==null),true,false)}" value="Añadir Invitados" action="{!esInvitado}">
+            <apex:param name="idInteraccion"
+                value="{!idC[0].ID}"
+                assignTo="{!IdInteraccion}"/>
+        </apex:commandButton>
+        <apex:commandButton disabled="{!IF(idC[0].R1_VLI_PKL_Access_status__c=='Denegado',false,true)}" value="Forzar Acceso" action="{!forzarEntrada}"/>
+        <apex:commandButton value="Recuperar Acceso" disabled="{!IF (recuperar,true,false)}" action="{!recuperarAcceso}">
+        </apex:commandButton>
+        <apex:commandButton value="Recuperar Invitado" disabled="{!IF (recupInvitado,true,false)}" action="{!recuperarInvitado}"/>
+    </div>
+    </apex:form>
+</apex:pageBlock>
+    
+ 
+<div style="height : 220px;">
+    <div style="width : 50%; float : left">
+           <apex:form id="tablaV">
+           <apex:pageBlock title="Información de Vuelo">
+                <apex:pageBlockTable value="{!idC[0]}" var="vipIs" >
+                    <apex:column value="{!vipIs.R1_VLI_TXT_Comp_Flight__c}"/>
+                    <apex:column value="{!vipIs.R1_VLI_TXT_Flight_number__c}" />
+                    <apex:column value="{!vipIs.R1_VLI_TXT_Class__c}"/>
+                    <apex:column value="{!vipIs.R1_VLI_DAT_Date__c}"/>
+                    <apex:column value="{!vipIs.R1_VLI_TXT_boarding_gate_cki__c}"/>
+                    <apex:column value="{!vipIs.R1_VLI_NUM_departure_tieme_cki__c}"/>
+                    <apex:column value="{!vipIs.R1_VLI_LOO_Flight__r.R1_FLG_PKL_Flight_status__c}"></apex:column>
+                    <apex:column value="{!vipIs.R1_VLI_NUM_Time_state__c}"/>
+            </apex:pageBlockTable>
+            <apex:pageBlockTable value="{!idC[0]}" var="vipIs">
+                <apex:column value="{!vipIs.R1_VLI_TXT_Origin__c}"/>
+                <apex:column value="{!vipIs.R1_VLI_TXT_Destination__c}"/>
+                <apex:column value="{!vipIs.R1_VLI_TXT_Bn__c}"/>
+                <apex:column value="{!vipIs.R1_VLI_TXT_Seat_number__c}"/>
+                <apex:column value="{!vipIs.R1_VLI_TXT_PNR__c}"/>
+                <apex:column value="{!vipIs.R1_VLI_TXT_ETKD__c}"/>
+                <apex:column headerValue="Embarcado" value="{!vipIs.R1_VLI_LOO_Flight__r.R1_FLG_CHK_boarded__c}"/>
+            </apex:pageBlockTable>
+            <apex:pageBlockTable value="{!idC[0]}" var="vipIs">
+                <apex:column value="{!vipIs.R1_VLI_TXT_Comp_Mkt_flight__c}"/>
+                <apex:column value="{!vipIs.R1_VLI_TXT_Mkt_Flight__c}"/>
+                <apex:column value="{!vipIs.R1_VLI_TXT_Inbound__c}"/>
+                <apex:column headerValue="Número Vuelo Inb" value="{!vipIs.R1_VLI_TXT_Inbound_flight__c}"/>
+                <apex:column value="{!vipIs.R1_VLI_TXT_Inbound_Class__c}"/>
+                <apex:column value="{!vipIs.R1_VLI_TXT_Inb_origin__c}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</div>
+
+<div style="width : 50%; float : left">
+    <apex:form id="tablaAc">
+        <apex:pageBlock title="Detalles del Acceso">
+            <apex:pageBlockTable value="{!idC[0]}" var="vipIs">
+                <apex:column headerValue="Invitados en Sala" value="{!vipIs.R1_VLI_RUS_Count_Invitees__c}"/>
+                <apex:column headerValue="Número Máximo de Invitados" value="{!vipIs.R1_VLI_NUM_Guest_number__c}"/>
+            </apex:pageBlockTable>
+
+            <apex:pageBlockTable value="{!vipServices}" var="service">
+                <apex:column headerValue="Nombre de Servicio" value="{!service.name}"></apex:column>
+                <apex:column value="{!service.R1_VLS_PKL_Service_status__c}"></apex:column>
+            </apex:pageBlockTable>
+
+            <apex:pageBlockTable value="{!idC[0]}" var="vipIs">
+                <apex:column value="{!vipIs.R1_VLI_TXT_Meal__c}"/>
+                <apex:column value="{!vipIs.R1_VLI_TXT_Special_Services__c}"/>
+            </apex:pageBlockTable>
+
+            <apex:pageBlockTable value="{!idC[0]}" var="vipIs">
+                <apex:column headerValue="Observaciones">
+                    <apex:inputTextarea style="width : 99% ;"  value="{!observaciones}"/>
+                    <apex:commandButton style="float : right" value="Guardar Observaciones" action="{!actualizarObservaciones}">
+                    </apex:commandButton>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</div>
+</div>
+
+<div style="height: 400px; width : 50%; float: left; ">    
+    <apex:form id="form" style="overflow: scroll;">
+        <apex:pageBlock title="{!salaSel}" >
+           
+            <apex:pageBlockTable value="{!VipInt}" var="vipIs" id="tablaC" style="">
+                <apex:column ><apex:commandLink value="Seleccionar" action="{!cargarDatos}"  reRender="cActual,botonera,tablaAc,form,tablaCm,formInv,tablaV,popUpAlerta">
+                    <apex:param name="idInteraccion"
+                        value="{!vipIs.ID}"
+                        assignTo="{!IdInteraccion}"/>
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column headerValue="Acceso"><apex:commandLink id="accesoLink" onClick="abrirAcceso('{!vipIs.id}')">
+                        <apex:outputText value="{!vipIs.Name}"/>
+                    </apex:commandLink>
+                </apex:column>
+                <!-- <apex:column value="{!vipIs.R1_VLI_LOO_Cliente__r.SALUTATION}"/> Comentado DBI-->
+                <apex:column style="width: 20px" headerValue="Vuelo" value="{!vipIs.R1_VLI_LOO_Flight__c}"/>
+                <!-- -->
+                <apex:column headerValue="Cliente"><apex:commandLink id="cActualLink" onClick="abrirAcceso('{!vipIs.R1_VLI_LOO_Cliente__c}')">
+                        <apex:outputText value="{!vipIs.R1_VLI_LOO_Cliente__r.name}"/>
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column headerValue="Pasajero" value="{!vipIs.R1_VLI_TXT_passenger_name__c}"/>
+                <apex:column value="{!vipIs.R1_VLI_TXT_Comp_Flight__c}"/>
+                <apex:column value="{!vipIs.R1_VLI_TXT_Class__c}"/>
+
+                <!-- <apex:column value="{!vipIs.R1_VLI_PKL_OneWolrd_code__c}"/> Comentado DBI-->
+                <apex:column headerValue="C. OneWorld" value="{!vipIs.R1_VLI_PKL_OneWolrd_code__c}"/>
+
+                <!-- <apex:column headerValue="Estado del Acceso" styleClass="{!CASE( vipIs.R1_VLI_PKL_Access_status__c, "Aprobado","entra", "Denegado", "noEntra", "Forzado", "forzado","NULL")}"/> Comentado DBI-->
+                <apex:column headerValue="Estado" styleClass="{!CASE( vipIs.R1_VLI_PKL_Access_status__c, "Aprobado","entra", "Denegado", "noEntra", "Forzado", "forzado","NULL")}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</div>
+
+<div style="width : 50%; float: right;">
+    <apex:form id="formInv">
+        <apex:pageBlock title="Invitados">
+            <apex:pageBlockTable value="{!invitadosIDC}" var="inv">
+                 <apex:column headerValue="Invitado"><apex:commandLink id="invitadoLink" onClick="abrirAcceso('{!inv.id}')">
+                        <apex:outputText value="{!inv.name}"/>
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column headerValue="Saludo" value="{!inv.R1_IV_LOO_Client__r.SALUTATION}"/>
+                <apex:column headerValue="Nombre"><apex:commandLink id="cActualLink" onClick="abrirAcceso('{!inv.R1_IV_LOO_Client__c}')">
+                        <apex:outputText value="{!inv.R1_IV_LOO_Client__r.name}"/>
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column value="{!inv.R1_IV_TXT_passenger_name__c}"/>
+                <apex:column value="{!inv.R1_IV_TXT_Comp_Flight__c}" />
+                <apex:column value="{!inv.R1_IV_TXT_Flight_number__c}"/>
+                <apex:column value="{!inv.R1_IV_TXT_Class__c}"/>
+                <apex:column value="{!inv.R1_IV_LOO_Client__r.R1_ACC_PKL_Card_Type__c}"/>
+                <apex:column headerValue="Hijo" ><apex:outPutField value="{!inv.R1_IV_CHK_Ninos__c}" >
+                     <apex:param name="idInvitado"
+                         value="{!inv.ID}"
+                         assignTo="{!idInvitado}"/>
+                    </apex:outputField>
+                </apex:column>
+                <apex:column ><apex:commandLink value="Cambiar Hijo" action="{!actualizarInvitado}"  reRender="cActual,botonera,tablaAc,form,tablaCm,formInv,tablaV">
+                    <apex:param name="idInvitado"
+                        value="{!inv.ID}"
+                        assignTo="{!idInvitado}"/>
+                    </apex:commandLink>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+    <apex:form id="popUpAlerta">
+        <!--<c:R1_COM_CustomerAlertsPopUp CustomerId="{!idC[0].R1_VLI_LOO_Cliente__c}"></c:R1_COM_CustomerAlertsPopUp>-->
+    </apex:form>
+</div>
+</apex:page>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>MC OAuth Client Detail</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>MC OAuth Client Details</value>
+    </caseValues>
+    <fields>
+        <label><!-- Auth Endpoint --></label>
+        <name>AuthEndpoint__c</name>
+    </fields>
+    <fields>
+        <label><!-- Client Id --></label>
+        <name>ClientId__c</name>
+    </fields>
+    <fields>
+        <label><!-- Client Secret --></label>
+        <name>ClientSecret__c</name>
+    </fields>
+    <fields>
+        <label><!-- Rest Endpoint --></label>
+        <name>RestEndpoint__c</name>
+    </fields>
+    <fields>
+        <label><!-- Soap Endpoint --></label>
+        <name>SoapEndpoint__c</name>
+    </fields>
+    <fields>
+        <label><!-- Token Endpoint --></label>
+        <name>TokenEndpoint__c</name>
+    </fields>
+    <gender>Neuter</gender>
+</CustomObjectTranslation>

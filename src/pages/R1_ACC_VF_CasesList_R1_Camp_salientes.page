@@ -1,0 +1,158 @@
+<apex:page showHeader="true" sidebar="true" standardController="Account" extensions="R1_Cases_RelatedList_CTRL" action="{!initCampanas_Salientes}">
+
+    <!-------------------------------------------------------------------------------------------------------------------------------------------------------
+    Author:        Alvaro Garcia
+    Company:       Accenture
+    Description:   VF with the information of the case
+    
+    History:
+    
+    <Date>            <Author>          <Description>
+    07/04/2017       Alvaro Garcia     Initial version
+    -------------------------------------------------------------------------------------------------------------------------------------------------------->
+
+<apex:includeScript value="/xdomain/xdomain.js"/>
+<apex:includeScript value="/soap/ajax/26.0/connection.js"/>
+<apex:includeScript value="/support/console/30.0/integration.js"/>
+
+<script type="text/javascript">
+	 function openCaseSubtab(caseId) {
+    	if (sforce.console.isInConsole()) { 
+			// First find the ID of the primary tab to put the new subtab in
+			sforce.console.openPrimaryTab(null, '/' + caseId, true);
+           // sforce.console.getEnclosingTabId(function(result){
+           // 	sforce.console.openSubtab(result.id,'/' + caseId,true,'',null);
+           // });
+    	}
+    	else {
+    		window.open('/' + caseId,'_blank');
+    		// window.top.location.href = '/' + caseId;
+    	}
+    };
+		                    
+</script>
+
+<head>
+	<style type="text/css"> #pbId, #pbsIs, .data2Col, .bPageBlock, .detailList {
+		margin: 0 0 5px 0 !important;
+		padding: 0 0 0 0 !important;
+		min-width: 100% !important;
+		}
+	</style> 
+</head>
+
+	<apex:form style="margin: 0 0 0 0; padding: 0 0 0 0;min-width: 100%;size: 100%;" id="formId"> 
+
+	    <apex:pageBlock id="pbId" title="{!rtName}"> 
+
+			<apex:pageBlockButtons location="top">
+
+				<apex:commandButton style="padding: 2px 3px;" value="Nuevo caso" action="{!newCase}" rerender="redirectPanel" />
+
+        		<apex:outputPanel id="redirectPanel" >
+
+		            <apex:outputText rendered="{!shouldRedirect}">
+		            
+		                <script type="text/javascript">
+		                	
+		                	if (sforce.console.isInConsole()) { 
+								// First find the ID of the primary tab to put the new subtab in
+								sforce.console.openPrimaryTab(null, '{!url}', true);
+					           // sforce.console.getEnclosingPrimaryTabId(function(result){
+					           // 	sforce.console.openSubtab(result.id,'{!url}',true,'',null);
+					           // });
+		                	}
+		                	else {
+		                		window.open('{!url}','_blank');
+		                		//window.top.location.href = '{!url}';
+		                	}
+		                    
+		                </script>
+
+		            </apex:outputText>
+
+		        </apex:outputPanel>
+
+        	</apex:pageBlockButtons>
+
+	        <apex:pageBlockSection columns="1" id="pbsIs">
+
+        		<apex:outputpanel style="margin: 0 0 0 0; padding: 0 0 0 0;min-width: 100%;size: 100%;overflow:scroll" layout="block">
+
+	        	<apex:pageBlockTable style="padding: 0 0 0 0;min-width: 100%;size: 100%;overflow:scroll" value="{!lst_case}" var="Case" >
+
+        			<apex:column headerValue="{!$ObjectType.Case.fields.CaseNumber.Label}" >
+
+        				<a onClick="openCaseSubtab('{!Case.Id}')" href="javascript:;">{!Case.CaseNumber}</a>
+	                    <!-- <apex:outputLink target="_top" value="{!URLFOR($Action.Case.View, Case.Id)}">{!Case.CaseNumber}</apex:outputLink>  -->
+
+	                </apex:Column>
+
+	                <apex:repeat value="{!$ObjectType.Case.FieldSets.R1_FS_Campos_Caso_RT_Campanas_Salientes}" var="f"> 
+
+		                <apex:column headerValue="{!f.Label}" rendered="{!f.Type == "reference" && f.FieldPath != "RecordTypeId" && f == "ParentId"}">
+
+		                    <a onClick="openCaseSubtab('{!Case[f]}')" href="javascript:;">{!Case[LEFT(f,LEN(f)-2) + caseNumber_Field]}</a>
+		                    <!-- <apex:outputfield value="{!Case[f]}"></apex:outputfield>  -->
+
+		                </apex:Column>
+
+		                <apex:column headerValue="{!f.Label}" rendered="{!f.Type == "reference" && f.FieldPath != "RecordTypeId" && f != "ParentId" && contains(f,"__c")}">
+
+		                    <a onClick="openCaseSubtab('{!Case[f]}')" href="javascript:;">{!Case[LEFT(f,LEN(f)-3) + relation_sufix_Field]}</a>
+		                    <!-- <apex:outputfield value="{!Case[f]}"></apex:outputfield>  -->
+
+		                </apex:Column>
+
+		                <apex:column headerValue="{!f.Label}" rendered="{!f.Type == "reference" && f.FieldPath != "RecordTypeId" && f != "ParentId" && !contains(f,"__c")}">
+
+		                    <a onClick="openCaseSubtab('{!Case[f]}')" href="javascript:;">{!Case[LEFT(f,LEN(f)-2) + name_Field]}</a>
+		                    <!-- <apex:outputfield value="{!Case[f]}"></apex:outputfield>  -->
+
+		                </apex:Column>
+
+		                <apex:column headerValue="{!f.Label}" rendered="{!f.Type != "reference" || f.FieldPath == "RecordTypeId"}">
+
+		                    <apex:outputfield value="{!Case[f]}"></apex:outputfield> 
+
+		                </apex:Column>
+
+		            </apex:repeat>
+
+	        	</apex:pageBlockTable>
+
+	        	</apex:outputpanel>
+
+	        </apex:pageblocksection> 
+
+	        <apex:commandLink value="Mostrar todos" action="{!showAll}" rendered="{!todos == true && tam_lst_case > 5}" rerender="redirectPanelLink" />
+
+    		<apex:outputPanel id="redirectPanelLink" >
+
+	            <apex:outputText rendered="{!shouldRedirectLink}">
+	            
+	                <script type="text/javascript">
+	                	
+	                	if (sforce.console.isInConsole()) { 
+							// First find the ID of the primary tab to put the new subtab in
+							sforce.console.openPrimaryTab(null, '{!url}', true, '{!rtName}');
+				           // sforce.console.getEnclosingPrimaryTabId(function(result){
+				           // 	sforce.console.openSubtab(result.id,'{!url}',true,'Todos los casos',null);
+				           // });
+	                	}
+	                	else {
+	                		window.open('{!url}','_blank');
+	                		// window.top.location.href = '{!url}';
+	                	}
+	                    
+	                </script>
+
+	            </apex:outputText>
+
+	        </apex:outputPanel>
+
+	    </apex:pageblock> 
+
+	</apex:form> 
+            
+</apex:page>

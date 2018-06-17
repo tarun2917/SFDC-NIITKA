@@ -1,0 +1,900 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CallCenter xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <adapterUrl>https://iberia--thinkconnect.eu6.visual.force.com/apex/thinkConnect</adapterUrl>
+    <customSettings>{&quot;reqSoftphoneHeight&quot;:&quot;460&quot;,&quot;reqUseApi&quot;:&quot;true&quot;,&quot;reqSoftphoneWidth&quot;:&quot;310&quot;,&quot;reqSalesforceCompatibilityMode&quot;:&quot;Classic_and_Lightning&quot;}</customSettings>
+    <displayName>CCPO</displayName>
+    <displayNameLabel>Display Name</displayNameLabel>
+    <internalNameLabel>Internal Name</internalNameLabel>
+    <sections>
+        <items>
+            <label>CTI Adapter URL</label>
+            <name>reqAdapterUrl</name>
+            <value>https://iberia--thinkconnect.eu6.visual.force.com/apex/thinkConnect</value>
+        </items>
+        <items>
+            <label>Use CTI API</label>
+            <name>reqUseApi</name>
+            <value>true</value>
+        </items>
+        <items>
+            <label>Softphone Height</label>
+            <name>reqSoftphoneHeight</name>
+            <value>460</value>
+        </items>
+        <items>
+            <label>Softphone Width</label>
+            <name>reqSoftphoneWidth</name>
+            <value>310</value>
+        </items>
+        <items>
+            <label>Package prefix</label>
+            <name>packagePrefix</name>
+            <value>thinkConnect__</value>
+        </items>
+        <items>
+            <label>Available where?</label>
+            <name>reqSalesforceCompatibilityMode</name>
+            <value>Classic_and_Lightning</value>
+        </items>
+        <label>General Information</label>
+        <name>reqGeneralInfo</name>
+    </sections>
+    <sections>
+        <items>
+            <label>Outside Prefix</label>
+            <name>reqOutsidePrefix</name>
+            <value>0</value>
+        </items>
+        <items>
+            <label>Long Distance Prefix</label>
+            <name>reqLongDistPrefix</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>International Prefix</label>
+            <name>reqInternationalPrefix</name>
+            <value>00</value>
+        </items>
+        <items>
+            <label>Internal Number Length</label>
+            <name>dialInternalLength</name>
+            <value>^[0-9]{0,4}$</value>
+        </items>
+        <items>
+            <label>Country Code</label>
+            <name>dialCountryCode</name>
+            <value>ES</value>
+        </items>
+        <items>
+            <label>Local Number Length</label>
+            <name>dialLocalLength</name>
+            <value>7</value>
+        </items>
+        <items>
+            <label>Long Distance Length</label>
+            <name>dialLongDistanceLength</name>
+            <value>10</value>
+        </items>
+        <items>
+            <label>Number of lines per agent</label>
+            <name>numLinesPerAgent</name>
+            <value>2</value>
+        </items>
+        <label>Dialing Options</label>
+        <name>reqDialingOptions</name>
+    </sections>
+    <sections>
+        <items>
+            <label>Transfer Button Enabled? (Y/N)</label>
+            <name>transferEnabled</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>Conference Button Enabled? (Y/N)</label>
+            <name>conferenceEnabled</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>Click-to-Consult Enabled? (Y/N)</label>
+            <name>clickToConsult</name>
+            <value>N</value>
+        </items>
+        <items>
+            <label>Auto-answer Enabled? (Y/N)</label>
+            <name>autoAnswerEnable</name>
+            <value>N</value>
+        </items>
+        <items>
+            <label>Display on side bar? (Y/N)</label>
+            <name>displayOnSideBar</name>
+            <value>N</value>
+        </items>
+        <items>
+            <label>Manual-in enable? (Y/N)</label>
+            <name>manualInEnable</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>DoNotCall check before clikToDial? (Y/N)</label>
+            <name>doNotCallCheck</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>Ring on inbound call? (Y/N)</label>
+            <name>ringOnCall</name>
+            <value>Y</value>
+        </items>
+        <label>Softphone Options</label>
+        <name>SoftphoneOptions</name>
+    </sections>
+    <sections>
+        <items>
+            <label>Show login screen? (Y/N)</label>
+            <name>showLogginScreen</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>Auto-login? (Y/N)</label>
+            <name>autoLogin</name>
+            <value>Y</value>
+        </items>
+        <label>Login screen options</label>
+        <name>loginScreenOptions</name>
+    </sections>
+    <sections>
+        <items>
+            <label>DNIS</label>
+            <name>DNIS</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>UUI 1</label>
+            <name>UUI1</name>
+            <value>Account.R1_ACC_TXT_Primary_FF_Card_CCPO__c</value>
+        </items>
+        <items>
+            <label>UUI 1 position</label>
+            <name>UUIPos1</name>
+            <value>41</value>
+        </items>
+        <items>
+            <label>UUI 2</label>
+            <name>UUI2</name>
+            <value>R1_Loyalty_Card__c.R1_FF_TXT_FF_code__c</value>
+        </items>
+        <items>
+            <label>UUI 2 position</label>
+            <name>UUIPos2</name>
+            <value>41</value>
+        </items>
+        <items>
+            <label>UUI 3</label>
+            <name>UUI3</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>UUI 3 position</label>
+            <name>UUIPos3</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>UUI 4</label>
+            <name>UUI4</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>UUI 4 position</label>
+            <name>UUIPos4</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>UUI 5</label>
+            <name>UUI5</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>UUI 5 position</label>
+            <name>UUIPos5</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>UUI Start</label>
+            <name>UUIStart</name>
+            <value>*</value>
+        </items>
+        <items>
+            <label>UUI Stop</label>
+            <name>UUIStop</name>
+            <value>$</value>
+        </items>
+        <items>
+            <label>UUI Separator</label>
+            <name>UUISep</name>
+            <value>!</value>
+        </items>
+        <label>ScreenPop Options</label>
+        <name>ScreenPopOptions</name>
+    </sections>
+    <sections>
+        <items>
+            <label>Create task after call? (Y/N)</label>
+            <name>createTask</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>Create task for internal calls? (Y/N)</label>
+            <name>createInternalTask</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>Show Call Log? (Y/N)</label>
+            <name>callLogShow</name>
+            <value>N</value>
+        </items>
+        <items>
+            <label>Use Interaction Log? (Y/N)</label>
+            <name>useInteractionLog</name>
+            <value>N</value>
+        </items>
+        <items>
+            <label>Subject of the task</label>
+            <name>taskSubject</name>
+            <value>Call</value>
+        </items>
+        <items>
+            <label>Append time stamp to subject?</label>
+            <name>appendTimeStamp</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>Preserve Call Log Related Data Selection? (Y/N)</label>
+            <name>callLogSelect</name>
+            <value>N</value>
+        </items>
+        <items>
+            <label>NONE value selectable on Related Data Selection? (Y/N)</label>
+            <name>noneValueSelect</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>Use Custom Call Log Fields? (Y/N)</label>
+            <name>callLogCustom</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>UCID URL</label>
+            <name>ucidURL</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Default call result</label>
+            <name>defaultResult</name>
+            <value>Finalizada con éxito</value>
+        </items>
+        <items>
+            <label>Transfer call result</label>
+            <name>transferResult</name>
+            <value>Llamada transferida</value>
+        </items>
+        <items>
+            <label>Hide comments panel? (Y/N)</label>
+            <name>hideCommentsPanel</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Call Result 1</label>
+            <name>CALLRESULT01</name>
+            <value>Finalizada con éxito</value>
+        </items>
+        <items>
+            <label>Call Result 2</label>
+            <name>CALLRESULT02</name>
+            <value>Llamada transferida</value>
+        </items>
+        <items>
+            <label>Call Result 3</label>
+            <name>CALLRESULT03</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Call Result 4</label>
+            <name>CALLRESULT04</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Call Result 5</label>
+            <name>CALLRESULT05</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Call Result 6</label>
+            <name>CALLRESULT06</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Call Result 7</label>
+            <name>CALLRESULT07</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Call Result 8</label>
+            <name>CALLRESULT08</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Call Result 9</label>
+            <name>CALLRESULT09</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Call Result 10</label>
+            <name>CALLRESULT10</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Task Comment 1</label>
+            <name>taskComment1</name>
+            <value>SR DOCS YY HK1-P-ESP-012345678-ESP-30JUN73-M-14APR21-APELLIDOS-NOMBRE/P1</value>
+        </items>
+        <items>
+            <label>Task Comment 2</label>
+            <name>taskComment2</name>
+            <value>SR DOCO YY HK1-MANCHESTER GBR-V-17317323-LONDON GBR-18JUN04-USA-I</value>
+        </items>
+        <items>
+            <label>Task Comment 3</label>
+            <name>taskComment3</name>
+            <value>FPO/CCVI+FF+/FF,18792028/15176778 (si no hay diferencia a pagar)</value>
+        </items>
+        <items>
+            <label>Task Comment 4</label>
+            <name>taskComment4</name>
+            <value>FPO/FF+CCVI+/FF,NRO FF/AUT+CCVI, (si hay diferencia a pagar)</value>
+        </items>
+        <items>
+            <label>Task Comment 5</label>
+            <name>taskComment5</name>
+            <value>FPCCXX,XXXXXXXXXXXXXXXX+BF,1/EURX.XX+SFXXX</value>
+        </items>
+        <items>
+            <label>Task Comment 6</label>
+            <name>taskComment6</name>
+            <value>FT*OBXXX SR CLID IB HK/OBXXXXXX</value>
+        </items>
+        <items>
+            <label>Task Comment 7</label>
+            <name>taskComment7</name>
+            <value>FXX/RFFY-RC-F1,U*IB.PLUS</value>
+        </items>
+        <items>
+            <label>Task Comment 8</label>
+            <name>taskComment8</name>
+            <value>TU IB NN1 XXX*DATE/LIMO NRO PAX2 TCP XXXXXX NRO BAGS....FROM CL ADRESS CON CP TO XXX*APT CGO*XXXIB0100 REC 00:00HRS PHONE 123456789</value>
+        </items>
+        <items>
+            <label>Task Comment 9</label>
+            <name>taskComment9</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Task record type ID</label>
+            <name>taskRecordType</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Task type</label>
+            <name>taskType</name>
+            <value>Call</value>
+        </items>
+        <items>
+            <label>Closed task value</label>
+            <name>closedTask</name>
+            <value>Completed</value>
+        </items>
+        <items>
+            <label>Update task automatically? (Y/N)</label>
+            <name>updateTaskAutomatically</name>
+            <value>N</value>
+        </items>
+        <label>Task Options</label>
+        <name>taskOptions</name>
+    </sections>
+    <sections>
+        <items>
+            <label>Show &apos;No Result&apos; Panel (Y/N)</label>
+            <name>showNoResult</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>Show &apos;Search&apos; Input (Y/N)</label>
+            <name>showSearchInput</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>Show &apos;Create Record&apos; button (Y/N)</label>
+            <name>showCreateRecord</name>
+            <value>Y</value>
+        </items>
+        <label>Call Panel Options</label>
+        <name>CallPanelOptions</name>
+    </sections>
+    <sections>
+        <items>
+            <label>New record page url</label>
+            <name>newObjectPage</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Telephone parameter</label>
+            <name>telephoneParamenet</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>New Account Available? (Y/N))</label>
+            <name>newAccountAvailable</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>New Account URL</label>
+            <name>newAccountUrl</name>
+            <value>/001/e?</value>
+        </items>
+        <items>
+            <label>Account phone field ID</label>
+            <name>AccountPhoneFieldId</name>
+            <value>acc10</value>
+        </items>
+        <items>
+            <label>New Contact Available? (Y/N))</label>
+            <name>newContactAvailable</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>New Contact URL</label>
+            <name>newContactUrl</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Contact phone field ID</label>
+            <name>ContactPhoneFieldId</name>
+            <value>con10</value>
+        </items>
+        <items>
+            <label>New Lead Available? (Y/N))</label>
+            <name>newLeadAvailable</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>New Lead URL</label>
+            <name>newLeadUrl</name>
+            <value>/00Q/e?</value>
+        </items>
+        <items>
+            <label>Lead phone field ID</label>
+            <name>LeadPhoneFieldId</name>
+            <value>lea8</value>
+        </items>
+        <items>
+            <label>New Case Available? (Y/N))</label>
+            <name>newCaseAvailable</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>New Case URL</label>
+            <name>newCaseUrl</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Case phone field ID</label>
+            <name>CasePhoneFieldId</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>New Opportunity Available? (Y/N))</label>
+            <name>newOpportunityAvailable</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>New Opportunity URL</label>
+            <name>newOpportunityUrl</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Opportunity phone field ID</label>
+            <name>OpportunityPhoneFieldId</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Use UUI parameters in new record? (Y/N)</label>
+            <name>useUuiParameters</name>
+            <value>N</value>
+        </items>
+        <items>
+            <label>UUI parameter I</label>
+            <name>UuiParameter1</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>UUI parameter II</label>
+            <name>UuiParameter2</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>UUI parameter III</label>
+            <name>UuiParameter3</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>UUI parameter IV</label>
+            <name>UuiParameter4</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>UUI parameter V</label>
+            <name>UuiParameter5</name>
+            <value xsi:nil="true"/>
+        </items>
+        <label>New Record Options</label>
+        <name>NewRecordOptions</name>
+    </sections>
+    <sections>
+        <items>
+            <label>Number prefix delimiter</label>
+            <name>NumberPrefixDelimiter</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Use phone format library? (Y/N)</label>
+            <name>UseFormatLibrary</name>
+            <value>Y</value>
+        </items>
+        <label>Telephone number format</label>
+        <name>TelephoneNumberFormat</name>
+    </sections>
+    <sections>
+        <items>
+            <label>Not Ready Reason Enabled? (Y/N)</label>
+            <name>AUXReasonEnabled</name>
+            <value>N</value>
+        </items>
+        <label>Reason Codes Enabled</label>
+        <name>ReasonCodesEnabled</name>
+    </sections>
+    <sections>
+        <items>
+            <label>Not Ready 0</label>
+            <name>AUX00</name>
+            <value>Inicio jornada</value>
+        </items>
+        <items>
+            <label>Not Ready 1</label>
+            <name>AUX01</name>
+            <value>Back Office</value>
+        </items>
+        <items>
+            <label>Not Ready 2</label>
+            <name>AUX02</name>
+            <value>Descanso</value>
+        </items>
+        <items>
+            <label>Not Ready 3</label>
+            <name>AUX03</name>
+            <value>Salientes BO</value>
+        </items>
+        <items>
+            <label>Not Ready 4</label>
+            <name>AUX04</name>
+            <value>Formación</value>
+        </items>
+        <items>
+            <label>Not Ready 5</label>
+            <name>AUX05</name>
+            <value>Salientes Campañas</value>
+        </items>
+        <items>
+            <label>Not Ready 6</label>
+            <name>AUX06</name>
+            <value>Incidencias</value>
+        </items>
+        <items>
+            <label>Not Ready 7</label>
+            <name>AUX07</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Not Ready 8</label>
+            <name>AUX08</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Not Ready 9</label>
+            <name>AUX09</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Not Ready 10</label>
+            <name>AUX10</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Not Ready 11</label>
+            <name>AUX11</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Not Ready 12</label>
+            <name>AUX12</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Not Ready 13</label>
+            <name>AUX13</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Not Ready 14</label>
+            <name>AUX14</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Not Ready 15</label>
+            <name>AUX15</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Not Ready 16</label>
+            <name>AUX16</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Not Ready 17</label>
+            <name>AUX17</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Not Ready 18</label>
+            <name>AUX18</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Not Ready 19</label>
+            <name>AUX19</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Not Ready 20</label>
+            <name>AUX20</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Work Not Ready</label>
+            <name>WorkNotReady</name>
+            <value>AfterCallWork</value>
+        </items>
+        <label>Not Ready Reason Codes</label>
+        <name>AUXReasonCodes</name>
+    </sections>
+    <sections>
+        <items>
+            <label>Enable presence state change? (Y/N)</label>
+            <name>enablePresence</name>
+            <value>N</value>
+        </items>
+        <items>
+            <label>Auto-login in presence? (Y/N)</label>
+            <name>presenceAutoLogin</name>
+            <value>N</value>
+        </items>
+        <items>
+            <label>Presence auto-login state ID</label>
+            <name>presenceAutoLoginState</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Presence busy state ID</label>
+            <name>presenceBusyState</name>
+            <value xsi:nil="true"/>
+        </items>
+        <label>Presence configuration</label>
+        <name>presenceConfig</name>
+    </sections>
+    <sections>
+        <items>
+            <label>ANI parsing</label>
+            <name>aniParsing</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>VDN list for parsing</label>
+            <name>vdnParsing</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>URL to invoke</label>
+            <name>urlInvoke</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Add IVR parameters? (Y/N)</label>
+            <name>addIVR</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Open as primary tab (P) or subtab (S)</label>
+            <name>openTabOrSub</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>New tab name</label>
+            <name>newTabName</name>
+            <value xsi:nil="true"/>
+        </items>
+        <label>External systems integration</label>
+        <name>externalIntegration</name>
+    </sections>
+    <sections>
+        <items>
+            <label>Server Name 1</label>
+            <name>IPAddress1</name>
+            <value>ibcct004pvap01.corp.iberia.es</value>
+        </items>
+        <items>
+            <label>Server Port 1</label>
+            <name>Port1</name>
+            <value>8443</value>
+        </items>
+        <items>
+            <label>Server Name 2</label>
+            <name>IPAddress2</name>
+            <value>ibcct004pvap02.corp.iberia.es</value>
+        </items>
+        <items>
+            <label>Server Port 2</label>
+            <name>Port2</name>
+            <value>8443</value>
+        </items>
+        <items>
+            <label>Server Name 3</label>
+            <name>IPAddress3</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Server Port 3</label>
+            <name>Port3</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Server Name 4</label>
+            <name>IPAddress4</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Server Name 4</label>
+            <name>Port4</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Server Name 5</label>
+            <name>IPAddress5</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Server Port 5</label>
+            <name>Port5</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Allow round-robin? (Y/N)</label>
+            <name>enableRoundRobin</name>
+            <value>Y</value>
+        </items>
+        <items>
+            <label>Server Path</label>
+            <name>Path</name>
+            <value>/BIG</value>
+        </items>
+        <items>
+            <label>Rest URL</label>
+            <name>Rest</name>
+            <value>/rest/genesys</value>
+        </items>
+        <items>
+            <label>Service Provider</label>
+            <name>Provider</name>
+            <value>Genesys</value>
+        </items>
+        <items>
+            <label>Site ID</label>
+            <name>SiteId</name>
+            <value>1</value>
+        </items>
+        <items>
+            <label>Connection Retry Interval in seconds</label>
+            <name>RetryInterval</name>
+            <value>5</value>
+        </items>
+        <label>CTI Engine Configuration</label>
+        <name>CTIEngineConfig</name>
+    </sections>
+    <sections>
+        <items>
+            <label>URL to invoke upon call reception</label>
+            <name>urlCallStarted</name>
+            <value>/apex/R1_VF_CTI?ani={!ani}&amp;dnis={!dnis}&amp;cid={!cid}&amp;calltype={!calltype}&amp;uui={!uui}&amp;recordid={!recordid}&amp;tabid={!tabid}</value>
+        </items>
+        <items>
+            <label>URL to invoke upon call terminate</label>
+            <name>urlCallEnded</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Invocation over same tab (Y/N)</label>
+            <name>urlInvokeSameTab</name>
+            <value>N</value>
+        </items>
+        <items>
+            <label>Invocation for inbound, outbound or internal calls?</label>
+            <name>urlInbOutInt</name>
+            <value>101</value>
+        </items>
+        <items>
+            <label>Open the new tab as a primary tab or as a subtab? (P/S)</label>
+            <name>urlOpenTabOrSub</name>
+            <value>S</value>
+        </items>
+        <label>URL Configuration</label>
+        <name>URLConfiguration</name>
+    </sections>
+    <sections>
+        <items>
+            <label>Map contact field 1</label>
+            <name>ContactMapObj1</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>to salesforce field 1</label>
+            <name>ContactMapSF1</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Map contact field 2</label>
+            <name>ContactMapObj2</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>to salesforce field 2</label>
+            <name>ContactMapSF2</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>Map contact field 3</label>
+            <name>ContactMapObj3</name>
+            <value xsi:nil="true"/>
+        </items>
+        <items>
+            <label>to salesforce field 3</label>
+            <name>ContactMapSF3</name>
+            <value xsi:nil="true"/>
+        </items>
+        <label>Additional contact data</label>
+        <name>contactMapping</name>
+    </sections>
+    <sections>
+        <items>
+            <label>Transfer phonebook user formatting (empty disables user search)</label>
+            <name>userPhonebookLabel</name>
+            <value xsi:nil="true"/>
+        </items>
+        <label>Phonebook options</label>
+        <name>phonebookOptions</name>
+    </sections>
+    <sections>
+        <items>
+            <label>Auto accept preview call? (Y/N)</label>
+            <name>autoAcceptPreview</name>
+            <value xsi:nil="true"/>
+        </items>
+        <label>Campaign options</label>
+        <name>campaignOptions</name>
+    </sections>
+</CallCenter>

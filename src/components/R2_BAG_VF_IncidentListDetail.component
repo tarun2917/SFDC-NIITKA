@@ -1,0 +1,139 @@
+<apex:component controller="R2_CLS_BAG_BagSearch" allowDML="true">
+    <apex:includeScript value="/support/console/41.0/integration.js"/>
+    <apex:includeScript value="/support/api/41.0/interaction.js"/>
+    <apex:includeScript value="/soap/ajax/41.0/connection.js"/>
+    <apex:attribute name="pirList" description="Lista de Incidencias resultado del Bag Search" type="Object" required="true"/>
+    <style>
+        .overflow{
+        width: 100%;
+        overflow-x: scroll;
+        }
+        .hidden{
+        display: none;
+        }
+        .open{
+        display: block;
+        }
+    </style>
+    <script type="text/javascript">
+        function toggleMenu(){
+            var menuId = document.getElementById("menu");
+            console.log(menuId);
+            if (menuId.classList.contains("hidden")) {
+                menuId.classList.remove("hidden");
+                menuId.classList.add("open");
+            } else {
+                menuId.classList.add("hidden");
+                menuId.classList.remove("open");
+            }
+        }
+    </script>
+        <script type="text/javascript">
+                function openPIR(requestData){
+                        console.log('Entra en openPIR');
+                        console.log('****** requestData: '+ requestData);
+                        R2_CLS_BAG_BagSearch.readRecordId(requestData, function(result, event){
+                if(event.status) {
+                                    var recordId = result;
+                                    console.log('*** recordId: '+recordId);
+                                    if (recordId!=null) {
+                                        if (sforce.console.isInConsole()) {
+                                            sforce.console.openPrimaryTab(null, `/`+recordId, true);
+                                        } else{
+                                            window.open('/'+recordId, '_blank');
+                                        }
+                                    }
+                }
+            });
+                        // if (sforce.console.isInConsole()) {
+                        //     function getPrimaryTabId(){
+                        //        sforce.console.getFocusedPrimaryTabId(openSubtab);
+                        //     }
+                        //     var openSubtab = function openSubtab(result) {
+                        //        sforce.console.openSubtab(result.id , '/apex/R2_INC_VF_IncidentInformation?id='+idPIR, true,
+                        //        'Detalle de PIR', null);
+                        //     };
+                        //     getPrimaryTabId();
+                        // }else {
+                        //    window.open('/apex/R2_VF_PXFMessages?id','_blank');
+                        // }
+                }
+        </script>
+
+    <apex:slds />
+
+    <div class="slds-box">
+        <h1>INCIDENCIAS ENCONTRADAS</h1>
+       <!--  <div class="slds-box">
+            <div class="slds-button-group">
+                <div class="slds-button-group" role="group">
+                    <button class="slds-button slds-button_neutral" onclick="openNewDelay(this)" id="bag-incident-button-delay">Nueva Demora (AHL)</button>
+                    <button class="slds-button slds-button_neutral" onclick="openNewDamage(this);" id="bag-incident-button-damage">Nuevo Deterioro (DPR)</button>
+                    <button class="slds-button slds-button_neutral">Consulta</button>
+                    <button class="slds-button slds-button_neutral" disabled="true">Crear Actividad</button>
+                </div>
+            </div>
+        </div> -->
+        <div class=" overflow">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                    <tr class="slds-text-title_caps">
+                        <apex:repeat value="{!pirList}" var="incident" rows="1">
+                            <apex:repeat value="{!incident['fields']}" var="field" id="pirLoop">
+                                <th scope="col"><div class="slds-truncate" title="{!field.label}">{!field.label}</div></th>
+                            </apex:repeat>
+                        </apex:repeat>
+                    </tr>
+                </thead>
+                <apex:form >
+                <tbody>
+                    <tr>
+                        <apex:repeat value="{!pirList}" var="incident" id="fieldLoop">
+                            <tr>
+                                <apex:repeat value="{!incident["fields"]}" var="field" id="fieldLoop">
+                                    <td data-label="{!field.label}">
+                                                                             <div class="slds-truncate" title="{!field.value}">
+                                                                                 <span style="display:none">{!field.href}</span>
+                                           <!-- <apex:outputLink rendered="{!field.href!=null}" value="{!field.href}">{!field.value}
+                                            </apex:outputLink> -->
+
+                                                                                    <!--
+                                                                                    abre la incidencia en una tab, por ahora el id que se pasa en la funcion
+                                                                                    javascript definida en controlador (field.onclick) tiene un id hardcodeado,
+                                                                                    descomentar cuando se pase un id real.
+                                            <apex:commandLink rendered="{!field.href!=null}" value="{!field.value}" onclick="{!field.onclick}">
+                                                                                    </apex:commandLink>
+                                                                                    -->
+                                                                                    <!--
+                                            <apex:commandLink rendered="{!field.href!=null && field.onclick!='openPir'}" value="{!field.value}" action="{!readRecord}">
+                                                <apex:param name="param" value="{!field.name}" assignTo="{!requestRead}"/>
+                                            </apex:commandLink>
+                                                                                -->
+
+                                                                                    <apex:commandLink rendered="{!field.onclick=='openPir'}" value="{!field.value}" onclick="openPIR('{!field.name}'); return false"/>
+
+                                            <apex:outputText rendered="{!field.href==null}" value="{!field.value}"></apex:outputText>
+
+                                        </div>
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                        </apex:repeat>
+                    </tr>
+                </tbody></apex:form>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        console.log('ei')
+        function openNewDelay(button) {
+            sforce.console.openPrimaryTab(null, `/apex/R2_INC_VF_Create_PIR`, true, 'Nuevo PIR Demora')
+            console.log(button.id)
+        }
+        function openNewDamage(button) {
+            sforce.console.openPrimaryTab(null, `/apex/R2_INC_VF_Create_PIR_Damaged`, true, 'Nuevo PIR Dañado')
+            console.log(button.id)
+        }
+    </script>
+</apex:component>

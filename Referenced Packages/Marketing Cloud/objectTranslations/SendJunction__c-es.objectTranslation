@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Unión de envío</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Uniones de envíos</value>
+    </caseValues>
+    <fields>
+        <label>Unidad comercial</label>
+        <name>Business_Unit__c</name>
+    </fields>
+    <fields>
+        <label>Campaña</label>
+        <name>Campaign__c</name>
+        <relationshipLabel>Definiciones de envíos</relationshipLabel>
+    </fields>
+    <fields>
+        <label>Fecha/hora de creación</label>
+        <name>Created_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label>Nombre de correo electrónico</label>
+        <name>Email_Name__c</name>
+    </fields>
+    <fields>
+        <label>Correo electrónico del remitente</label>
+        <name>From_Email__c</name>
+    </fields>
+    <fields>
+        <label>Nombre del remitente</label>
+        <name>From_Name__c</name>
+    </fields>
+    <fields>
+        <label>Definición de envío</label>
+        <name>SendDefinition__c</name>
+        <relationshipLabel>Campañas</relationshipLabel>
+    </fields>
+    <fields>
+        <label>Estado del envío</label>
+        <name>Send_Status__c</name>
+    </fields>
+    <fields>
+        <label>Fecha/hora del estado</label>
+        <name>Status_Date_Time__c</name>
+    </fields>
+    <gender>Masculine</gender>
+    <nameFieldLabel>Nombre de unión de envío</nameFieldLabel>
+</CustomObjectTranslation>

@@ -1,0 +1,84 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" standardController="Case" extensions="R2_CLS_PaymentOrdersInCases_CTRL" action="{!mostrarTabla}">
+
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+    
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+    <apex:includeScript value="/xdomain/xdomain.js"/>
+    <apex:includeScript value="/soap/ajax/33.0/connection.js"/>
+    <apex:includeScript value="/support/console/40.0/integration.js"/>
+    <apex:includeScript value="/soap/ajax/33.0/apex.js"/>
+    
+    <apex:includeScript value="{!URLFOR($Resource.CaseHistoryResources, 'js/jquery-1.6.4.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CaseHistoryResources, 'js/jquery.tablesorter.min.js')}" />  
+    
+    <script type="text/javascript">
+    $(document).ready(function() 
+                      { 
+                          $("#sortThis").tablesorter(); 
+                      } 
+	); 
+    </script>
+    
+    <body>
+        <div class="slds slds-card">
+            
+                        <table id="sortThis" class="slds-table slds-table_bordered slds-table_cell-buffer">
+                            <thead>
+                                <tr class="slds-text-tittle_caps">
+                                    <th scope="col" class="slds-truncate" nowrap="true">Numero de Orden</th>
+                                    <th scope="col" class="slds-truncate" nowrap="true">Id</th>
+                                    <th scope="col" class="slds-truncate" nowrap="true">Estado</th>
+                                    <th scope="col" class="slds-truncate" nowrap="true">Cliente</th>
+                                    <th scope="col" class="slds-truncate" nowrap="true">IBAN</th>
+                                    <th scope="col" class="slds-truncate" nowrap="true">SWIFT</th> 
+                                    <th scope="col" class="slds-truncate" nowrap="true">Cod. Remesa</th>
+                                    <th scope="col" class="slds-truncate" nowrap="true">Fecha emision Remesa</th>
+                                    <th scope="col" class="slds-truncate" nowrap="true">Fecha de Pago</th>
+                                    <th scope="col" class="slds-truncate" nowrap="true">Valor total</th>     
+                                </tr>
+                            </thead>        
+                            <tbody>
+                                <apex:repeat value="{!ordersToShow}" var="order">
+                                    <tr class="slds-text-tittle_caps" >
+                                        <td scope="col" class="slds-truncate"><a onclick="openViewDetail('{!order.Id}')"><apex:outputText value="{!order.Name}"/></a></td>
+                                        <td scope="col" class="slds-truncate"><apex:outputText value="{!order.Id}"/></td>
+                                        <td scope="col" class="slds-truncate"><apex:outputText value="{!order.R2_OPY_PCK_Status__c}"/></td>
+                                        <td scope="col" class="slds-truncate"><apex:outputText value="{!order.R2_OPY_LOO_CaseAccount__c}"/></td>
+                                        <td scope="col" class="slds-truncate"><apex:outputText value="{!order.R2_OPY_TXT_IBAN__c}"/></td>
+                                        <td scope="col" class="slds-truncate"><apex:outputText value="{!order.R2_OPY_TXT_SWIFT__c}"/></td>
+                                        <td scope="col" class="slds-truncate"><apex:outputText value="{!order.R2_OPY_TXT_Remittance_Code__c}"/></td>
+                                        <td scope="col" class="slds-truncate"><apex:outputText value="{!order.R2_OPY_DAT_Date_Issue_Remittance__c}"/></td>
+                                        <td scope="col" class="slds-truncate"><apex:outputText value="{!order.R2_OPY_DAT_Payment_Date__c}"/></td>
+                                        <td scope="col" class="slds-truncate"><apex:outputText value="{!order.R2_OPY_FOR_Total_Amount__c}"/></td>
+                                    </tr>                                
+                                </apex:repeat>
+                            </tbody>
+                            
+                        </table>
+                    
+        </div>
+    </body>
+    <script>
+    function openViewDetail(objectId) {
+                    
+                        if (sforce.console.isInConsole()) {
+                                if(objectId === ""){
+                                    
+                                }else{  
+                                   
+                                    // First find the ID of the primary tab to put the new subtab in
+                                    function getPrimaryTabId(){
+                                        sforce.console.getFocusedPrimaryTabId(openSubtab);
+                                    }    
+                                    // Funcion que habre la url en un subtab pasandole la ID del primaryTab
+                                    var openSubtab = function openSubtab(result) {               
+                                        sforce.console.openSubtab(result.id , '/' + objectId, true, '', null);
+                                    };
+                                    getPrimaryTabId();
+                                }
+                        }
+                    
+              };
+    </script>
+    </html>
+</apex:page>

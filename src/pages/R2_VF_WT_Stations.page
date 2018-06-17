@@ -1,0 +1,170 @@
+<apex:page controller="R2_WT_Stations_CTRL" standardStylesheets="false" showHeader="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+<head>
+<!-- /*---------------------------------------------------------------------------------------------------------------------
+    Author:         Alberto Puerto Collado
+    Company:        Accenture
+    Description:    Stations, page and scripts
+    IN:             
+    OUT:            
+
+    History: 
+     <Date>                     <Author>                         <Change Description>
+    14/11/2017             Alberto Puerto Collado                  Initial Version
+    ----------------------------------------------------------------------------------------------------------------------*/ -->
+	<script type="text/javascript">
+	function abre_PXF_Message_js(){
+				console.log('Entra en abre_PXF_Message');
+				 //window.open('/apex/R2_VF_PXFMessage?id','_blank');
+				if (sforce.console.isInConsole()) { 
+						function getPrimaryTabId(){ 
+							 sforce.console.getFocusedPrimaryTabId(openSubtab); 
+						} 
+						var openSubtab = function openSubtab(result) { 
+							 sforce.console.openSubtab(result.id , '/apex/R2_VF_PXFMessages?', true, 
+							 'Telex PXF Message', null); 
+						}; 
+						getPrimaryTabId(); 
+				}else { 
+					 window.open('/apex/R2_VF_PXFMessages?id','_blank');
+				}
+		}
+	function abre_TTY_Message_js(){
+		//window.open('/apex/R2_VF_TTY_Messages?id','_blank');
+		if (sforce.console.isInConsole()) { 
+			function getPrimaryTabId(){ 
+				 sforce.console.getFocusedPrimaryTabId(openSubtab); 
+			} 
+			var openSubtab = function openSubtab(result) { 
+				sforce.console.openSubtab(result.id , '/apex/R2_VF_TTY_Messages?', true, 
+				'Telex TTY Message', null); 
+			}; 
+			getPrimaryTabId(); 
+		}else { 
+			window.open('/apex/R2_VF_TTY_Messages?id','_blank');
+		}
+	}
+	function displayStation_js(){
+		var station = document.getElementById('{!$Component.inputStation}');
+		var comp = document.getElementById('inputComp');
+		alert(station+comp);
+		if((station != null || station != '') && (comp != null || comp != '')){
+			alert('ole!');
+			dsScreen();
+		}else{
+			alert('Por favor, introduzca los campos de estación y compañía');
+		}
+	}
+</script>
+	<meta charset="utf-8" />
+	<meta http-equiv="x-ua-compatible" content="ie=edge" />
+	<title>Consulta estaciones</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<!-- Import the Design System style sheet -->
+	<apex:slds />
+	<style>
+	body{
+		background: #fff;
+	}
+	.slds-form-element{
+		margin-bottom: 20px;
+	}
+	.slds-form-element__help{
+		opacity: 0.8;
+	}
+	.field-input-custom{
+		max-width: 70%;
+	}
+	.field-required{
+		color: red !important;
+	}
+	.text-area-custom{
+		min-height: 150px;
+	}
+	.apartadoModal{
+        margin-right: 3.2%;
+        color: blue;
+        size: 1.3rem;
+    }
+    .propiedadTitle{
+    	margin-right: 3%;
+        color: blue;
+        size: 1.1rem;
+    }
+    .propiedadSub{
+    	margin-right: 2.2%;
+        color: brown;
+        size: 0.8rem;
+    }
+	</style>
+</head>
+
+<body>
+	<!-- REQUIRED SLDS WRAPPER -->
+	<div class="slds-scope">
+	<apex:form >
+		<apex:actionFunction name="dsScreen" action="{!screenStations}" reRender="false"/>
+
+	<div class="slds-box">
+
+		<!-- <div class="slds-box slds-m-bottom_medium">
+			<div class="slds-button-group" role="group">
+			<apex:commandButton styleClass="slds-button slds-button_neutral" value="Ir a enviar un PXF" onClick="abre_PXF_Message_js()"/>      
+			<apex:commandButton styleClass="slds-button slds-button_neutral" value="Ir a enviar un TTY" onClick="abre_TTY_Message_js()"/>
+			<apex:commandButton styleClass="slds-button slds-button_neutral" value="Cancelar" onClick="cerrar()"/>
+		 
+			</div>
+		</div> -->
+		<div class="slds-box">
+			<div class="slds-form slds-form_stacked">
+
+				<div class="slds-grid">
+					<div class="slds-col slds-m-right_medium">
+					<div class="slds-form-element">
+						<label class="slds-form-element__label" for="input-id-1">Pulse el botón para consultar el listado de estaciones-:</label>
+						<div class="slds-form-element__control">
+							<apex:commandButton styleClass="slds-button slds-button_neutral" value="DLS (Display Station List)" reRender="response">
+								<apex:actionSupport event="onclick" action="{!listStations}"/>
+							</apex:commandButton>   
+						</div>
+						<div class="slds-form-element__help">Indique una Estación y Compañía para consultar su detalle. (Por ejemplo "MAD" e "IB"): </div>
+						<!-- <div class="slds-form-element__control">
+							<apex:input type="text" id="input-id-0" styleClass="slds-input field-input-custom"/>
+						</div> -->
+						<div>
+							<label>Estación</label>
+							<div class="slds-form-element__control slds-col">
+								<apex:input type="text" id="inputStation" styleClass="slds-input field-input-custom" style="max-width: 80px;" value="{!inputEstacion}" onfocus="this.select();"/>
+							</div>
+						
+							<label>Compañía</label>
+							<div class="slds-form-element__control">
+								<apex:input type="text" id="inputComp" styleClass="slds-input field-input-custom" style="max-width: 80px;" value="{!inputAirC}" onfocus="this.select();"/>
+							</div>
+						</div>
+						<div class="slds-form-element__control">
+							<apex:commandButton styleClass="slds-button slds-button_neutral" value="DSS (Display Station Screen)" reRender="false">
+								<apex:actionSupport event="oncomplete" action="{!screenStations}"/>
+							</apex:commandButton> 
+							<!-- <apex:commandButton styleClass="slds-button slds-button_neutral" value="DSS (Display Station Screen) JAVASCRIPT" onclick="displayStation_js();" reRender="false"/>   --> 
+						</div>
+					</div>
+
+					<div id="response" class="slds-form-element slds-m-top_medium">
+						<div class="slds-form-element__control">
+							<apex:inputTextarea richText="true" readonly="true"  styleClass="slds-textarea text-area-custom" value="{!respStation}" ></apex:inputTextarea>
+						</div>
+					</div>
+						<!-- <apex:outputText value="{!inputEstacion} + {!inputAirC}"></apex:outputText> -->
+					</div>
+				</div>
+
+			</div>
+		</div>
+</div>
+</apex:form>
+</div>
+		</body>
+</html>
+</apex:page>

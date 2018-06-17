@@ -1,0 +1,233 @@
+<apex:component controller="R1_CustomerAlertsPopUp_Ctrl" id="idcomponent">
+  <apex:attribute name="CustomerId" description="Id of the customer whose alerts are gonna be shown"
+  type="String" required="true" assignTo="{!clientId}" />
+
+
+ 
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <link rel="stylesheet" href="/resources/demos/style.css"/>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <style>
+      .dialogPosition{ 
+        position:fixed;
+        top:-1cm;
+        width:100em; 
+      }
+
+        .enlaceboton {     
+        font-size: 9pt;  
+        padding: 4px; 
+        background-color: #f4f2f2; 
+        color: #666666; 
+        text-decoration: none; 
+        border: 1px solid #cecaca;
+        align: center;
+        cursor: pointer;
+        border-radius: 4px;
+      } 
+      .enlaceboton:link, 
+      .enlaceboton:visited { 
+        
+      } 
+      .enlaceboton:hover {  
+      color: #666666;
+          text-decoration: none;
+        background-color: #E9E9E9;
+      }
+      .ui-accordion-header { background-color: red; }
+      .ui-accordion-header.ui-state-active { background-color: rgb(215,25,44);}
+    </style>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+      $ = jQuery.noConflict();
+      
+      
+      $( document ).ready(function() {
+          
+          if({!lstAlerts.size>0}){
+              $( "#dialog" ).on('dialogclose', function(event){
+               //$( "#backscreen" ).hide();
+               $( "#dialog" ).remove();
+               $( "#backscreen" ).remove();
+            });
+              $( "#dialog" ).dialog({ dialogClass: 'dialogPosition', modal: true,
+                buttons: {
+                  Ok: function() {
+                    $( this ).dialog( "close" );
+                  }
+                }
+              });
+              $( "#backscreen" ).show();
+              $( "#accordion" ).accordion({
+                active: false,
+                collapsible: true 
+              });
+          }
+      });
+
+
+      
+    </script>
+    <script type="text/javascript">
+
+    <apex:includeScript value="/soap/ajax/41.0/connection.js"/>
+    <apex:includeScript value="/support/console/41.0/integration.js"/>
+    <apex:includeScript value="/soap/ajax/26.0/apex.js"/>
+    <apex:includeScript value="https://code.jquery.com/ui/1.12.1/jquery-ui.js"/>
+
+//Calling method
+    
+    function elemento(e){
+          var res=[];
+          if (e.srcElement){
+            tag = e.srcElement.id;
+            res = tag.split(';');
+          }
+          else if (e.target){
+              tag = e.target.id;
+              res = tag.split(';');
+          }
+          var boton = res[1];
+          //alert("El elemento selecionado ha sido " + boton);
+
+          var tipo = 'tipoFdb';
+          var comentario = 'textVal';
+
+           var auxTipo = tipo.concat(boton);
+           var auxComentario = comentario.concat(boton);
+      
+           var comment = document.getElementById(auxComentario).value;
+          var feedback = document.getElementById(auxTipo).value;
+
+      //var tipo = document.getElementById('tipoFdb'+alerta).value;
+      //var result = sforce.apex.execute("R1_CustomerAlertsPopUp_Ctrl","guardarFeedback",{}); 
+          console.log('Alerta: ' + boton);
+          console.log('Tipo de feedback: ' + feedback);
+          console.log('COmentario feedback:  ' + comment);
+          
+         //testGetFocusedPrimaryTabId();
+
+        R1_CustomerAlertsPopUp_Ctrl.guardarFeedback(comment, feedback, boton, function(result, event){
+
+          if(event){
+             console.log(result);
+             //windows.location"https://iberia--dev6.cs88.my.salesforce.com/0019E00000cEmbQ";
+             }
+       
+        });
+        sforce.console.refreshPrimaryTabById('scc-pt-0', true);
+        location.reload();
+
+
+    }
+    function refresco(e){
+      console.log('por que se refresca la pagina?');
+    }
+    
+</script>
+    
+  </head>
+
+  <div id="backscreen" style="display:none;z-index:20; position:fixed; top:0; left:0; width:100%; height:100%;background: #555555; opacity: 0.5;">
+  </div>
+  <div id="dialog" title="Mensajes personalizados del cliente" style="display:none;z-index:201;rgb(215,25,44) ;">
+    <div style="overflow:auto;max-height: 30em;" id="div2">
+      <div id="accordion">
+
+       <apex:repeat value="{!lstAlerts}" var="alerta" id="idRepeat">
+       <h3>{!alerta.R2_ATA_PKL_Type__c}</h3>
+       <div id="div3">
+        <!--p><b>Desde:</b> {!TEXT(DATEVALUE(alerta.R1_ATA_DATH_Creation_date__c))}</p -->
+        <!--p><b>Hasta:</b> {!TEXT(DATEVALUE(a lerta.R1_ATA_DATH_Expiry_date__c))}</p -->
+        <h6>{!alerta.Name}</h6>
+        <p>{!alerta.R1_ATA_ATXTL_Description__c}</p>
+        <hr/>
+
+        <form id="formAlert">
+            <label>Comentario</label>
+            <textarea rows="4" cols="35" maxlength="255"  id="textVal{!alerta.Id}" rendered="true" styleClass="slds-input slds-size--1-of-1"  />
+            <br/>
+            <br/>
+            <label>Feedback</label> &nbsp;&nbsp;
+            <select id="tipoFdb{!alerta.Id}">
+                <option value="Neutral">Neutral</option>
+                <option value="Positivo">Positivo</option>
+                <option value="Negativo">Negativo</option>
+            </select>
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <!-- <button id="boton;{!alerta.Id}" onclick="refresco(event);">Save</button> -->
+            <a  id="boton;{!alerta.Id}" class="enlaceboton" onclick="elemento(event);" onmouseup="refresco(event);">Save</a>
+            <input type="hidden" name="opcion" id="opcion" value="{!alerta.Id}"></input>
+             <!-- <A HREF="#" onClick="testGetFocusedPrimaryTabId();return false">
+         Click here to get the focused primary tab ID</A>  -->
+
+    <apex:includeScript value="/support/console/42.0/integration.js"/>
+    <script type="text/javascript">
+        function testGetFocusedPrimaryTabId() { 
+            sforce.console.getFocusedPrimaryTabId(showTabId);
+        }
+        var showTabId = function showTabId(result) {
+            //Display the tab ID
+            alert('Tab ID: ' + result.id);
+        };
+        
+  </script>
+             
+        </form>
+        
+        
+        <!-- <apex:form id="formAlert">
+            <apex:inputText value="{!valorFeedback}" id="textVal" rendered="true" styleClass="slds-input slds-size--1-of-1" />
+            <br/>
+            
+            <br/>
+            <div class="slds-select_container">
+                <apex:selectList id="outputTypeDoc" size="1" value="{!tipoFeedback}" styleClass="slds-select" onchange="refreshJS()">
+                    <apex:selectOptions value="{!optionTipoFeed}" />
+                    
+                </apex:selectList>
+                
+                
+            </div>
+            
+            
+            <apex:commandButton action="{!guardarFeedback}" value="Save" onclick="refreshJS()"></apex:commandButton>
+             
+        </apex:form> -->
+        <!-- <apex:actionSupport event="onchange"  action="{!guardarFeedback}" 
+                                rerender="componentId" oncomplete="grabExName()"/> -->
+                                <!-- <apex:inputHidden value="{!alerta.Id}" id="theHiddenInput"/> -->
+
+        
+
+        </div>
+        </apex:repeat>
+
+        <!-- <apex:form>
+        <apex:outputpanel id="counter">
+            <apex:inputText value="{!tipoFeedback}"/>
+            <apex:actionSupport event="onchange" 
+                                action="{!incrementCounter}" 
+                                rerender="counter" status="counterStatus"/>
+        </apex:outputpanel>
+        <apex:actionStatus id="counterStatus" 
+                           startText=" (incrementing...)" 
+                           stopText=" (done)"/>
+                           <apex:actionFunction name="refresh" action="{!guardarFeedback}"/>
+
+    </apex:form> -->
+        
+      </div> 
+    
+ 
+  </div>
+  </div>
+  
+
+</apex:component>

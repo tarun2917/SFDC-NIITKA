@@ -1,0 +1,120 @@
+<apex:page StandardController="R1_Incident__c" extensions="R2_WT_BaggageGastos_CTRL" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+  <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <head>
+      <meta charset="utf-8"/>
+      <title>Gastos</title>
+      <apex:slds />
+
+      <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"/>
+      <script type="text/javascript">
+        $j = jQuery.noConflict();
+        $j(document).ready(function() {
+          $j("#vf-gastos-box").on('click', '#select-all-rows-table', function() {
+              $j('.input-checkbox-table-row').not(this).prop('checked', this.checked);
+          });
+        });
+      </script>
+    </head>
+    <body>
+      <div class="slds-scope">
+        <apex:form >
+          <div class="slds-box" id="vf-gastos-box">
+              <h2 class="slds-form-element__label">Gastos</h2>
+              <div class="slds-button-group" style="display: inline-block;">
+                <div class="slds-button-group" role="group">
+
+                <apex:outputPanel id="buttonsControls">
+                  <apex:commandButton styleClass="slds-button slds-button_neutral" value="Nuevo" action="{!addRoowEmpty}" reRender="tableContent,buttonsControls" id="newButton" disabled="false"/>
+                  <apex:commandButton styleClass="slds-button slds-button_neutral"  value="Eliminar" action="{!deletedHandler}" reRender="tableContent,buttonsControls" id="deleteButton" disabled="{!deleteDisabled}"/>
+                  <apex:commandButton styleClass="slds-button slds-button_neutral"  value="Guardar" action="{!saveHandler}" reRender="tableContent,buttonsControls" id="saveButton" disabled="{!saveDisabled}"/>
+                  <apex:commandButton styleClass="slds-button slds-button_neutral"  value="Cancelar" action="{!cancelHandler}" reRender="tableContent,buttonsControls" id="cancelButton" disabled="{!cancelDisabled}"/>
+                </apex:outputPanel>
+
+                </div>
+              </div>
+
+              <apex:outputPanel id="tableContent">
+              <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-top_medium">
+                <thead>
+                  <tr class="slds-text-title_caps">
+                  <th class="slds-text-align_left" scope="col">
+                      <div class="slds-th__action slds-th__action_form">
+                        <span class="slds-checkbox">
+                          <input type="checkbox" name="options" id="select-all-rows-table" tabindex="-1" value="on" />
+                          <label class="slds-checkbox__label" for="select-all-rows-table">
+                            <span class="slds-checkbox_faux"></span>
+                            <span class="slds-form-element__label slds-assistive-text">Select All</span>
+                          </label>
+                        </span>
+                      </div>
+                    </th>
+                    <apex:repeat value="{!headersTable}" var="field">
+                      <th scope="col">
+                        <div class="slds-truncate" title="{!field.label}">{!field.label}</div>
+                      </th>
+                    </apex:repeat>
+                  </tr>
+                </thead>
+                <tbody>
+
+                <!-- loop new rows list -->
+                <apex:repeat value="{!newRowsListRender}" var="gasto">
+                  <tr>
+                    <td>
+                    <div class="slds-th__action slds-th__action_form">
+                      <span class="slds-checkbox">
+                        <apex:inputCheckbox styleClass="input-checkbox-table-row" value="{!gasto.deleted}" id="checkbox-deleted"/>
+                        <apex:outputLabel styleClass="slds-checkbox__label" for="checkbox-deleted">
+                          <span class="slds-checkbox_faux"></span>
+                          <span class="slds-form-element__label slds-assistive-text">Select</span>
+                        </apex:outputLabel>
+                      </span>
+                    </div>
+                    </td>
+                    <!-- loop field -->
+                    <apex:repeat value="{!gasto["fields"]}" var="field">
+                    <td>
+                      <div class="slds-truncate" title="{!field.value}">
+                        <apex:input styleClass="slds-input" disabled="{!field.isFormula}" value="{!field.value}" id="input-data"/>
+                      </div>
+                    </td>
+                    </apex:repeat>
+                  </tr>
+                </apex:repeat>
+
+                <!-- loop list gastos DB -->
+                <apex:repeat value="{!gastosListRender}" var="gasto">
+                  <tr>
+                    <td>
+                    <div class="slds-th__action slds-th__action_form">
+                      <span class="slds-checkbox">
+                        <apex:inputCheckbox styleClass="input-checkbox-table-row" value="{!gasto.deleted}" id="checkbox-deleted"/>
+                        <apex:outputLabel styleClass="slds-checkbox__label" for="checkbox-deleted">
+                          <span class="slds-checkbox_faux"></span>
+                          <span class="slds-form-element__label slds-assistive-text">Select</span>
+                        </apex:outputLabel>
+                      </span>
+                    </div>
+                    </td>
+                    <!-- loop field -->
+                    <apex:repeat value="{!gasto["fields"]}" var="field">
+                    <td>
+                      <div class="slds-truncate" title="{!field.value}">
+                        <apex:outputText value="{!field.value}"/>
+                      </div>
+                    </td>
+                    </apex:repeat>
+                  </tr>
+                </apex:repeat>
+
+
+                </tbody>
+              </table>
+            </apex:outputPanel>
+
+          </div>
+        </apex:form>
+      </div>
+    </body>
+  </html>
+</apex:page>

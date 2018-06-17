@@ -1,0 +1,6 @@
+<apex:page standardController="R1_Loyalty_Card__c">
+   <apex:detail inlineEdit="true" rendered="{! If(R1_Loyalty_Card__c.RecordType.Name !='Comarch' ,true,false) }"/>
+    <apex:outputpanel rendered="{! If(R1_Loyalty_Card__c.RecordType.Name =='Comarch' ,true,false) }">
+        Entro
+    </apex:outputpanel>
+</apex:page>

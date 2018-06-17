@@ -1,0 +1,18 @@
+<apex:page standardController="Account" title="{!Account.Name}" cache="true">
+  <apex:includeScript value="/support/console/20.0/integration.js"/>
+    <script type="text/javascript">
+        function testSetTabTitle() {
+            //Set the current tab's title
+            sforce.console.setTabTitle('{!Account.Name}');
+        }
+        var pageLoad = window.onload;
+          window.onload = function() {
+                if (pageLoad) {
+                        pageLoad();
+                }
+                  testSetTabTitle();
+          }
+    </script>
+  <apex:detail />
+  <c:R1_COM_CustomerAlertsPopUp CustomerId="{!Account.Id}"></c:R1_COM_CustomerAlertsPopUp>
+</apex:page>

@@ -1,0 +1,5 @@
+<apex:page StandardController="Case">
+    <apex:pageBlock >
+    <apex:iframe height="300" width="100%" scrolling="true" id="theFrame" src="{!$Label.URL_Gestor_Documental}&caseId={!Case.Id}&caseType=actividad"/>
+    </apex:pageBlock>
+</apex:page>

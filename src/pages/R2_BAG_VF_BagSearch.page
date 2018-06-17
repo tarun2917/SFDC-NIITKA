@@ -1,0 +1,424 @@
+<apex:page controller="R2_CLS_BAG_BagSearch" id="body">
+    <style>
+        .slds-form-element{
+        margin-right: 15%;
+        }
+        .resaltado{
+            color: brown;
+            font-size: 1.1rem;
+        }
+    </style>
+    <apex:slds />
+    <div id="title" class="slds-scope">
+        <div class="slds-box">
+            Incidencias
+        </div>
+    <apex:form id="form0">
+
+        <script id="js_scripts" type="text/javascript">
+        /*---------------------------------------------------------------------------------------------------------------------
+        Author:         Alberto Puerto Collado
+        Company:        Accenture
+        Description:    Calling Refresh delayed bag on WT
+        IN:
+        OUT:
+
+        History:
+         <Date>                     <Author>                         <Change Description>
+        14/11/2017             Alberto Puerto Collado                  Initial Version
+        ----------------------------------------------------------------------------------------------------------------------*/
+         function callingModal(string, loading){
+            var text = string;
+            //sforce.debug.trace=true;
+
+            //_************CREATING MODAL PR:***************
+            //HTML: Creating ELEMENTS
+            var wrapper = document.createElement("div");
+            wrapper.id = "Wrapper";
+            wrapper.addEventListener("click", closeModal, false);
+            var div = document.createElement("div");
+            div.id = "modal_custom";
+            var wrapperTexto = document.createElement("div");
+            wrapperTexto.id = "Texto_Det_Passenger";
+            var wrap_Variable = document.createElement("div");
+            wrap_Variable.id = "Datos_Recibidos_PR";
+            var title = document.createElement("h1");
+            var titText = document.createTextNode("Conectando con WorldTracer:");
+            var parraf = document.createElement("pre"); //pre instead p (preformat text)
+            if(loading == 1){
+                var divSpinner = document.createElement("div");
+                divSpinner.id = "divSpinner";
+                divSpinner.className = "slds-spinner slds-spinner_medium";
+                divSpinner.position = "fixed";
+                var spanSpin = document.createElement("span");
+                spanSpin.id = "spanSpin";
+                spanSpin.className ="slds-assistive-text";
+                var spanSpinTextin = document.createTextNode("Conectando con WorldTracer");
+                spanSpin.appendChild(spanSpinTextin);
+                var aSpin = document.createElement("div");
+                aSpin.id = "aSpin";
+                aSpin.className = "slds-spinner__dot-a";
+                var bSpin = document.createElement("div");
+                bSpin.id = "bSpin";
+                bSpin.className = "slds-spinner__dot-b";
+                divSpinner.appendChild(spanSpin);
+                divSpinner.appendChild(aSpin);
+                divSpinner.appendChild(bSpin);
+                div.appendChild(divSpinner);
+            }
+
+            var contenido = document.createTextNode(text);
+
+            var boton = document.createElement("button");
+            boton.style.id= "Exit_button";
+            boton.innerHTML= "Cerrar";
+            boton.addEventListener("click", closeModal, false);
+
+            //DOM: structure
+            div.appendChild(wrapperTexto);
+            wrapperTexto.appendChild(title);
+            wrapperTexto.appendChild(wrap_Variable);
+            wrap_Variable.appendChild(parraf);
+            wrapperTexto.appendChild(boton);
+            title.appendChild(titText); 
+            parraf.appendChild(contenido);
+
+            //CSS
+            wrapper.style.position= "fixed";
+            wrapper.style.zIndex= "8888";
+            wrapper.style.background= "black";
+            wrapper.style.opacity= "0.5";
+            wrapper.style.height= "100%";
+            wrapper.style.width= "100%";
+
+            div.style.position= "fixed";
+            div.style.boxSizing = "border-box";
+            div.style.border= "2px solid grey";
+            div.style.zIndex= "9999";
+            div.style.background= "white";
+            div.style.minHeight= "20%";
+            div.style.maxHeight= "80%";
+            div.style.maxWidth= "80%";
+            div.style.align= "center";
+            div.style.textAlign= "center";
+            div.style.fontSize= "1.3rem";
+            //div.style.overflow= "auto"; //better only scroll on wrap_Variable
+            div.style.margin= "auto";
+            div.style.left= "50%";
+            div.style.top= "50%";
+            //transform for all browsers
+            div.style.webkitTransform = "translate(-50%, -50%)";
+            div.style.webkitTransform = "translate(-50%, -50%)";
+            div.style.MozTransform = "translate(-50%, -50%)";
+            div.style.msTransform = "translate(-50%, -50%)";
+            div.style.OTransform = "translate(-50%, -50%)";
+            div.style.transform = "translate(-50%, -50%)";
+
+            wrapperTexto.style.padding= "0.6em";
+
+            wrap_Variable.style.height= "70vh";
+            wrap_Variable.style.overflow= "auto";
+            wrap_Variable.marginBottom= "5vh";
+
+            parraf.style.textAlign= "left";
+            parraf.style.fontSize= "1.1rem";
+
+            boton.style.position= "fixed";
+            boton.style.bottom= "0";
+            boton.style.align= "center";
+            boton.style.fontSize= "1rem";
+            //transform for all browsers
+            boton.style.webkitTransform = "translate(-50%, -10%)";
+            boton.style.webkitTransform = "translate(-50%, -10%)";
+            boton.style.MozTransform = "translate(-50%, -10%)";
+            boton.style.msTransform = "translate(-50%, -10%)";
+            boton.style.OTransform = "translate(-50%, -10%)";
+            boton.style.transform = "translate(-50%, -10%)";
+
+            //DOM: Insert
+            if(!document.getElementById("modal_custom")){
+                document.body.insertBefore(wrapper, document.body.firstChild);
+                document.body.insertBefore(div, document.body.firstChild);
+            }
+
+            //Auxiliary function to close modal called from two addEventListeners (wrapper & boton)
+            function closeModal() {
+                document.body.removeChild(wrapper);
+                document.body.removeChild(div);
+            }
+        }
+            function validaErrores(){
+                /* var test = {!errorBusqueda}; */
+                // if(test != 'no'){
+                //     callingModal(test);
+                // }
+                alert('we');
+            }
+            function llamaJS(){
+                alert('llama js)');
+                llamada();
+            }
+
+            function wpDAH_JS(){
+                console.log('::ANTES IF:: tiene num PIR: ' + "{!searchParams.nPIR}");
+                if ("{!searchParams.nPIR}" != "" && "{!searchParams.nPIR}" != null) {
+                    console.log('::DENTRO IF::tiene num PIR: ' + "{!searchParams.nPIR}");
+                    var numPIR = "{!searchParams.nPIR}";
+                    console.log('numPIR: ' + numPIR);
+                    wpDAH2();
+
+                    // var recordId = 'test';
+                    
+                        console.log('entra');
+                        // console.log('event: ' + event);
+                        // if(event.status) {
+                            // const recordId = result;
+                            console.log('idbag: '+"{!idbag}");
+                            if ("{!idbag}"!=null) {
+                                let url;
+                                // if (arrayReq[4]=='DELAYED') {
+                                    // url = '/apex/R2_INC_VF_IncidentInformation?id='+recordId
+                                url = '/'+"{!idbag}";
+                                // }else if (arrayReq[4]=='DAMAGED'){
+                                    // url = '/apex/R2_INC_VF_Info_PIR_Damaged?id='+recordId;
+                            }
+                            if (url) {
+                                if (sforce.console.isInConsole()) {
+                                    sforce.console.openPrimaryTab(null, url , true);
+                                    
+                                } else{
+                                    window.open(url, '_blank');
+                                }
+                            }else {
+                                console.log('url not valid');
+                            }
+
+                        // }
+                     // })
+                    console.log('sale');
+                    // wpDAH_JS();
+                }
+                else {
+                    console.log('no tiene num PIR: ' + "{!searchParams.nPIR}");
+                    // llamada();
+                }
+            }
+            function resultadoJS(){
+                console.log('resultadoJS');
+                if ("{!idbag}" != "" && "{!idbag}" != null){
+                    console.log('existe idBag');
+                    sforce.console.openPrimaryTab(null, "{!idbag}" , true);
+                }else if("{! errorBusqueda}" != "" && "{! errorBusqueda}" != null){
+                    console.log('errorBusqueda');
+                    helper_displayMessage("{! errorBusqueda}");
+                }else if("{!incidentList}" != null){
+                    console.log('incidentList no nulo');
+                    // setTimeout(function(){document.forms[0].submit();},10)
+                    document.forms[0].submit();
+                }
+            }
+
+            // window.onload = resultadoJS();
+            
+            function helper_displayMessage(aux) { 
+                console.log('helper con aux '+ aux);
+                //provisional
+                var aviso = document.createElement('div');
+                aviso.id = 'avisoJS';
+                aviso.innerHTML = aux;
+                aviso.style.color = 'red';
+                aviso.style.textAlign = 'center';
+                document.getElementById('inputsDeBusqueda').appendChild(aviso);    
+                setTimeout(function(){aviso.innerHTML = ''}, 5000);         
+            }
+            // R2_CLS_BAG_BagSearch.readRecordId(requestData, function(result, event){
+            //     if(event.status) {
+            //         const recordId = result;
+            //         console.log('recordId: '+recordId);
+            //         if (recordId!=null) {
+            //             let url;
+            //             // if (arrayReq[4]=='DELAYED') {
+            //                 // url = '/apex/R2_INC_VF_IncidentInformation?id='+recordId
+            //             url = '/'+recordId;
+            //             // }else if (arrayReq[4]=='DAMAGED'){
+            //                 // url = '/apex/R2_INC_VF_Info_PIR_Damaged?id='+recordId;
+            //         }
+            //         if (url) {
+            //             if (sforce.console.isInConsole()) {
+            //                 sforce.console.openPrimaryTab(null, url , true);
+                            
+            //             } else{
+            //                 window.open(url, '_blank');
+            //             }
+            //         }else {
+            //             console.log('url not valid');
+            //         }
+
+            //     }
+            // })
+
+        
+        // function closeMessage() {
+        //         document.body.removeChild(wrapper);
+        //         document.body.removeChild(div);
+        // }
+        </script>
+<!--             - Errores: {!errorBusqueda} <br/>
+            - nPIR: {!searchParams.nPIR}<br/>
+            - IDBAG: {!idbag} -->
+            <apex:variable var="search" value="{!search}" />
+            <apex:actionFunction name="llamada" action="{!wpDAH}" oncomplete="validaErrores();" >
+                <apex:param value="submit" name="submit" assignTo="{!searchParams}"/>
+            </apex:actionFunction>
+           <!--  <apex:actionFunction name="wpDAH2" action="{!wpDAHByPIR}" reRender="form0"/> -->
+            <!-- <apex:actionFunction name="wpDAH2" action="{!wpDAHByPIR}" reRender="form0"/> -->
+
+            <div class="slds-box">
+                <div class="slds-box">
+                    <div class="slds-button-group">
+                        <div class="slds-button-group" role="group">                         
+                            <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!incidents}" value="IR">
+                                <apex:param value="submit" name="submit" assignTo="{!searchParams}"/>
+                            </apex:commandButton>
+                            <!-- <button class="slds-button slds-button_neutral">Cancelar</button> -->
+                        </div>
+
+                        <div class="slds-button-group" role="group" style=" ">
+                           <!--  <apex:commandLink styleClass="slds-button slds-button_inverse" onclick="llamaJS();" value="MEH" style="background: black; color: white;">
+                                </apex:commandLink>
+                            <apex:commandButton styleClass="slds-button slds-button_neutral" onclick="wpDAH_JS();"  value="DAH2" >    
+                            </apex:commandButton> -->
+                            <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!wpDAH}" oncomplete="resultadoJS();" value="DAH"  rerender="form0,componente">   <!-- style="background: brown; color: white;" -->
+                            </apex:commandButton>
+                           <!--  <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!wpDAH}"  value="DAH">    
+                            </apex:commandButton> -->
+                            <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!wpDDP}" oncomplete="resultadoJS();"  value="DDP" rerender="form0,componente"> <!-- style="background: brown; color: white;" -->
+                            </apex:commandButton>
+                         <!--    <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!wpDDP}" value="DDP" >
+                                <apex:param value="submit" name="submit" assignTo="{!searchParams}"/>
+                            </apex:commandButton> -->
+                            <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!wpPDIAHL}" value="PDI AHL" oncomplete="resultadoJS();" rerender="form0,componente" />
+                            <!-- style="background: #555E3B; color: white;" -->
+                            <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!wpPDIDPR}" value="PDI DPR" oncomplete="resultadoJS();" rerender="form0,componente" />
+                            <!-- style="background: #555E3B; color: white;" -->
+                                
+                            <!-- <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!wpPDIAHL}" value="PDI AHL" rerender="form0,componente">
+                                <apex:param value="submit" name="submit" assignTo="{!searchParams}"/>
+                            </apex:commandButton>
+                            <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!wpPDIDPR}" value="PDI DPR" rerender="form0,componente">
+                                <apex:param value="submit" name="submit" assignTo="{!searchParams}"/>
+                            </apex:commandButton> -->
+                        </div>
+
+                        <div class="slds-button-group" role="group" ><!-- style="padding: 0.2rem; background: rgba(191, 37, 37, 0.7);" 
+                        <button class="slds-button slds-button_inverse" bla bla bla-->
+                            <button class="slds-button slds-button_neutral" onclick="openNewDelay(this);" id="bag-incident-button-delay">Nueva Demora (AHL)</button>
+                            <button class="slds-button slds-button_neutral" onclick="openNewDamage(this);" id="bag-incident-button-damage">Nuevo Deterioro (DPR)</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-box" id="inputsDeBusqueda">
+                    <div class="slds-grid">
+                        <div class="slds-col">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-1">Nº PIR</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputText styleClass="slds-input" value="{!search.nPIR}" />
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-1">Fecha Creación</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputText styleClass="slds-input" value="{!search.fechaCreacion}" />
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-1">Número de Expediente</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputText styleClass="slds-input" value="{!search.nExpediente}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-1">PIR Asociado (AR)</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputText styleClass="slds-input" value="{!search.pirAsociado}" />
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-1">Escala y Cía (MS)</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputText styleClass="slds-input" value="{!search.escala}" />
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-1">Tipo Incidencia</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputText styleClass="slds-input" value="{!search.tipoIncidencia}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-1">Nombre Pax(NM1)</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputText styleClass="slds-input" value="{!search.nombrePax}" />
+                                </div>
+                            </div>
+                            <!-- <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-1">Compañía (MS)</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputText styleClass="slds-input" value="{!search.compania}" />
+                                </div>
+                            </div> -->
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-1">Etiqueta (TN)</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputText styleClass="slds-input" value="{!search.etiqueta}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-1">Color Tipo (CT)</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputText styleClass="slds-input" value="{!search.colorTipo}" />
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-1">Estado de la Incidencia</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputText styleClass="slds-input" value="{!search.estadoIncidencia}" />
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="text-input-id-1">Tipo de BBDD</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputText styleClass="slds-input" value="{!search.tipoBBDD}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:form>
+
+        <div id="componente" class="slds-box" style="{!IF(incidentList == null,'display:none','')}">
+                        <apex:variable var="pirList" value="{!incidentList}" />
+
+            <c:R2_BAG_VF_IncidentListDetail pirList="{!pirList}"/>
+        </div>
+    </div>
+    <script>
+        console.log('ei');
+        function openNewDelay(button) {
+            sforce.console.openPrimaryTab(null, `/apex/R2_INC_VF_Create_PIR`, true, 'Nuevo PIR Demora')
+            console.log(button.id)
+        }
+        function openNewDamage(button) {
+            sforce.console.openPrimaryTab(null, `/apex/R2_INC_VF_Create_PIR_Damaged`, true, 'Nuevo PIR Deterioro')
+            console.log(button.id)
+        }
+    </script>
+</apex:page>

@@ -1,0 +1,165 @@
+<apex:page controller="R2_CLS_GuPosttemplateFilter" docType="html-5.0" cache="false" standardStylesheets="false">
+<!-------------------------------------------------------------------------------------------------------------------------------------------------------
+Author:        
+Company:       Accenture
+Description:   VF filter email template
+
+History:
+
+<Date>            <Author>  
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------> 
+    <apex:includeScript value="/xdomain/xdomain.js"/>
+    <apex:includeScript value="/soap/ajax/26.0/connection.js"/>
+    <apex:includeScript value="/support/console/30.0/integration.js"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"/>
+    <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"/>
+    <apex:includeScript value="{!$Resource.from_html}"/>
+    
+  
+   
+    
+    <div class="blueflame">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title-primary">Seleccionar Plantilla</h3>
+            </div>
+            <div class="panel-body">  
+                <apex:form id="principal" >
+                  <script type="text/javascript">
+        // Funcion que abre el formulario de creacion del email
+        
+          function openEmailForm(){
+        
+               var array = []
+               var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
+                    
+               for (var i = 0; i < checkboxes.length; i++) {
+                        array.push(checkboxes[i].value)
+                            } 
+            
+              if(i == 1){
+            
+             if(sforce.console.isInConsole()){
+                // First find the ID of the primary tab to put the new subtab in
+                
+                console.log('se va redirigir a la pagina del email');
+                function getPrimaryTabId(){
+                    sforce.console.getFocusedPrimaryTabId(openSubtab);
+                }
+                // Funcion que abre la url en un subtab pasandole la ID del primaryTab
+                var openSubtab = function openSubtab(result) {
+                    if(true){
+                        console.log('se va a imprimir el id del template');
+                        sforce.console.openSubtab(result.id ,'/_ui/core/email/author/EmailAuthor?template_id={!lstTemplateEmail[0].id}&p2_lkid={!idContacto}&p3_lkid={!p3_lkid}&p5={!p5}' , false, '', null, 'SalesforceSubTab');
+                        sforce.console.openSubtab(result.id ,'/apex/R2_VF_PreviewGuPost?p3_lkid={!p3_lkid}&idTemplate={!selected}' , true, 'Vista Previa', null, 'SalesforceSubTab','Vista Previa de Plantilla');
+                        
+                        sforce.console.refreshPrimaryTabById(result.id);
+                    }else{
+                        console.log('o pasa por aqui');
+                        sforce.console.openSubtab(result.id ,'/_ui/core/email/author/EmailAuthor?template_id={!lstTemplateEmail[0].id}&p2_lkid={!idContacto}&p3_lkid={!p3_lkid}&p5={!p5}' , false, '', null);
+                        sforce.console.openSubtab(result.id ,'/apex/R2_VF_PreviewGuPost?p3_lkid={!p3_lkid}&idTemplate={!selected}' , true, 'Vista Previa', null);
+                        sforce.console.refreshPrimaryTabById(result.id);
+                    }
+                };
+                getPrimaryTabId();
+
+
+                }
+            }else{
+                alert("No puede enviar un email si no tiene seleccionado una plantilla o si tiene seleccionada más de una, por favor, revise su selección")}
+          };
+         
+                
+        </script>
+     
+                    <div id="blockbckanim" style="display:none"> 
+                        <img id="apimgld" style="" src="/img/loading32.gif" /> 
+                    </div>
+
+                    <apex:pageMessages id="showmsg"></apex:pageMessages>
+                    <!--apex:actionFunction name="actionShow" action="{!mostrarTemplate}"/-->
+                    
+                    <apex:outputText value="" id="errorMsg" style="color: red; font-weight:bold" escape="false"></apex:outputText>
+                    <apex:outputText value="" id="valido" style="color: LimeGreen; font-weight:bold" escape="false"></apex:outputText>
+                    
+                   
+                        
+                    <apex:pageBlock >
+                            <apex:panelGrid columns="3" style="margin-left: 0%" width="50%">
+            
+                                    <apex:pageBlockSection columns="3" >
+                                            
+                                            <apex:selectList value="{!companySelected}" label="Compañia" multiselect="false" size="1" >
+                                                        <apex:selectOptions value="{!company}"></apex:selectOptions></apex:selectList>
+                                            
+                                            <apex:selectList value="{!idiomaSelected}" label="Idioma" multiselect="false" size="1" >
+                                                                    <apex:selectOptions value="{!idiomas}"></apex:selectOptions> </apex:selectList>
+                                                            
+                                             <apex:input value="{!textoSelected}"  type="tel" size="50" label="Motivo"/>
+                                                          
+                                    </apex:pageBlockSection>
+                             </apex:panelGrid>
+                                    
+                            <apex:panelGrid columns="10" style="margin-left: 5%" width="25%">
+                                    <apex:pageBlockSection columns="10">
+                                
+                                                 
+                                             <apex:commandButton id="estilopagina" action="{!mostrarTemplate}" value="Buscar" reRender="error, principal, valido" style="padding=2px, 3px" styleclass="btn btn-primary btn-sm active" ></apex:commandButton>
+                                            <!-- <apex:commandButton styleclass="slds-button slds-button_neutral" onClick="openEmailForm()">Enviar Email</apex:commandButton>  -->
+                                                
+                                               <button id="Enviar email" class="slds-button slds-button_neutral" onClick="openEmailForm()" style="padding=2px, 3px">Enviar Email</button>
+                                               
+                                                        <!--apex:commandButton value="Enviar Email" reRender="error, principal, valido" styleclass="btn btn-primary btn-sm active" ></apex:commandButton-->
+                                           
+                                      </apex:pageBlockSection>
+                             </apex:panelGrid>
+                                
+                               
+                    </apex:pageBlock>
+
+                    <apex:commandButton action="{!Beginning}" title="Beginning" value="<<" reRender="principal"/>
+                        <apex:commandButton action="{!Previous}" title="Previous" value="<" reRender="principal"/>       
+                        <apex:commandButton action="{!Next}" title="Next" value=">" reRender="principal"/>
+                        <apex:commandButton action="{!End}" title="End" value=">>" reRender="principal"/>
+                    
+                    <apex:outputLabel style="font-weight: bold;" value=" {!pagIni}" />
+                    <apex:outputLabel style="font-weight: bold;" value=" {!espacio}" />
+                    <apex:outputLabel style="font-weight: bold;" value="{!pagFin}" />
+
+                   <apex:outputpanel id="frm1">
+
+                    <apex:dataTable value="{!listCustomObjectParcial}" var="a" columnswidth="20, 500,500" cellpadding="5" border="1" cellspacing="0" StyleClass="table table-hover border-radius(4)" html-class="tablesorter">
+                      <thead>
+                        </thead> 
+                        <tbody>
+                        <apex:column style="text-align: center;"  headerClass="bg-info">
+                            <apex:inputCheckbox value="{!a.seleccionado}"  id="checkedone">
+                                <apex:actionSupport event="onchange" action="{!getSelected}" rerender="error, principal, checkedone"/>
+                            </apex:inputCheckbox>
+                        </apex:column>
+                     <!--   <apex:column headervalue="Código" value="{!a.templateName}" style="text-align: center;" width="125" headerClass="bg-info text-center"/> -->
+                        <apex:column headervalue="Nombre"  value="{!a.displayName}" style="text-align: center;"  headerClass="bg-info text-center" html-class="tablesorter" >
+                            
+                            </apex:column>
+                            
+                        </tbody>
+                    </apex:dataTable>
+                    
+                    
+                    
+                    <!--/apex:pageBlockSection--> 
+                    <br/><br/>  
+                    
+                    &nbsp;&nbsp;
+                    <!--apex:commandButton value="Volver" action="{!mostrarCasos}" reRender="error, principal, valido" styleclass="btn btn-primary btn-sm active" onclick="ShowLoading();" oncomplete="HideLoading();"/-->
+                    
+
+                    <!--/apex:pageBlock-->   
+                    </apex:outputpanel>
+
+                </apex:form>  
+            </div>
+        </div>
+    </div>
+</apex:page>

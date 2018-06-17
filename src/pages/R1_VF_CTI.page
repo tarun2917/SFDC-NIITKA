@@ -1,0 +1,99 @@
+<apex:page standardController="Case"  extensions="R1_CLS_CTI_VF_CTRL" action="{!asignarCaso}">
+   
+    <apex:form id="form">
+        <apex:actionFunction name="cargar" action="{!asignarCaso}" oncomplete="testOpenSubtab()" rerender="form">
+       </apex:actionFunction>
+   <apex:includeScript value="/support/console/40.0/integration.js"/>
+
+
+
+<script type="text/javascript">
+        //$=jQuery.noConflict();
+          function cerrarVentana(){
+        
+            sforce.console.getEnclosingPrimaryTabId(closeSubtab);
+        }
+        var idCaso="";
+        var closeSubtab = function closeSubtab(result) {
+            //Now that we have the primary tab ID, we can close it
+            console.log('Holaaaa:'+ result.id);
+            var tabId = result.id;
+            sforce.console.closeTab(tabId);
+            var idC = "{!idc}";
+            sforce.console.closeTab(idC);
+        }
+        
+        
+        function cerrarVisual(){
+        
+            sforce.console.getFocusedSubtabId(closeSubtab);
+        }
+        
+        var closeSubtab = function closeSubtab(result) {
+            //Now that we have the primary tab ID, we can close it
+            console.log('Holaaaa:'+ result.id);
+            var tabId = result.id;
+            sforce.console.closeTab(tabId);
+            if(idCaso!=""){
+                sforce.console.focusSubtabById(idCaso);
+            }
+        }
+        
+        function testOpenSubtab() {
+            //First find the ID of the primary tab to put the new subtab in
+            if({!noCliente}==false && {!internal}==false){
+            sforce.console.getEnclosingPrimaryTabId(openSubtab);
+            }
+            else if({!internal}==true){
+            cerrarVisual();
+            
+            }
+        }
+        
+        var openSubtab = function openSubtab(result) {
+            console.log("Entro en Sub");
+            console.log("Primary ID: "+result.id);
+            var urlCaso= "https://" + window.location.host +"{!urlCaso}";
+            console.log("URL "+urlCaso);
+            var primaryTabId = result.id;
+            sforce.console.focusPrimaryTabById(primaryTabId);
+            sforce.console.openSubtab(primaryTabId , urlCaso, false, 
+                'Caso', null, openSuccess, 'casoNuevo');
+             var idtab=sforce.console.getFocusedSubtabId();
+            
+        };
+        
+        var openSuccess = function openSuccess(result) {
+            //Report whether we succeeded in opening the subtab
+            if (result.success == true) {
+                console.debug("ID Caso: "+result.id);
+                idCaso=result.id;
+           
+            } else {
+                
+            }
+        };
+        
+        window.onload=testOpenSubtab();
+    </script>
+    </apex:form>
+
+     
+    <apex:form rendered="{!IF(noCliente,false,true)}" >
+        <c:R1_COM_CustomerAlertsPopUp CustomerId="{!acc[0].id}" rendered="{!IF(noCliente,false,true)}"></c:R1_COM_CustomerAlertsPopUp>
+    <apex:pageBlock >
+    <apex:pageBlockTable value="{!acc}" var="account" >
+    <apex:column value="{!account.name}"/>
+    <apex:column value="{!account.R1_ACC_PKL_identification_Type__c}"/>
+    <apex:column value="{!account.R1_ACC_TXT_Identification_number__c}"/>
+    <apex:column value="{!account.R1_ACC_FOR_Primary_FF_Card_CCPO__c}"/>
+    <apex:column value="{!account.R1_ACC_PKL_Card_Type__c }"/>
+    <apex:column headerValue="Servicio" value="{!servicio}"/>
+    <apex:column headerValue="Tiempo de espera" value="{!timeInQueue}"/>
+    </apex:pageBlockTable>
+    </apex:pageBlock>
+    <button type="button" class="btn" onClick="cerrarVisual();return false;">Aceptar</button>
+    <button type="button" class="btn" onClick="cerrarVentana();return false;">Rechazar</button>
+    </apex:form>
+    <apex:outputLabel rendered="{!IF(noCliente,true,false)}">Cliente no encontrado</apex:outputLabel>
+</apex:page>

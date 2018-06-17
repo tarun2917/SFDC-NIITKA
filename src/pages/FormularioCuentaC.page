@@ -1,0 +1,895 @@
+<apex:page id="pageId"  showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" standardController="Case" extensions="CompensacionController">
+    
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+    
+    <style type="text/css">
+        .tablesorter-blue .header,
+        .tablesorter-blue .tablesorter-header {
+        /* black (unsorted) double arrow */
+        background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+        /* white (unsorted) double arrow */
+        /* background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAAP///////yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==); */
+        /* image */
+        /* background-image: url(images/black-unsorted.gif); */
+        background-repeat: no-repeat;
+        background-position: center right;
+        padding: 4px 18px 4px 4px;
+        white-space: normal;
+        cursor: pointer;
+        }
+        .tablesorter-blue .headerSortUp,
+        .tablesorter-blue .tablesorter-headerSortUp,
+        .tablesorter-blue .tablesorter-headerAsc {
+        /* black asc arrow */
+        background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+        /* white asc arrow */
+        /* background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7); */
+        /* image */
+        /* background-image: url(images/black-asc.gif); */
+        }
+        .tablesorter-blue .headerSortDown,
+        .tablesorter-blue .tablesorter-headerSortDown,
+        .tablesorter-blue .tablesorter-headerDesc {
+        /* black desc arrow */
+        background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
+        /* white desc arrow */
+        /* background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7); */
+        /* image */
+        /* background-image: url(images/black-desc.gif); */
+        }
+        .cabecera{
+        background-color:#F2F2F2 !important;
+        }
+        /*.AzulClaro{
+        border-left: solid lightblue 10px !important; 
+        }
+        .Verde{
+        border-left: solid #81F781 10px !important; 
+        }
+        .Amarillo{
+        border-left: solid #FFFF00 10px !important; 
+        }
+        .Naranja{
+        border-left: solid #FFBF00 10px !important; 
+        }
+        .AzulOscuro{
+        border-left: solid #3104B4 10px !important; 
+        }
+        .Negro{
+        border-left: solid #000000 10px !important; 
+        }
+        .Violeta{
+        border-left: solid #A901DB 10px !important; 
+        }     
+        .Rosa{
+        border-left: solid #FF00FF 10px !important; 
+        }
+        .Rojo{
+        border-left: solid #FF4000 10px !important; 
+        }
+        .VerdeOscuro{
+        border-left: solid #088A08 10px !important; 
+        }
+        .Marron{
+        border-left: solid #886A08 10px !important; 
+        }
+        .Oliva{
+        border-left: solid #688A08 10px !important; 
+        }
+        .Gris{
+        border-left: solid #D8D8D8 10px !important; 
+        } 
+        .Cian{
+        border-left: solid #81F7F3 10px !important; 
+        }                                                                
+        .botonPrimerPlano{
+        position: fixed;
+        z-index: 999;
+        }
+        .duplicado{
+        background-color: #F8E6E0 !important;
+        }     
+        .cliente{
+        background-color: #F8E6E0 !important;
+        } 
+        .iban{
+        background-color: #F5D0A9 !important;
+        }*/ 
+        fieldset{
+        padding: 1rem;
+        } 
+        .padding{
+            padding: 1rem;
+        }
+    </style> 
+    
+    <apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/js/jquery.tablesorter.min.js" />
+    <apex:includeScript value="/soap/ajax/41.0/connection.js"/>
+    <apex:includeScript value="/support/console/41.0/integration.js"/>
+    <apex:includeScript value="/soap/ajax/26.0/apex.js"/>
+    <apex:includeScript value="https://code.jquery.com/ui/1.12.1/jquery-ui.js"/>
+
+    <script type="text/javascript">
+    function hideSection(htmlSection, svg){
+        console.log(htmlSection.id);
+        console.log(svg.id);
+        var element = document.getElementById(htmlSection.id);
+        var svgElement = document.getElementById(svg.id);
+        if (element.classList.contains("slds-is-open")) {
+            element.classList.remove("slds-is-open");
+            svgElement.innerHTML="<use xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#right')}\" />";
+        } else {
+            element.classList.add("slds-is-open");
+            svgElement.innerHTML="<use xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}\" />";
+        }
+    }
+
+    function mostrarModal(){
+        var error = "Aqui se va amostrar si ha ido bien o mal";
+        alert(error);
+    }
+
+    function refreshJS(){
+      refresh();
+      }
+
+    function refreshCliente(){
+        console.log("Prueba log");
+        refreshClient();
+    }
+
+    function actualizar(){
+        console.log("Prueba rerender");
+        rerenderPanel();
+    }
+    function testGetFocusedSubtabId() {
+            sforce.console.getFocusedSubtabId(closeSubtab);
+        }
+        
+        var closeSubtab = function closeSubtab(result) {
+            //Now that we have the tab ID, we can close it
+            var tabId = result.id;
+            sforce.console.closeTab(tabId);
+        };
+    </script>
+    
+    <apex:outputPanel id="TopPanel" rendered="true">
+    <apex:form id="formulario"> 
+
+        <apex:outputPanel id="pnlMsg" rendered="true">   
+            <div style="text-align:center;font-size: 25px;">     
+                <apex:outputText rendered="true" style="color:orange;" value="{!msg}" id="msg"/>
+            </div>
+        
+        <apex:actionFunction name="rerenderPanel" rerender="TopPanel" />
+        
+        
+        <apex:outputPanel id="popUpRerender" rendered="true">
+        <h3 class="slds-section-title--divider">{!$Label.R2_VF_PagosPedientes}</h3> 
+        <table class = "slds-table slds-table_bordered slds-table_cell-buffer" id="ordenar">  
+            <thead>        
+                <tr class="slds-text-title_caps cabecera">
+                    <th>
+                        {!$Label.R2_VF_Selecionar}
+                    </th>
+                    <apex:repeat value="{!camposList}" var="campo">
+                        <th>
+                            {!campo}
+                        </th>
+                    </apex:repeat>
+                </tr>
+            </thead>
+            <tbody> 
+                <!--Cada pasada de esta tabla crea una tabla con los pagos de un cliente-->        
+                <apex:repeat var="compensaciones" value="{!compenEmitidoList}">        
+                    <!--   <tr class="hola2">-->
+                    <!--Cada pasada de este bucle crea una fila con los datos de un pago--> 
+                    <apex:repeat var="compen" value="{!compensaciones}"> 
+                        <tr>
+                            <td class="{!compen.formato + ' ' + compen.duplicado}">
+                                <apex:inputCheckbox value="{!compen.selected}"/>
+                            </td> 
+                            <!--Cada pasada de este bucle crea cada una de las columnas de un pago-->      
+                            <apex:repeat var="campo" value="{!listaCampos}"> 
+                                <!--Controlamos si es el Id del cliente, caso en el que lo sustituiremos por el nombre con link al registro-->
+                                <apex:outputPanel rendered="{!IF(campo = 'R2_COM_LOO_Client__c',true,false)}">
+                                    <td><a href="{!'\\'+compen.pago[campo]}" target="_blank">                
+                                        {!IF(!isNull(compen.pago[campo]),mapaNombres[compen.pago[campo]],compen.pago[campo])}
+                                        </a></td>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!IF(campo = 'R2_COM_LOO_Client__c',false,true)}">
+                                    <td>{!compen.pago[campo]}</td>
+                                </apex:outputPanel>                 
+                            </apex:repeat>  
+                        </tr>    
+                    </apex:repeat>      
+                    <!--  </tr>        -->
+                </apex:repeat> 
+            </tbody>        
+        </table>  
+
+        <apex:outputPanel id="popUpPago">
+        <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUpFormaPago}"/>
+            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUpFormaPago}">
+               <!-- <apex:outputText value="El pago se va a realizar a traves de {!labelPago}" /> <br/> -->
+               <p>El pago se va a realizar a traves de {!formadePago}</p> 
+                         <apex:commandButton value="Cerrar" action="{!closePopupFormaPago}" />
+        </apex:outputPanel> 
+
+       </apex:outputPanel>
+
+        <apex:outputPanel id="popUpCentroCuenta">
+        <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUpCentroCuenta}"/>
+            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUpCentroCuenta}">
+                No exite un centro y cuenta disponible con las caracteristicas proporcionadas. Por favor complete los siguentes campos.<br/>
+                
+                <p>El pago va a ir por: {!labelPago}</p>
+                <label class="slds-form-element__label" for="Centro">Centro</label>
+                <apex:inputText value="{!centroPopUp}" id="theTextCentro"/>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <label class="slds-form-element__label" for="Cuenta">Cuenta</label>
+                <apex:inputText value="{!cuentaPopUp}" id="theTextCuenta"/><br/><br/>
+                <div style="text-align: center;"> 
+                <apex:commandButton value="Guardar" action="{!guardarCentroCuenta}" onclick="window.location.top.reload();"/>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <apex:commandButton value="Cancelar" action="{!closePopupCentroCuenta}" />
+                </div>
+            </apex:outputPanel>
+        </apex:outputPanel> 
+
+       </apex:outputPanel>
+
+       
+
+
+        
+        
+        <!--panel que mostrará los posibles duplicados-->
+        <apex:outputPanel id="duplicados" rendered="{!duplicados}">
+            <apex:pageMessage severity="warning" />
+            <h3 class="slds-section-title--divider">Posibles duplicados</h3>
+            
+            
+            
+            
+            <table class = "slds-table slds-table_bordered slds-table_cell-buffer" id="ordenar2">  
+                <thead>      
+                    <tr class="slds-text-title_caps cabecera">
+                        <th>
+                            Original
+                        </th>
+                        <th>
+                            Duplicado
+                        </th>
+                        <th>
+                            Motivo
+                        </th>
+                        <th>
+                            Estado
+                        </th>
+                        <th>
+                            IBAN
+                        </th>
+                        <th>
+                            Cliente
+                        </th>
+                        <th>
+                            Importe total
+                        </th>            
+                    </tr>
+                </thead>
+                <tbody>      
+                    <apex:repeat var="duplicado" value="{!listadoDuplicados}">        
+                        <tr>
+                            <td class="{!duplicado.estilo}">
+                                <apex:outputLink value="/{!duplicado.original.Id}" target="_blank">{!duplicado.original.Name}</apex:outputLink>
+                            </td>
+                            <td>
+                                <apex:outputLink value="/{!duplicado.duplicado.Id}" target="_blank">{!duplicado.duplicado.Name}</apex:outputLink>
+                            </td>  
+                            <td>
+                                <apex:outputText value="{!duplicado.duplicado.R2_COM_TXT_Passenger_Reason__c}"/>
+                            </td> 
+                            <td>
+                                <apex:outputText value="{!duplicado.duplicado.R2_COM_PKL_Status__c}"/>
+                            </td>
+                            <td>
+                                <apex:outputText value="{!duplicado.duplicado.R2_COM_TXT_IBAN__c}"/>
+                            </td>
+                            <td>
+                                <a href="{!'\\'+duplicado.duplicado.R2_COM_LOO_Client__c}" target="_blank">
+                                    {!IF(!isNull(duplicado.duplicado.R2_COM_LOO_Client__c),mapaNombres[duplicado.duplicado.R2_COM_LOO_Client__c],duplicado.duplicado.R2_COM_LOO_Client__c)}
+                                </a>
+                            </td>
+                            <td>
+                                <apex:outputText value="{!duplicado.duplicado.R2_COM_DIV_Total_Amount__c}"/>
+                            </td>                              
+                        </tr>       
+                    </apex:repeat>  
+                </tbody>       
+            </table>          
+        </apex:outputPanel>  
+        <apex:actionFunction name="repintarTabla" reRender="formulario" action="{!traza}"/>    
+        
+        <h3 class="slds-section-title--divider">Tipo de pago</h3>        
+        <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+        <div class="slds-form-element__row">
+            <div class="slds-form-element slds-size--2-of-4">
+                <label class="slds-form-element__label" for="select-01">Tipo de pago</label>
+                <div class="slds-form-element__control">   
+                    <div class="slds-select_container">
+                        <apex:selectList id="TipoPago" size="1" value="{!valueTipoPago}" styleClass="slds-select" onchange="refreshJS()">
+                            <apex:selectOptions value="{!optionTipoPago}" />
+                            <apex:actionSupport event="oncomplete" rerender="formulario"/>
+                        </apex:selectList>
+                        <apex:actionFunction name="refresh" action="{!habilitarPago}" reRender="chequeId,botonera"/>
+                    </div>
+                </div>
+                                
+                           
+            </div>
+            <div class="slds-form-element slds-size--2-of-4">
+                      <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="select-01">País</label>
+                                <div class="slds-form-element__control">   
+                                    <div class="slds-select_container">
+                                        <apex:selectList id="Pais2" size="1" value="{!opUpdate.R2_OPY_TXT_Bank_Country__c}" styleClass="slds-select" onchange="document.getElementById('{!$Component.pageId.formulario.Pais}').value = document.getElementById('{!$Component.pageId.formulario.Pais2}').value;
+                                            document.getElementById('{!$Component.pageId.formulario.PaisCheque}').value = document.getElementById('{!$Component.pageId.formulario.Pais2}').value;">
+                                            <apex:selectOptions value="{!optionPais}" />
+                                            <apex:actionSupport event="oncomplete" rerender="Pais,Pais2,PaisCheque"/>
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                            </div>
+            </div>
+        </div>
+        </div>
+        
+        <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small" >
+            <div class="slds-form-element slds-size--1-of-3 ">
+                <label class="slds-form-element__label" for="select-01">Control y actualización de Centro y Cuenta</label>
+                <div class="slds-form-element__control">   
+                    <div class="slds-p-bottom_small slds-align_absolute-center" style="margin: 0 auto;width: 100%;">
+                        <apex:commandLink action="{!comprobacionCentroCuenta}"  value="Validacion de centro y cuenta" styleClass="slds-button slds-button--neutral" id="ValidacionPago"/> <!--oncomplete="repintarTabla();" NO!-->
+                    </div>
+                    </div>
+            </div>
+        </div>
+
+        <apex:outputPanel id="ClienteExpediente" rendered="true"> 
+        <h3 class="slds-section-title--divider">Información Cliente Expediente</h3>
+        <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+            <!-- <table>
+                <apex:repeat var="compen" value="{!compensaciones[0]}">
+                <tr>
+                    <td>
+                        <div class="slds-form-element slds-size--1-of-3">
+                            <label class="slds-form-element__label" for="NumDoc">Nombre del cliente</label>
+                            <div class="slds-form-element__control">
+                                <apex:inputField value="{!opUpdate.R2_OPY_LOO_CaseAccount__c}" styleClass="slds-input" id="outputName" type="text"/>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="slds-form-element slds-size--1-of-3">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="select-01">Tipo Doc.</label>
+                                <div class="slds-form-element__control">   
+                                    <div class="slds-select_container">
+                                        <apex:selectList id="outputTypeDoc" size="1" value="{!opUpdate.R2_OPY_PKL_Document_Type__c}" styleClass="slds-select">
+                                            <apex:selectOptions value="{!optionTipoDoc}" />
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="slds-form-element slds-size--1-of-1">
+                            <label class="slds-form-element__label" for="NumDoc">Núm. Doc.</label>
+                            <div class="slds-form-element__control">
+                                <apex:inputField value="{!opUpdate.R2_OPY_TXT_NIF__c}" type="text" styleClass="slds-input" id="outputNumDoc"/>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="slds-form-element slds-size--1-of-1">
+                                <label class="slds-form-element__label" for="Entidad">Teléfono</label>
+                                <div class="slds-form-element__control" html-disabled = "true" >
+                                    <apex:inputField  id="telefono" html-maxlength="72" value="{!opUpdate.R2_OPY_TXT_Address1__c}" type="text" styleClass="slds-input" onblur="document.getElementById('{!$Component.pageId.formulario.direccion}').value = document.getElementById('{!$Component.pageId.formulario.domicilio1}').value"/>
+                                </div>  
+                            </div>  
+                    </td> 
+                    <td>
+                        <div class="slds-form-element slds-size--1-of-1">
+                                <label class="slds-form-element__label" for="Oficina">Email</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="email" html-maxlength="72" value="{!opUpdate.R2_OPY_TXT_Address2__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div>
+                    </td>
+                    <td>
+                        <div class="slds-form-element slds-size--1-of-1">
+                                <label class="slds-form-element__label" for="Oficina">Dirección del cliente</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="domicilioCliente" html-maxlength="72" value="{!opUpdate.R2_OPY_TXT_Address2__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div> 
+                    </td>
+                </tr>
+                
+                </apex:repeat>
+            </table> -->
+
+            <div class="padding">
+        <fieldset class="slds-form--compound">
+            <div class="form-element__group" >
+                <div class="slds-form-element__row" >
+                    <div class="slds-form-element slds-size--1-of-3">
+                            <label class="slds-form-element__label" for="NumDoc">Nombre del cliente</label>
+                            <div class="slds-form-element__control">
+                                <div disabled="true">
+                                <apex:inputField value="{!opUpdate.R2_OPY_LOO_CaseAccount__c}" styleClass="slds-input" id="outputName" type="text" onchange="refreshCliente()"/>
+                                 </div>
+                            </div>
+                            <apex:actionFunction name="refreshClient" action="{!cambioCliente}"  rerender="ClienteExpediente"/>
+                        </div>
+                    <div class="slds-form-element slds-size--1-of-3">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="select-01">Tipo Doc.</label>
+                                <div class="slds-form-element__control">   
+                                    <div class="slds-select_container">
+                                        <apex:selectList id="outputTypeDoc" size="1" value="{!opUpdate.R2_OPY_PKL_Document_Type__c}" styleClass="slds-select">
+                                            <apex:selectOptions value="{!optionTipoDoc}" />
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="slds-form-element slds-size--1-of-1">
+                            <label class="slds-form-element__label" for="NumDoc">Núm. Doc.</label>
+                            <div class="slds-form-element__control">
+                                <apex:inputField value="{!opUpdate.R2_OPY_TXT_NIF__c}" type="text" styleClass="slds-input" id="outputNumDoc"/>
+                            </div>
+                        </div>
+                    
+                </div>
+                <div class="slds-form-element__row">
+                     <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="Entidad">Teléfono</label>
+                                <div class="slds-form-element__control" html-disabled = "true" >
+                                    <apex:input id="telefono" html-maxlength="72" value="{!telefonoCliente}" type="text" styleClass="slds-input" onblur="document.getElementById('{!$Component.pageId.formulario.direccion}').value = document.getElementById('{!$Component.pageId.formulario.domicilio1}').value"/>
+                                </div>  
+                            </div>  
+                    <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="Oficina">Email</label>
+                                <div class="slds-form-element__control">
+                                    <apex:input id="email" html-maxlength="72" value="{!emailCliente}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div>
+                    
+                </div>
+                <div class="slds-form-element__row">
+                     <div class="slds-form-element slds-size--1-of-3">
+                                <label class="slds-form-element__label" for="Entidad">Observaciones</label>
+                                <div class="slds-form-element__control" html-disabled = "true" >
+                                    <apex:input id="Observaciones" html-maxlength="72" value="{!observaciones}" type="text" styleClass="slds-input" onblur="document.getElementById('{!$Component.pageId.formulario.direccion}').value = document.getElementById('{!$Component.pageId.formulario.domicilio1}').value"/>
+                                </div>  
+                            </div>  
+                    
+                            </div>
+                </div>
+            
+        </fieldset>
+        </div>
+        
+            
+        </div> 
+        </apex:outputPanel>
+        <h3 class="slds-section-title--divider">Información General Identidad Bancaria</h3>
+        <div class="padding">
+        <fieldset class="slds-form--compound">
+            <div class="form-element__group">
+                <div class="slds-form-element__row">
+                    <div class="slds-form-element slds-size--1-of-3">
+                        <label class="slds-form-element__label" for="NombreBanco">Nombre del Banco</label>
+                        <div class="slds-form-element__control">
+                            <apex:inputField id="NombreBanco" value="{!opUpdate.R2_OPY_TXT_Bank_Name__c}" type="text" styleClass="slds-input"/>
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-3">
+                      <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="select-01">País</label>
+                                <div class="slds-form-element__control">   
+                                    <div class="slds-select_container">
+                                        <apex:selectList id="Pais" size="1" value="{!opUpdate.R2_OPY_TXT_Bank_Country__c}" styleClass="slds-select" onchange="document.getElementById('{!$Component.pageId.formulario.PaisCheque}').value = document.getElementById('{!$Component.pageId.formulario.Pais}').value;
+                                        document.getElementById('{!$Component.pageId.formulario.Pais2}').value = document.getElementById('{!$Component.pageId.formulario.Pais}').value;">
+                                            <apex:selectOptions value="{!optionPais}" />
+                                            <apex:actionSupport event="oncomplete" rerender="Pais,PaisCheque,Pais2"/>
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-3">
+                        <label class="slds-form-element__label" for="Localidad">Localidad</label>
+                        <div class="slds-form-element__control">
+                            <apex:inputField id="Localidad" value="{!opUpdate.R2_OPY_TXT_Bank_Loc__c}" type="text" styleClass="slds-input" onblur="document.getElementById('{!$Component.pageId.formulario.LocalidadCheque}').value = document.getElementById('{!$Component.pageId.formulario.Localidad}').value"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element__row">
+                    <div class="slds-form-element slds-size--1-of-1">
+                        <label class="slds-form-element__label" for="direccion">Dirección</label>
+                        <div class="slds-form-element__control">
+                            <apex:inputField id="direccion" html-maxlength="72" value="{!opUpdate.R2_OPY_TXT_Bank_Dir__c}" type="text" styleClass="slds-input" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <apex:outputPanel id="chequeId" rendered="true">
+        <div id="lght_section_1" class="{! if(boolCheque==TRUE,'slds-section slds-is-open', 'slds-section' )}">
+        <h3 class="slds-section__title">
+                <!-- <button aria-controls="expando-unique-id" aria-hidden="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_1, svg_section_1);return false;" reRender="false"> -->
+                    <!-- <svg id="svg_section_1" class="slds-button__icon" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                    </svg> -->
+                    <span class="slds-truncate slds-section__title-action" title="CHEQUE">CHEQUE</span>
+                <!-- </button> -->
+            </h3>
+            <div aria-hidden="true" class="slds-section__content" id="expando-unique-id">
+                <fieldset class="slds-form--compound" html-disabled = "true">
+                    <div class="form-element__group">
+                        <div class="slds-form-element__row">
+                           <div class="slds-form-element slds-size--1-of-1">
+                                <label class="slds-form-element__label" for="Entidad">Dirección del cliente</label>
+                                <div class="slds-form-element__control"  >
+                                    <apex:inputField id="domicilio1" html-maxlength="72" value="{!opUpdate.R2_OPY_TXT_Address1__c}" type="text" styleClass="slds-input" />
+                                </div>  
+                            </div>  
+                            </div>
+                            <div class="slds-form-element__row">
+                             <div class="slds-form-element slds-size--1-of-1">
+                                <label class="slds-form-element__label" for="Oficina">Dirección2 del cliente</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="domicilio2" html-maxlength="72" value="{!opUpdate.R2_OPY_TXT_Address2__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div>  
+                            </div>             
+                        
+                    </div>
+                </fieldset>
+                <fieldset class="slds-form--compound">
+                    <div class="form-element__group">
+                        <div class="slds-form-element__row">
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="Numcuenta">Código postal del cliente</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="CPCheque" value="{!opUpdate.R2_OPY_TXT_Postal_Code__c}" type="text" styleClass="slds-input"/>
+                                </div>  
+                            </div>
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="DigitoControl">Localidad del cliente</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="LocalidadCheque" value="{!opUpdate.R2_OPY_TXT_City__c}" type="text" styleClass="slds-input" onblur="document.getElementById('{!$Component.pageId.formulario.Localidad}').value = document.getElementById('{!$Component.pageId.formulario.LocalidadCheque}').value"/>
+                                </div>
+                            </div>              
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="slds-form--compound" >
+                    <div class="form-element__group">
+                        <div class="slds-form-element__row">
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="Numcuenta">Provincia del cliente</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="provinciaCheque" value="{!opUpdate.R2_OPY_TXT_Province__c}" type="text" styleClass="slds-input"/>
+                                </div>  
+                            </div>
+
+                            <div class="slds-form-element slds-size--1-of-2">
+                      <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="select-01">País del cliente</label>
+                                <div class="slds-form-element__control">   
+                                    <div class="slds-select_container">
+                                        <apex:selectList id="PaisCheque" size="1" value="{!opUpdate.R2_OPY_TXT_Bank_Country__c}" styleClass="slds-select" onchange="document.getElementById('{!$Component.pageId.formulario.Pais}').value = document.getElementById('{!$Component.pageId.formulario.PaisCheque}').value;
+                                        document.getElementById('{!$Component.pageId.formulario.Pais2}').value = document.getElementById('{!$Component.pageId.formulario.PaisCheque}').value;">
+                                            <apex:selectOptions value="{!optionPais}" />
+                                            <apex:actionSupport event="onchange" rerender="Pais,PaisCheque,Pais2"/>
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>              
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div> 
+        
+
+        <div id="lght_section_2" class="{! if(boolSepa==TRUE,'slds-section slds-is-open', 'slds-section' )}">
+            <h3 class="slds-section__title">
+                <!-- <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_2, svg_section_2);return false;" reRender="false">
+                    <svg id="svg_section_2" class="slds-button__icon" aria-hidden="false">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                    </svg> -->
+
+                    <span class="slds-truncate slds-section__title-action" title="SEPA">SEPA</span>
+                <!-- </button> -->
+            </h3>
+            <div aria-hidden="false" class="slds-section__content" id="expando-unique-id">
+                <fieldset class="slds-form--compound">
+                    <div class="form-element__group">
+                        <div class="slds-form-element__row">
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="Entidad">Entidad</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="Entidad" value="{!opUpdate.R2_OPY_TXT_Bank_Code__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div>  
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="Oficina">Oficina</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="Oficina" value="{!opUpdate.R2_OPY_TXT_Bank_Sucursal__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div>  
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="DigitoControl">Digito Control</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="DigitoControl" value="{!opUpdate.R2_OPY_TXT_Control_Digit__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div> 
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="Numcuenta">Número de cuenta</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="Numcuenta" value="{!opUpdate.R2_OPY_TXT_Bank_Account__c}" type="text" styleClass="slds-input"/>
+                                </div>  
+                            </div>              
+                        </div>
+                    </div> 
+                </fieldset>
+                <fieldset class="slds-form--compound" >
+                    <div class="form-element__group">
+                        <div class="slds-form-element__row">
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="inputIBAN">IBAN</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="inputIBAN" value="{!opUpdate.R2_OPY_TXT_IBAN__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div> 
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="inputSWIFT">SWIFT</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="inputSWIFT" value="{!opUpdate.R2_OPY_TXT_SWIFT__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div>              
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>  
+        <div id="lght_section_3" class="{! if(boolLatam==TRUE,'slds-section slds-is-open', 'slds-section' )}">
+            <h3 class="slds-section__title">
+                <!-- <button  aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_3, svg_section_3);return false;" reRender="false"> -->
+                    <!-- <svg id="svg_section_3" class="slds-button__icon" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                    </svg> -->
+                    <span class="slds-truncate slds-section__title-action" title="Resto de Países">Resto de Países</span>
+                <!-- </button> -->
+            </h3>
+            <div aria-hidden="false" class="slds-section__content" id="expando-unique-id">
+                <fieldset class="slds-form--compound" >
+                    <div class="form-element__group">
+                        <div class="slds-form-element__row">
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="CuentaLocalExtranjera">Cuenta Local Extranjera</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="CuentaLocalExtranjera" value="{!opUpdate.R2_OPY_TXT_External_Local_Account__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="TipoDeCuenta">Tipo de Cuenta</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="TipoDeCuenta" value="{!opUpdate.R2_OPY_TXT_Account_Type__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="slds-form--compound">
+                    <div class="form-element__group">
+                        <div class="slds-form-element__row">
+                            <div class="slds-form-element slds-size--1-of-3">
+                                <label class="slds-form-element__label" for="LATAMBanco">LATAM Banco</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="LATAMBanco" value="{!opUpdate.R2_OPY_TXT_Latam_Bank__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div> 
+                            <div class="slds-form-element slds-size--1-of-3">
+                                <label class="slds-form-element__label" for="LATAMSucursal">LATAM Sucursal</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="LATAMSucursal" value="{!opUpdate.R2_OPY_TXT_Latam_Sucursal__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-size--1-of-3">
+                                <label class="slds-form-element__label" for="LATAMDC">LATAM DC</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="LATAMDC" value="{!opUpdate.R2_OPY_TXT_Latam_DC__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="slds-form--compound">
+                    <div class="form-element__group">
+                        <div class="slds-form-element__row">
+                            <div class="slds-form-element slds-size--1-of-1">
+                                <label class="slds-form-element__label" for="LATAMCuenta">LATAM Cuenta</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="LATAMCuenta" value="{!opUpdate.R2_OPY_TXT_Latam_Account__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="slds-form--compound">
+                    <div class="form-element__group">
+                        <div class="slds-form-element__row">
+                            
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="FEDABA">FED ABA</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="FEDABA" value="{!opUpdate.R2_OPY_TXT_Fed_ABA__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="CHIPSABA">CHIPS ABA</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="CHIPSABA" value="{!opUpdate.R2_OPY_TXT_Chips_ABA__c}" type="text" styleClass="slds-input"/>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="slds-form--compound">
+                    <div class="form-element__group">
+                        <div class="slds-form-element__row">
+                        <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="Entidad">Dirección del cliente</label>
+                                <div class="slds-form-element__control"  >
+                                    <apex:inputField id="domicilioLatam" html-maxlength="72" value="{!opUpdate.R2_OPY_TXT_Address1__c}" type="text" styleClass="slds-input" />
+                                </div>  
+                            </div>
+                           
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="DigitoControl">Localidad del cliente</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="LocalidadLatam" value="{!opUpdate.R2_OPY_TXT_City__c}" type="text" styleClass="slds-input" onblur="document.getElementById('{!$Component.pageId.formulario.Localidad}').value = document.getElementById('{!$Component.pageId.formulario.LocalidadCheque}').value"/>
+                                </div>
+                            </div>              
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="slds-form--compound" >
+                    <div class="form-element__group">
+                        <div class="slds-form-element__row">
+                            <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="Numcuenta">Provincia del cliente</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="provinciaLatam" value="{!opUpdate.R2_OPY_TXT_Province__c}" type="text" styleClass="slds-input"/>
+                                </div>  
+                            </div>
+                             <div class="slds-form-element slds-size--1-of-2">
+                                <label class="slds-form-element__label" for="Numcuenta">Código postal del cliente</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputField id="CPLatam" value="{!opUpdate.R2_OPY_TXT_Postal_Code__c}" type="text" styleClass="slds-input"/>
+                                </div>  
+                            </div>
+
+                            
+                             
+                                
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div> 
+        </apex:outputPanel>               
+        </div>
+        
+        <div class="slds-p-bottom_small slds-align_absolute-center" style="margin: 0 auto;width: 100%;">
+        <apex:outputPanel id="botonera" rendered="true">
+            <apex:commandLink action="{!ComprobarDuplicados}"  value="Comprobar Duplicados" styleClass="slds-button slds-button--neutral" id="ComprobarDuplicados"/> <!--oncomplete="repintarTabla();" NO!-->
+            <!--<apex:commandLink action="{!GuardarIBAN}" target="_self" value="Validar Pagos" styleClass="slds-button slds-button- -neutral" id="GuardarIBAN" oncomplete="repintarTabla();"/>-->
+            <!-- <apex:commandButton action="{!validarPago}"  value="Validar Pago" styleClass="slds-button slds-button--neutral" id="validarPago" disabled="{!validado}"/>oncomplete="repintarTabla();" -->
+            <apex:commandButton action="{!crearOp}" value="Crear orden de pago" styleClass="slds-button slds-button--neutral" id="CrearOP" rendered="{!!escalado}" disabled="{!noValidado}"/><!-- disabled="{!noValidado}"  QUeda poner esto dentro para deshabilitar el boton de crear el pago cuandose aclare la validacion de pago-->
+            <apex:commandButton value="Close" action="{!cerrarFormularioCuenta}" styleClass="slds-button slds-button--neutral" onclick="testGetFocusedSubtabId()" oncomplete="window.close();return false;"/>﻿
+
+        </apex:outputPanel>
+
+            
+                
+            <apex:outputPanel id="tstpopup">
+                <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
+                    <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+                        <h2>{!resultado}</h2><br/>
+                        <apex:repeat value="{!errores}" var="string" id="theRepeat">
+                            <apex:outputText value="{!string}" id="theValue"/><br/><br/>
+                        </apex:repeat>
+
+                        <apex:commandButton value="Close" action="{!closePopup}" rerender="tstpopup"/>
+                    </apex:outputPanel>
+            </apex:outputPanel>
+
+
+        </div> 
+
+
+
+        <!-- POP UP -->
+        <!-- <apex:form > -->
+        <!-- <apex:commandButton value="Show Pop up" action="{!showPopupCentroCuenta}" rerender="popUpCentroCuenta"/>
+        <apex:pageBlock >
+            This is just filler text from the Salesforce General. 
+        </apex:pageBlock> -->
+ 
+        
+ 
+    <!-- </apex:form> -->
+ 
+    
+     <!-- END POP UP -->
+        <style type="text/css">
+        .custPopup{
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            z-index: 9999;
+            left: 50%;
+            padding:10px;
+            position: absolute;
+            /* These are the 3 css properties you will need to change so the popup 
+            displays in the center of the screen. First set the width. Then set 
+            margin-left to negative half of what the width is. You can add 
+            the height property for a fixed size pop up if you want.*/
+            width: 500px;
+            margin-left: -250px;
+            margin-right: -250px;
+            top:100px;
+        }
+        .popupBackground{
+            background-color:black;
+            opacity: 0.20;
+            filter: alpha(opacity = 20);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 9998;
+        }
+
+    </style>
+
+        
+
+
+
+        <script>
+        $(document).ready(function()
+                          {
+                              $("[id$='ordenar']").tablesorter({theme: 'blue', dateFormat : "dd/mm/yyyy"});
+                              $("[id$='ordenar2']").tablesorter({theme: 'blue', dateFormat : "dd/mm/yyyy"});
+                          });
+        </script>
+
+        <apex:actionFunction name="RenderizarPick" reRender="Pais,PaisCheque" /> 
+        </apex:outputPanel>  
+    </apex:form>
+ </apex:outputPanel>    
+ </apex:page>

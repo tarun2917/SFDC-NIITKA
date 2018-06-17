@@ -1,0 +1,239 @@
+<!----------------------------------------------------------------------
+    Author:        Alvaro Garcia
+    Company:       Accenture
+    Description:   VF with the information of the case
+    
+    History:
+    
+    <Date>            <Author>          <Description>
+    25/04/2017       Alvaro Garcia     Initial version
+    28/09/2017       Jaime Ascanta     Implement lightning designsystem
+    ----------------------------------------------------------------------- -->
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" standardController="Account" extensions="R2_ACC_CLS_CasesList_CTRL" action="{!loadTabSelected}">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <head>
+        <title>Page</title>
+        <apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+        <style type="text/css">
+        .body-custom {
+            font-size: 12px !important;
+            font-family: 'SalesforceSans-Regular', Helvetica, Arial, sans-serif !important;
+        }
+
+        .btn-custom {
+            line-height: 24px;
+            padding: 0 9px;
+            margin: 1px;
+            font-size: 12px;
+            font-weight: normal;
+
+            line-height: 24px;
+            padding: 0 9px;
+        }
+
+        .table-custom thead th {
+            font-size: .9em;
+            text-align: left;
+            text-transform: capitalize;
+            font-style: normal;
+            margin: 0;
+            letter-spacing: normal;
+            color: #54698d;
+            font-weight: normal;
+        }
+
+        .table-custom tbody th {
+            color: #000;
+            font-weight: normal;
+        }
+        .table-custom tbody th a {
+            color: #006cb5;
+        }
+
+        .table-custom tbody tr>th:first-child,
+        .table-custom thead tr>th:first-child {
+            padding-left: 6px;
+        }
+
+        .card-header-custom header h3 {
+            font-size: 1.3em;
+            font-weight: normal;
+            color: #16325c;
+        }
+
+        .card-header-custom,
+        .card-footer-custom {
+            margin: 5px 10px;
+            padding: 0px;
+        }
+        .card-footer-custom div:first-child{
+            text-align: left;
+        }
+        .card-footer-custom div:last-child{
+            text-align: right;
+        }
+        </style>
+
+
+        <apex:includeScript value="/xdomain/xdomain.js" />
+        <apex:includeScript value="/soap/ajax/26.0/connection.js" />
+        <apex:includeScript value="/support/console/30.0/integration.js" />
+
+        <script type="text/javascript">
+        function openCaseSubtab(caseId, casNumber) {
+            if (sforce.console.isInConsole()) {
+            // First find the ID of the primary tab to put the new subtab in
+            sforce.console.openPrimaryTab(null, '/' + caseId, true, casNumber);
+            // sforce.console.getEnclosingTabId(function(result){
+            //   sforce.console.openSubtab(result.id,'/' + caseId,true,'',null);
+            // });
+            } else {
+                window.open('/' + caseId, '_blank');
+                // window.top.location.href = '/' + caseId;
+            }
+        };
+        </script>
+        
+    </head>
+
+    <body class="body-custom">
+        <apex:outputPanel id="redirectPanel">
+            <apex:outputText rendered="{!shouldRedirect}">
+                <script type="text/javascript">
+                if (sforce.console.isInConsole()) {
+                    // First find the ID of the primary tab to put the new subtab in
+                    sforce.console.openPrimaryTab(null, '{!url}', true);
+                    // sforce.console.getEnclosingPrimaryTabId(function(result){
+                    //   sforce.console.openSubtab(result.id,'{!url}',true,'',null);
+                    // });
+                } else {
+                    window.open('{!url}', '_blank');
+                    //window.top.location.href = '{!url}';
+                }
+                </script>
+            </apex:outputText>
+        </apex:outputPanel>
+        <apex:outputPanel id="redirectPanelLink">
+            <apex:outputText rendered="{!shouldRedirectLink}">
+                <script type="text/javascript">
+                if (sforce.console.isInConsole()) {
+                    // First find the ID of the primary tab to put the new subtab in
+                    sforce.console.openPrimaryTab(null, '{!url}', true, '{!rtName}');
+                    // sforce.console.getEnclosingPrimaryTabId(function(result){
+                    //   sforce.console.openSubtab(result.id,'{!url}',true,'Todos los casos',null);
+                    // });
+                } else {
+                    window.open('{!url}', '_blank');
+                    // window.top.location.href = '{!url}';
+                }
+                </script>
+            </apex:outputText>
+        </apex:outputPanel>
+        <!-- REQUIRED SLDS WRAPPER -->
+        <div class="slds">
+            <!-- PRIMARY CONTENT WRAPPER -->
+            <apex:outputPanel id="tabsContainer" layout="block">
+                <apex:form >
+                    <div class="slds-context-bar">
+                        <nav class="slds-context-bar__secondary" role="navigation">
+                            <ul class="slds-grid">
+
+                                <apex:repeat value="{!mapTab}" var="tab">
+                                <li class="slds-context-bar__item {!If(tab_selected==tab ,'slds-is-active','') } ">
+                                    <apex:commandLink action="{!changeTab}" reRender="tabsContainer,tableData" styleClass="slds-context-bar__label-action">
+                                        <span class="slds-truncate" title="{!mapTab[tab]}">{!mapTab[tab]}</span>
+                                        <apex:param name="tabName" value="{!tab}" assignTo="{!tab_selected}"/>
+                                        <!-- <apex:param value="{!tab}" assignTo="{!tabWrapperSelec}"/> -->
+                                    </apex:commandLink>
+                                </li>
+                                </apex:repeat>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                    <article class="slds-card">
+                        <div class="slds-card__header slds-grid card-header-custom">
+                            <div class="slds-col">
+                                <apex:outputPanel id="pagination" layout="block">
+                                <div class="slds-button-group" role="group">
+                                    <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!Beginning}" title="Beginning" value="<<" disabled="{!disablePrevious}" reRender="tableData,pagination"/>
+                                    <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!Previous}" title="Previous" value="<" disabled="{!disablePrevious}" reRender="tableData,pagination"/>       
+                                    <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!Next}" title="Next" value=">" disabled="{!disableNext}" reRender="tableData,pagination"/>
+                                    <apex:commandButton styleClass="slds-button slds-button_neutral" action="{!End}" title="End" value=">>" disabled="{!disableNext}" reRender="tableData,pagination"/>
+                                </div>
+                                </apex:outputPanel>
+                            </div>
+                            <div class="slds-col">
+                                <apex:commandButton styleClass="slds-button slds-button_neutral btn-custom" value="Nuevo Caso" action="{!newCase}" rerender="redirectPanel" />
+                            </div>
+                            <div class="slds-col">
+                            </div>
+                        </div>
+                        <div class="slds-card__body">
+                            <!--<apex:variable value="{!lst_case}" var="case"/> -->
+                            <apex:outputPanel id="tableData" layout="block">
+                            
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer table-custom">
+                                <thead>
+                                    <tr class="slds-text-title_caps">
+                                        <th scope="col">
+                                            <div class="slds-truncate" title="{!$ObjectType.Case.fields.CaseNumber.Label}">{!$ObjectType.Case.fields.CaseNumber.Label}</div>
+                                        </th>
+                                        <apex:repeat value="{!lst_fsCase}" var="f">
+                                            <th scope="col">
+                                                <div class="slds-truncate" title="{!f.Label}">{!f.Label}</div>
+                                            </th>
+                                        </apex:repeat>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!lst_case}" var="c">
+                                        <tr>
+                                            <th scope="row">
+                                                <div class="slds-truncate" title="{!c.CaseNumber}">
+                                                    <a onClick="openCaseSubtab('{!c.Id}', '{!c.R1_CAS_FOR_Case_Number__c}')" href="javascript:;">{!c.R1_CAS_FOR_Case_Number__c}</a>
+                                                </div>
+                                            </th>
+                                            <apex:repeat value="{!lst_fsCase}" var="f">
+                                                <th scope="row">
+                                                    <div class="slds-truncate">
+                                                        <apex:outputPanel rendered="{!f.Type == 'reference' && f.FieldPath != 'RecordTypeId' && f == 'ParentId'}">
+                                                            <a onClick="openCaseSubtab('{!c[f]}')" href="javascript:;">{!c[LEFT(f,LEN(f)-2) + caseNumber_Field]}</a>
+                                                        </apex:outputPanel>
+                                                        <apex:outputPanel rendered="{!f.Type == 'reference' && f.FieldPath != 'RecordTypeId' && f != 'ParentId' && contains(f,'__c')}">
+                                                            <a onClick="openCaseSubtab('{!c[f]}')" href="javascript:;">{!c[LEFT(f,LEN(f)-3) + relation_sufix_Field]}</a>
+                                                        </apex:outputPanel>
+                                                        <apex:outputPanel rendered="{!f.Type == 'reference' && f.FieldPath != 'RecordTypeId' && f != 'ParentId' && !contains(f,'__c')}">
+                                                            <a onClick="openCaseSubtab('{!c[f]}')" href="javascript:;">{!c[LEFT(f,LEN(f)-2) + name_Field]}</a>
+                                                        </apex:outputPanel>
+                                                        <apex:outputPanel rendered="{!f.Type != 'reference' || f.FieldPath == 'RecordTypeId'}">
+                                                            <apex:outputfield value="{!c[f]}"></apex:outputfield>
+                                                        </apex:outputPanel>
+                                                    </div>
+                                                </th>
+                                            </apex:repeat>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                        </div>
+                        <footer class="slds-card__footer card-footer-custom slds-grid">
+                            <div class="slds-col">
+                                <apex:commandLink value="Mostrar todos »" action="{!showAll}" rendered="{!todos == true && tam_lst_case > 5}" rerender="redirectPanelLink" />
+                            </div>
+                            <div class="slds-col">
+                            </div>
+                            <div class="slds-col">
+                            </div>
+                        </footer>
+                    </article>
+                </apex:form>
+            </apex:outputPanel>
+            <!-- / PRIMARY CONTENT WRAPPER -->
+        </div>
+        <!-- / REQUIRED SLDS WRAPPER -->
+    </body>
+    </html>
+</apex:page>

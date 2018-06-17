@@ -1,0 +1,2217 @@
+<apex:page id="page" StandardController="R1_Incident__c" extensions="R2_CLS_INC_IncidentInformationController,R2_WT_BaggageHistory_CTRL,R2_WT_BaggageGastos_CTRL" showHeader="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" >
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+<apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+    <meta charset="utf-8" />
+    <apex:includeScript value="/xdomain/xdomain.js"/>
+    <apex:includeScript value="/soap/ajax/41.0/connection.js"/>
+    <apex:includeScript value="/soap/ajax/41.0/apex.js"/>
+    <apex:includeScript value="/support/console/41.0/integration.js"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"/>
+
+<!-- Para cuando llame a todo mi JS con el static resource:
+    <apex:includeScript value="{!URLFOR($Resource.js, 'worldTracer.js')}"/>
+ -->
+    <style>
+        
+        fieldset.slds-form-element {
+        border-bottom: 1px dotted #a8b7c7;
+        
+      }
+      
+      div.slds-form{
+        margin: 0em 0em 0em 0em;
+        padding: 0em 0em 0em 0em;
+      }
+      /*table, th, td {
+    border: 1px solid black;
+    }*/
+
+    th, td {
+        padding: 10px;
+    }
+      .iberia_lightning_resource hr {
+        margin-bottom: 1rem;
+        margin-top: 0.5rem;
+      }
+
+      #resultado_busqueda_vias{
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+      }
+
+      .italics {
+        font-style: italic;
+      	
+      }
+        
+        .slds-form-element{
+            margin-right: 3.2%;
+            width: 21.8%;
+        }
+        .slds-section__content{
+            margin-left: 3%;
+        }
+        .hidden{
+            display: none;
+        }
+        .open{
+            display: block;
+        }
+        .slds-scope .slds-button--neutral, .slds-scope .slds-button_neutral {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+        .apartadoModal{
+            margin-right: 3.2%;
+            color: blue;
+        }
+        .requiredClass{
+            border-left: 3px solid #E40909;
+            padding-left: 2px;
+        }
+        .hideMyBro{
+            display: none !important;
+            visibility: hidden;
+        }
+        
+        
+        
+        
+        
+        
+        .padded{
+          padding-left: 17px;
+        }
+        .colorCodes{
+          transform: rotate(90deg) translate(87px,84px);
+        }
+        .grid-roh{
+          width: 50%;
+          float: left;
+          display: inline-block;
+        }
+          /* The Modal (background) */
+          .modal {
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+            padding-top: 100px;
+            /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0,0,0);
+            /* Fallback color */
+            background-color: rgba(0,0,0,0.4);
+            /* Black w/ opacity */
+          }
+          /* Modal Content */
+          .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            margin-top: -50px;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+          }
+          .modal-body{
+            width: 100%;
+            word-wrap: break-word;
+          }
+          /* The Close Button */
+          .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+          }
+          .close:focus,
+          .close:hover {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+          }
+          
+
+        
+        .selectedMatch {
+      			background: yellow;
+      		}
+      		.selectedMatch:hover {
+      			background: #CCCC00;
+      		}
+    </style>
+</head>
+<body id="bodyDetail">
+
+    <apex:actionStatus id="loadingStatus">
+        <apex:facet name="start">
+            <apex:outputPanel >
+                <div class="slds-spinner_container slds-is-fixed">
+                    <div role="status" class="slds-spinner slds-spinner_medium">
+                        <span class="slds-assistive-text">Loading</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+            </apex:outputPanel>
+        </apex:facet>
+    </apex:actionStatus>
+
+    <apex:form id="formScript">
+
+    <script id="js_scripts" type="text/javascript">
+
+    /*---------------------------------------------------------------------------------------------------------------------
+    Author:         Alberto Puerto Collado
+    Company:        Accenture
+    Description:    all javascript methods
+    IN:
+    OUT:
+
+    History:
+     <Date>                     <Author>                         <Change Description>
+    10/11/2017             Alberto Puerto Collado                  Initial Version
+    27/12/2017             Alberto Puerto Collado                  "Final" Version
+    ----------------------------------------------------------------------------------------------------------------------*/
+    function hideSection(htmlSection, svg){
+        console.log(htmlSection.id);
+        console.log(svg.id);
+        var element = document.getElementById(htmlSection.id);
+        var svgElement = document.getElementById(svg.id);
+        if (element.classList.contains("slds-is-open")) {
+            element.classList.remove("slds-is-open");
+            svgElement.innerHTML="<use xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#right')}\" />";
+        } else {
+            element.classList.add("slds-is-open");
+            svgElement.innerHTML="<use xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}\" />";
+        }
+    }
+    /*function toggleMenu(){
+        var menuId = document.getElementById("menu");
+        console.log(menuId);
+        if (menuId.classList.contains("hidden")) {
+            menuId.classList.remove("hidden");
+            menuId.classList.add("open");
+        } else {
+            menuId.classList.add("hidden");
+            menuId.classList.remove("open");
+        }
+    }*/
+/*
+     $j = jQuery.noConflict();
+     $j(document).ready(function() {
+     $j( document.getElementById('page1:formScript:pg1:testSample')).click(function(){
+         alert('Bingo');
+         });
+     });
+*/
+    window.onload = function(){
+        var stringWarning = '';
+        // document.getElementById('page:formButtons:LookupCase_lkwgt').style.visibility = ‘hidden’;
+        // document.getElementById('LookupCase').disabled=true;
+
+    }
+    // $(document).ready(function(){
+    //     $ = jQuery.noConflict();
+    //     $("[id$=LookupCase]").hide();
+    // });
+
+    function abre_PXF_Message_js(){
+        // debugger;
+        console.log('Entra en abre_PXF_Message');
+
+        console.log('##RP## Primary Id: ' + sforce.console.getFocusedPrimaryTabId());
+        console.log('##RP## Subtab Id: ' + sforce.console.getFocusedSubtabId());
+        console.log('##RP## Enclosing tab Id: ' + sforce.console.getEnclosingTabId());
+
+        console.log('##RP## isInConsole: ' + sforce.console.isInConsole());
+
+        //debugger;
+        if (sforce.console.isInConsole()) {
+            function getPrimaryTabId(){
+               sforce.console.getFocusedPrimaryTabId(openSubtab);
+            }
+            var openSubtab = function openSubtab(result) {
+               sforce.console.openSubtab(result.id , '/apex/R2_VF_PXFMessages?id={!incidenciaId}', true,
+               'Telex PXF Message', null);
+            };
+            getPrimaryTabId();
+        }
+        else {
+           window.open('/apex/R2_VF_PXFMessages?id={!incidenciaId}','_blank');
+        }
+         //window.open('/apex/R2_VF_PXFMessage?id','_blank');
+        // if (sforce.console.isInConsole()) { //REVISAR
+        //     var openSubtab = function openSubtab(result) {
+        //        sforce.console.openSubtab(result.id , '/apex/R2_VF_PXFMessages?', true,
+        //        'Telex PXF Message', null);
+        //     };
+        //     //function getPrimaryTabId(){
+        //        sforce.console.getPrimaryTabIds(openSubtab);
+        //     //}
+
+        //     //getPrimaryTabId();
+        // }else {
+        //    window.open('/apex/R2_VF_PXFMessages?id','_blank');
+        // }
+    }
+    function abre_TTY_Message_js(){
+        //window.open('/apex/R2_VF_TTY_Messages?id','_blank');
+        if (sforce.console.isInConsole()) {
+            function getPrimaryTabId(){
+               sforce.console.getFocusedPrimaryTabId(openSubtab);
+            }
+            var openSubtab = function openSubtab(result) {
+               sforce.console.openSubtab(result.id , '/apex/R2_VF_TTY_Messages?id={!incidenciaId}', true,
+               'Telex TTY Message', null);
+            };
+            getPrimaryTabId();
+        }
+        else {
+           window.open('/apex/R2_VF_TTY_Messages?id={!incidenciaId}','_blank');
+        }
+    }
+    function abre_Stations_js(){
+        //window.open('/apex/R2_VF_TTY_Messages?id','_blank');
+        if (sforce.console.isInConsole()) {
+            function getPrimaryTabId(){
+               sforce.console.getFocusedPrimaryTabId(openSubtab);
+            }
+            var openSubtab = function openSubtab(result) {
+               sforce.console.openSubtab(result.id , '/apex/R2_VF_WT_Stations?id={!incidenciaId}', true,
+               'Stations', null);
+            };
+            getPrimaryTabId();
+        }
+        else {
+           window.open('/apex/R2_VF_WT_Stations?id={!incidenciaId}','_blank');
+        }
+    }
+    function reopenDAH_js(){
+     //   callingModal('Actualizando el PIR tras ser reabierto, fase beta sin mostrar el warning',1);
+        // closeMessage();
+        //var resp =
+        console.log('Reabrir --> llamando a controller y actual resp---->'+resp);
+        if(stringWarning == ''){
+            reabrirRCB();
+        }
+        //console.log(`errorResponse---->+${errorResponse}`);
+//descomentar para warnings
+        var resp = '{!errorResponse}';
+        // alert(resp);
+        // console.log('errorResponse---->'+resp);
+        // if(resp == '1'){
+        //     callingModal('Actualizando el PIR tras ser reabierto',1);
+        //     leyendoDAH();
+        // }else{
+        //     callingModal(resp);
+        // }
+
+        //leyendoDAH();
+    }
+    function cambiaEscalaDAH_js(){
+        // debugger;
+        console.log('Cambio escala --> llamando a controller y actual resp---->'+resp);
+        if(stringWarning == ''){
+            reasignarRIB();
+        }      
+        var resp = '{!errorResponse}';
+    }
+    function restablecerRIT_js(){
+        console.log('Convertir --> llamando a controller y actual resp---->'+resp);
+        convertirCFD();
+        var resp = '{!errorResponse}';
+        // callingModal('PIR correctamente convertido', 1);
+    }
+    // function abreConvertido_js(){
+    //     debugger;
+    //     refresVar();
+    //     //var resp = '{!errorResponse}';
+    // }
+
+    function suspendDAH_js(){
+        console.log('Suspender --> llamando a controller y actual resp---->'+resp);
+        suspenderSUS();
+        var resp = '{!errorResponse}';
+    }
+    function informeDAH_js(){
+        // callingModal('Informe: "PARTE DE IRREGULARIDAD DE EQUIPAJE\n\nNUMERO DE REFERENCIA        - MADIB67999/27SEP17/1147GMT\nNOMBRE                      - MANI/\nTITULO/INICIALES            - CMN:TITLE/U/\nGIVEN NAME                  -\nVUELO/FECHA                 - IB3170/13SEP/\nNUMERO DE EQUIPAJES         - 1\nNUMERO DEL BILLETE          - 1256984\nCOLOR/TIPO                  - BN05BWX\nNUMERO ETIQUETA FACTURACION - ON556985/\n\nPOR FAVOR CONSERVE SU BILLETE Y EL COMPROBANTE DEL\nEQUIPAJE. ESTE INFORME NO IMPLICA RECONOCIMIENTO DE\nRESPONSABILIDAD.\n"');
+
+        console.log('Informe --> llamando a controller y actual resp---->'+resp);
+        document.body.style.cursor = 'progress';
+        informePIR();
+        var resp = '{!errorResponse}';
+        console.log('{!errorResponse}');
+        // modalAF();
+        // console.log('llamando a controller y actual resp---->'+resp);
+        // ();
+    }
+    function informeMuestra(){
+        var resp = '{!errorResponse}';
+        console.log('{!errorResponse}');
+        modalAF();
+        document.body.style.cursor = 'auto';
+    }
+    function closeDAH_js(){
+        console.log('Cerrar --> llamando a controller y actual resp---->'+resp);
+        document.body.style.cursor = 'progress';
+        cerrarCAH();
+        var resp = '{!errorResponse}';
+        //leyendoDAH();
+    }
+    function modifyDAH_js(){
+        // callingModal('Enviando datos a WorldTracer y actualizando el PIR',1);
+        console.log('Modificar --> llamando a controller y actual resp---->'+resp);
+        document.body.style.cursor = 'progress';
+
+        // callingModal('Conectando con WorldTracer',1);
+        modificarAAH();
+        var resp = '{!errorResponse}';        
+    }
+    // function convertirDeterioro_js(){
+    //     convertDeterioro();
+    // }
+    function abreDeterioro_js(){
+        if ('{!errorResponse}' == '1'){
+            if (sforce.console.isInConsole()) {
+                sforce.console.openPrimaryTab(null, '/{!newId}', true);
+            }
+            else{
+                window.top.location.href = '/' + id;
+            }
+        }
+        else {
+            callingModal('{!errorResponse}')
+        }
+        
+    }
+    function refreshDAH_js(){
+        // debugger;
+        if('{!errorResponse}' == '1'){
+            callingModal('Actualizando el PIR con WorldTracer',1);
+            leyendoDAH();
+        // }else if('{!errorResponse}' == '2'){
+        //     window.parent.location.reload();
+        }else{
+            modalAF();
+            //callingModal('{!errorResponse}');
+        }
+        // callingModal('Espere para visualizar los datos actualizados por favor', 1);
+        // leyendoDAH();
+        //location.reload();
+    }
+    function validaReabrir(){
+        console.log('validaReabrir ');
+        // debugger;
+        var station = document.getElementById('{! $Component.page.formButtons.nuevaStationRea}').value;
+        // var airline = document.getElementById('nuevaAirlineCE').value;
+        var airline = document.getElementById('{! $Component.page.formButtons.nuevaAirlineRea}').value;
+        console.log('station + airline ' + station + airline);
+        var valStat = validaStation(station);
+        var valAir = validaAirline(airline);
+        console.log('validaciones stat/air: ' + valStat + valAir);
+        // var stringWarning = '';
+        stringWarning = '';
+
+        if(!valStat){
+            stringWarning += 'ESTACIÓN Formato incorrecto ('+ station + ') regla a seguir: [A-Z]{3,4}<br/>';
+        }
+        if(!valAir){
+            stringWarning += 'AEROLÍNEA Formato incorrecto ('+ airline + ') regla a seguir: [A-Z]{2,3}';
+        }
+        if(stringWarning != ''){
+            //alert(stringWarning);
+            helper_displayMessage(stringWarning, '{! $Component.page.formButtons.botonesReabrir}', 'warningRE');
+            return false;
+        }
+    }
+    function validaCambiaEscala(){
+        console.log('validaCambiaEscala ');
+        // debugger;
+        var station = document.getElementById('{! $Component.page.formButtons.nuevaStationCE}').value;
+        // var airline = document.getElementById('nuevaAirlineCE').value;
+        var airline = document.getElementById('{! $Component.page.formButtons.nuevaAirlineCE}').value;
+        console.log('station + airline ' + station + airline);
+        var valStat = validaStation(station);
+        var valAir = validaAirline(airline);
+        console.log('validaciones stat/air: ' + valStat + valAir);
+        // var stringWarning = '';
+        stringWarning = '';
+
+        if(!valStat){
+            stringWarning += 'ESTACIÓN Formato incorrecto ('+ station + ') regla a seguir: [A-Z]{3,4}<br/>';
+        }
+        if(!valAir){
+            stringWarning += 'AEROLÍNEA Formato incorrecto ('+ airline + ') regla a seguir: [A-Z]{2,3}|[A-Z]{2}|[0-9][A-Z]|[A-Z][0-9]';
+        }
+        if(stringWarning != ''){
+            //alert(stringWarning);
+            helper_displayMessage(stringWarning, '{! $Component.page.formButtons.botonesCambiarEscala}', 'warningCE');
+            return false;
+        }
+        console.log('stringWarning ' + stringWarning);
+    }
+    function validaStation(station){
+        // debugger;
+        console.log('validaStation '+ station);
+        var regExpStation = new RegExp("[A-Z]{3,4}");
+        var resultado = false;
+        if(regExpStation.test(station)){
+            resultado = true;
+        } 
+        return resultado;
+    }
+    function validaAirline(airline){
+        // debugger;
+        console.log('validaAirline '+ airline);
+        var regExpAirline = new RegExp("[A-Z]{2,3}|[A-Z]{2}|[0-9][A-Z]|[A-Z][0-9]");//new RegExp("[A-Z]{2,3}");
+
+        var resultado = false;
+        if(regExpAirline.test(airline)){
+            resultado = true;
+        }
+        return resultado;
+    }
+    function helper_displayMessage(aux, contenedor, divId) { 
+        //debugger;
+        console.log('helper con aux '+ aux + ' y contenedor:' + contenedor);
+
+        var aviso = document.createElement('div');
+        aviso.id = divId;//'avisoJS';
+        aviso.innerHTML = aux;
+        aviso.style.color = 'red';
+        aviso.style.textAlign = 'center';
+        var existe = document.getElementById(divId);//'avisoJS');
+        if(existe){
+            existe.innerHTML = aux;
+            setTimeout(function(){existe.innerHTML = ''}, 5000); 
+        }else{
+            document.getElementById(contenedor).appendChild(aviso); 
+            setTimeout(function(){aviso.innerHTML = ''}, 5000); 
+        }                
+    }
+    /*---------------------------------------------------------------------------------------------------------------------
+    Author:         Alberto Puerto Collado
+    Company:        Accenture
+    Description:    Open modal window with personal customization
+
+    IN:             String - Sentences to display as "Header"
+                    Tipo -  1 -> Loader Gif
+                            2 -> Display table
+    OUT:
+
+    History:
+     <Date>                     <Author>                               <Change Description>
+    14/11/2017              Alberto Puerto Collado                   Initial Version
+    23/01/2018              Alberto Puerto Collado                   Added functionality for display tables
+    22/02/2018              Alberto Puerto Collado                   Added put new file and buttons cancel/confirm to add new row on MR and modify pir
+    ----------------------------------------------------------------------------------------------------------------------*/
+     function callingModal(string, tipo, metodo){
+        var text = string;
+        //sforce.debug.trace=true;
+
+        //_************CREATING MODAL PR:***************
+        //HTML: Creating ELEMENTS
+        var wrapper = document.createElement("div");
+        wrapper.id = "Wrapper";
+        wrapper.addEventListener("click", closeModal, false);
+        var div = document.createElement("div");
+        div.id = "modal_custom";
+        var wrapperTexto = document.createElement("div");
+        wrapperTexto.id = "Texto_Det_Passenger";
+        var wrap_Variable = document.createElement("div");
+        wrap_Variable.id = "Datos_Recibidos_PR";
+        var title = document.createElement("h1");
+        if(tipo != 2){
+            var titText = document.createTextNode("Conectando con WorldTracer:");
+        }else{
+            var titText = document.createTextNode("Listado de " + metodo + ":");
+        }
+        
+        var parraf = document.createElement("pre"); //pre instead p (preformat text)
+        //Tipo == 1 -> loading gif
+        if(tipo == 1){
+            var divSpinner = document.createElement("div");
+            divSpinner.id = "divSpinner";
+            divSpinner.className = "slds-spinner slds-spinner_medium";
+            divSpinner.position = "fixed";
+            var spanSpin = document.createElement("span");
+            spanSpin.id = "spanSpin";
+            spanSpin.className ="slds-assistive-text";
+            var spanSpinTextin = document.createTextNode("Conectando con WorldTracer");
+            spanSpin.appendChild(spanSpinTextin);
+            var aSpin = document.createElement("div");
+            aSpin.id = "aSpin";
+            aSpin.className = "slds-spinner__dot-a";
+            var bSpin = document.createElement("div");
+            bSpin.id = "bSpin";
+            bSpin.className = "slds-spinner__dot-b";
+            divSpinner.appendChild(spanSpin);
+            divSpinner.appendChild(aSpin);
+            divSpinner.appendChild(bSpin);
+            div.appendChild(divSpinner);
+        }
+
+
+        var contenido = document.createTextNode(text);
+
+        var boton = document.createElement("button");
+        boton.style.id= "Exit_button";
+        boton.innerHTML= "Cerrar";
+        boton.addEventListener("click", closeModal, false);
+
+        //DOM: structure
+        div.appendChild(wrapperTexto);
+        wrapperTexto.appendChild(title);
+        wrapperTexto.appendChild(wrap_Variable);
+        wrap_Variable.appendChild(parraf);
+        wrapperTexto.appendChild(boton);
+        title.appendChild(titText);
+        parraf.appendChild(contenido);
+
+        //Tipo == 2 -> table - primero MG y de ahí sumamos
+        if(tipo == 2){
+            var table = '';
+            var newMR = '';
+            switch(metodo) {
+                case 'MG':
+                    table = generate_table('MG');
+                    break;
+                case 'MR':
+                    table = generate_table('MR');
+                    newMR = generate_newMRrow('MR');
+                    break;
+                case 'FF':
+                    table = generate_table('FF'); 
+                    newMR = generate_newMRrow('FF');             
+                    break;
+                case 'UC':
+                    table = generate_table('UC');
+                    newMR = generate_newMRrow('UC');
+                    break;
+                case 'DY':
+                    table = generate_table('DY');
+                    break;
+                case 'DS':
+                    table = generate_table('DS');
+                    break;
+                case 'IR':
+                    table = generate_table('IR');
+                    break;
+                case 'CR':
+                    table = generate_table('CR');
+                    break;
+                default:
+                    table = null;
+            }
+            // if(metodo == 'MG'){
+            //     var table = generate_table('MG');
+            // }  
+            if(newMR != ''){
+                parraf.appendChild(newMR); 
+            }   
+            // parraf.appendChild(newMR); 
+            parraf.appendChild(table);                   
+//{   ! JSENCODE(errorResponse lista o lo que sea) }
+        }
+
+
+        //CSS
+        wrapper.style.position= "fixed";
+        wrapper.style.zIndex= "8888";
+        wrapper.style.background= "black";
+        wrapper.style.opacity= "0.5";
+        wrapper.style.height= "100%"; //"100%" - vh
+        wrapper.style.width= "100%";
+
+        div.style.position= "fixed";
+        div.style.boxSizing = "border-box";
+        div.style.border= "2px solid grey";
+        div.style.zIndex= "9999";
+        div.style.background= "white";
+        div.style.minHeight= "40%";//"20%";
+        div.style.maxHeight= "40vh";//"80%"; vh
+        div.style.minWidth= "50%";
+        div.style.maxWidth= "80%";
+        div.style.align= "center";
+        div.style.textAlign= "center";
+        div.style.fontSize= "1.3rem";
+        //div.style.overflow= "auto"; //better only scroll on wrap_Variable
+        div.style.margin= "auto";
+        div.style.left= "50%";
+        div.style.top= "50%"; //15%
+        //transform for all browsers
+        div.style.webkitTransform = "translate(-50%, -50%)";
+        div.style.webkitTransform = "translate(-50%, -50%)";
+        div.style.MozTransform = "translate(-50%, -50%)";
+        div.style.msTransform = "translate(-50%, -50%)";
+        div.style.OTransform = "translate(-50%, -50%)";
+        div.style.transform = "translate(-50%, -50%)";
+
+        wrapperTexto.style.padding= "0.6em";
+
+        wrap_Variable.style.height= "70vh";
+        wrap_Variable.style.overflow= "auto";
+        wrap_Variable.marginBottom= "5vh";
+
+        parraf.style.textAlign= "left";
+        parraf.style.fontSize= "1.1rem";
+
+        boton.style.position= "fixed";
+        boton.style.bottom= "0";
+        boton.style.align= "center";
+        boton.style.fontSize= "1rem";
+        //transform for all browsers
+        boton.style.webkitTransform = "translate(-50%, -10%)";
+        boton.style.webkitTransform = "translate(-50%, -10%)";
+        boton.style.MozTransform = "translate(-50%, -10%)";
+        boton.style.msTransform = "translate(-50%, -10%)";
+        boton.style.OTransform = "translate(-50%, -10%)";
+        boton.style.transform = "translate(-50%, -10%)";
+
+        //DOM: Insert
+        if(!document.getElementById("modal_custom")){
+            document.body.insertBefore(wrapper, document.body.firstChild);
+            document.body.insertBefore(div, document.body.firstChild);
+        }
+        //Auxiliary function to close modal called from two addEventListners (wrapper & boton)
+        function closeModal() {
+            document.body.removeChild(wrapper);
+            document.body.removeChild(div);
+        }
+    } 
+    function generate_table(metodo) { 
+    // debugger;  
+      // creates a <table> element and a <tbody> element
+      var table = document.createElement("table");
+      table.style = "slds-table slds-table_bordered slds-table_cell-buffer";
+      table.cellpadding = "3";
+      var tblBody = document.createElement("tbody");
+      tblBody.style = "slds-text-title_caps";
+
+
+      // let map = new Map();
+      // map.set( 'Fecha', 'CreatedDate');
+      // map.set( 'Tipo', 'RecordType.DeveloperName');
+      // map.set( 'Mensaje', 'R2_MG_ATXT_Message__c');
+      // map.set( 'Telex (TX)', 'R2_MG_TXT_TX__c');
+      // map.set( '(XF)', 'R2_MG_TXT_XF__c');
+
+/*
+EJEMPLO de un registro serializado:
+{
+  "attributes": {
+    "type": "R2_MG_Message__c",
+    "url": "/services/data/v41.0/sobjects/R2_MG_Message__c/a0z0E000002wgi6QAA"
+  },
+  "Id": "a0z0E000002wgi6QAA",
+  "Name": "TLX-20180116-003001",
+  "R2_MG_ATXT_Message__c": "extended version pxf",
+  "R2_MG_PKL_Type__c": "Saliente",
+  "R2_MG_TXT_TX__c": "FRAKKQQ",
+  "R2_MG_TXT_XF__c": "ATLZZAP/HDQZZAA",
+  "R2_MG_LOO_Incident__c": "a0g0E000002sYkmQAE",
+  "R2_MG_TXT_Copy_1__c": "AHL MADIB5353",
+  "R2_MG_TXT_Copy_2__c": "OHD MIAIB2342",
+  "R2_MG_TXT_Copy_3__c": "OHD BCNIB4345",
+  "R2_MG_TXT_Copy_4__c": "AHL BILIB5432",
+  "RecordTypeId": "0120E0000005tQ5QAI",
+  "CreatedDate": "2018-01-16T17:30:08.000+0000",
+  "RecordType": {
+    "attributes": {
+      "type": "RecordType",
+      "url": "/services/data/v41.0/sobjects/RecordType/0120E0000005tQ5QAI"
+    },
+    "DeveloperName": "R2_PXF",
+    "Id": "0120E0000005tQ5QAI"
+  }
+}
+*/
+      var lista = [];
+      lista = '{!auxiliar }';
+      console.log('::lista auxiliar en JS:: ' + lista);
+      // var listaJS = [];
+
+        var lstObjetosJSON = eval("(function(){return " + lista + ";})()");//parse no va fino
+        console.log('::lstObjetosJSON:: ' + lstObjetosJSON);
+        // console.log('::  lstObjetosJSON 0 .Name:: ' + lstObjetosJSON[0].Name);
+        // console.log('::  lstObjetosJSON 0 .R2_MG_ATXT_Message__c:: ' + lstObjetosJSON[0].R2_MG_ATXT_Message__c);
+
+        filas = lstObjetosJSON.length;
+
+    //prefiero switch en lugar de if else para tener independientes cada valor aunque por el momento se repitan en varios las cabeceras
+    switch(metodo) {
+        case 'MG':
+            // var listaHeader = ['CreatedDate', 'RecordType.DeveloperName', 'R2_MG_ATXT_Message__c', 'R2_MG_TXT_TX__c', 'R2_MG_TXT_XF__c'];
+            var listaHeader = ['Nº','Fecha', 'Tipo', 'Mensaje','Contenido del mensaje', 'Telex (TX)', 'Mensaje XF'];
+            break;
+        case 'MR':
+            var listaHeader = ['Nº', 'Fecha','Contenido'];
+            break;
+        case 'FF':
+            var listaHeader = ['Nº', 'Fecha','Contenido'];
+            break;
+        case 'UC':
+            var listaHeader = ['Nº', 'Fecha','Contenido'];
+            break;
+        case 'DY':
+            var listaHeader = ['Nº', 'Fecha','Contenido'];
+            break;
+        case 'DS':
+            var listaHeader = ['Nº', 'Fecha','Contenido'];
+            break;
+        case 'IR':
+            var listaHeader = ['Nº', 'Fecha','Contenido'];
+            break;
+        case 'CR':
+            var listaHeader = ['Nº', 'Fecha','Contenido'];
+            break;
+        default:
+        
+    }
+        filas = lstObjetosJSON.length;
+        columnas = listaHeader.length;
+
+     //header
+    for (var h = 0; h < columnas; h++) {
+            var thColumna = document.createElement("th");
+            var thColText = document.createTextNode(listaHeader[h] );
+            thColumna.appendChild(thColText);
+            tblBody.appendChild(thColumna);
+    }
+    // if(filas < 1){
+    //     var divNoData = document.createElement("tr");
+    //     var divNDtext = document.createTextNode('No hay datos ('+ metodo +') para el PIR seleccionado' );
+    //     return table;
+    // }
+      // creating all cells 
+      for (var i = 0; i < filas; i++) {
+        //un row de título - resumen -> pensar
+         // var thColumna = document.createElement("th");
+         // var thColText = document.createTextNode("Título" + i);
+         // thColumna.appendChild(thColText);
+         // tblBody.appendChild(thColumna);
+
+        // creates a table row
+        var row = document.createElement("tr");
+        row.style = "slds-truncate";
+     
+        // for (var j = 0; j < columnas; j++) {
+        //   // Create a <td> element and a text node, make the text
+        //   // node the contents of the <td>, and put the <td> at
+        //   // the end of the table row
+        //   var cell = document.createElement("td");
+        //   var cellText = document.createTextNode("celda "+i+", columna "+lista[j]);
+        //   cell.appendChild(cellText);
+        //   row.appendChild(cell); 
+        // }
+        switch(metodo) {
+        case 'MG':
+            //1 Número
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(i + 1);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //2 Fecha
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].CreatedDate);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //3 Tipo
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].R2_MG_PKL_Type__c);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //4 Tipo recordtype
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].RecordType.DeveloperName);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //5 Mensaje
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].R2_MG_ATXT_Message__c);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //6 TX
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].R2_MG_TXT_TX__c);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //7 XF
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].R2_MG_TXT_XF__c);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            break;
+        case 'MR':
+            //1 Número
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(i + 1);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //2 Fecha
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].CreatedDate);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //3 R2_ADI_ATXTL_MR_Match__c
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].R2_ADI_ATXTL_MR_Match__c);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            break;
+        case 'FF':
+            //1 Número
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(i + 1);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //2 Fecha
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].CreatedDate);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //3 R2_ADI_TXT_FF_Observation__c
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].R2_ADI_TXT_FF_Observation__c);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            break;
+        case 'UC':
+            //1 Número
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(i + 1);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //2 Fecha
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].CreatedDate);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //3 R2_ADI_TXT_UC_User_Comment__c
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].R2_ADI_TXT_UC_User_Comment__c);
+            cell.appendChild(cellText);
+            row.appendChild(cell);
+            break;
+        case 'DY':
+            //1 Número
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(i + 1);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //2 Fecha
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].CreatedDate);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //3 R2_ADI_ATXTL_DY_Delivery_Info__c
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].R2_ADI_ATXTL_DY_Delivery_Info__c);
+            cell.appendChild(cellText);
+            row.appendChild(cell);
+            break;
+        case 'DS':
+            //1 Número
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(i + 1);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //2 Fecha
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].CreatedDate);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //3 R2_ADI_ATXTL_DS_Delivery_service__c
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].R2_ADI_ATXTL_DS_Delivery_service__c);
+            cell.appendChild(cellText);
+            row.appendChild(cell);
+            break;
+        case 'IR':
+            //1 Número
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(i + 1);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //2 Fecha
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].CreatedDate);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //3 R2_ADI_ATXTL_Internet_Info__c
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].R2_ADI_ATXTL_Internet_Info__c);
+            cell.appendChild(cellText);
+            row.appendChild(cell);
+            break;
+        case 'CR':
+            //1 Número
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(i + 1);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //2 Fecha
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].CreatedDate);
+            cell.appendChild(cellText);
+            row.appendChild(cell); 
+            //3 R2_ADI_TXT_CR_Remarks_Cost__c
+            var cell = document.createElement("td");
+            var cellText = document.createTextNode(lstObjetosJSON[i].R2_ADI_TXT_CR_Remarks_Cost__c);
+            cell.appendChild(cellText);
+            row.appendChild(cell);
+            break;
+        default:        
+        }
+        
+        tblBody.appendChild(row);
+      }
+      table.appendChild(tblBody);
+
+      table.setAttribute("border", "2");
+
+      return table;
+    }
+    function generate_newMRrow(tipo){
+        var wrapperNewRow  = document.createElement("div");
+        wrapperNewRow.id = "divNewRowMR";
+        wrapperNewRow.style = "{!if(boolEnabled, 'display:block','display:none')}";//" slds-table slds-table_bordered slds-table_cell-buffer";
+        wrapperNewRow.style.textAlign = 'center';
+            
+        var divNewContenido = document.createElement("div");
+        divNewContenido.id = "divLabelBotonMR";
+
+        var inputField = document.createElement("textarea");//input
+        inputField.id = "inputNewRow";
+        // inputField.type = "text";
+        inputField.style = "slds-textarea";
+
+        var metodo = '';
+
+        // inputField.value = "{!valorNuevoMR}";
+        switch(tipo) {
+                case 'MG':
+                    
+                    break;
+                case 'MR':
+                    inputField.value = "{!valorNuevoMR}";
+                    metodo = 'MatchInfo';
+                    break;
+                case 'FF':
+                    inputField.value = "{!valorNuevoFF}";  
+                    metodo = 'Observaciones (FF)';         
+                    break;
+                case 'UC':
+                    inputField.value = "{!valorNuevoUC}";
+                    metodo = 'Comentarios de Usuario (UC)';
+                    break;
+                case 'DY':
+                    
+                    break;
+                case 'DS':
+                    
+                    break;
+                case 'IR':
+                    
+                    break;
+                case 'CR':
+                    
+                    break;
+                default:
+                    table = null;
+            }
+
+        inputField.cols = '100';
+        inputField.rows = '3';
+       
+            
+        var labelElement = document.createElement("div");
+        var labelText = document.createTextNode('Creación de nuevo registro en '+metodo+': ');
+        labelElement.appendChild(labelText);
+        labelElement.style = "slds-form-element__label";
+        labelElement.style.color = 'blue';
+
+        var warningRow = document.createElement("div");
+        
+        divNewContenido.appendChild(labelElement);
+        divNewContenido.appendChild(inputField);
+        divNewContenido.appendChild(warningRow);
+
+        var divButtons = document.createElement("div");
+        divButtons.id = "divButtons";
+               
+        // var buttonCancel = document.createElement("button");
+        // buttonCancel.style.id= "Exit_button";
+        // buttonCancel.innerHTML= "Cerrar";
+        // buttonCancel.addEventListener("click", closeAddRow, false);
+        var buttonModify = document.createElement("button");
+        buttonModify.style.id= "AddRow_button";
+        buttonModify.innerHTML= "Añadir registro";
+
+        var divButtons = document.createElement("div");
+        divButtons.id = "divResponseRow";       
+
+        // divButtons.appendChild(buttonCancel);
+        divButtons.appendChild(buttonModify);
+
+        wrapperNewRow.appendChild(divNewContenido);
+        wrapperNewRow.appendChild(divButtons);
+
+        buttonModify.addEventListener("click", 
+                                    function(){var param = document.getElementById("inputNewRow").value; 
+                                                console.log('envío de param: ' + param);
+                                                switch(tipo) {
+                                                    case 'MG':
+                                                        
+                                                        break;
+                                                    case 'MR':
+                                                        mrROWajax(param);
+                                                        break;
+                                                    case 'FF':
+                                                        ffROWajax(param);        
+                                                        break;
+                                                    case 'UC':
+                                                        ucROWajax(param);
+                                                        break;
+                                                    case 'DY':
+                                                        
+                                                        break;
+                                                    case 'DS':
+                                                    
+                                                    break;
+                                                    case 'IR':
+                                                        
+                                                    break;
+                                                    case 'CR':
+                                                        
+                                                        break;
+                                                    default:
+                                                }
+                                                buttonModify.innerHTML = 'Editar registro';
+                                                warningRow.innerHTML = 'Registro '+tipo+' guardado para enviar a WorldTracer';
+                                                warningRow.style.color = 'green';
+                                                warningRow.style.fontSize = '0.8rem';
+                                                setTimeout(function(){warningRow.innerHTML = ''}, 3000);  
+                                            }, 
+                                    false);
+
+        return wrapperNewRow;
+        // function closeAddRow(){
+        //     divNewContenido.innerHTML = 'oleee';
+        // }       
+    }
+    function rowGuardado(){
+        console.log('registro añadido'); 
+    }
+    function displayMR(){
+        callingModal('Match (MR)', 2, 'MR');
+    }
+    function displayMG(){
+        callingModal('Mensajes (MG)', 2, 'MG');
+    } 
+    function displayCR(){
+        callingModal('Coste daños (CR)', 2, 'CR');
+    } 
+    function displayFF(){
+        callingModal('Observaciones (FF)', 2, 'FF');
+    } 
+    function displayUC(){
+        callingModal('Comentarios de usuario (UC)', 2, 'UC');
+    }
+    function displayDY(){
+        callingModal('Servicio de Entrega (DY)', 2, 'DY');
+    } 
+    function displayDS(){
+        callingModal('Servicio de Entrega (DS)', 2, 'DS');
+    } 
+    function displayIR(){
+        callingModal('Comentarios del Pasajero (IR)', 2, 'IR');
+    } 
+    function abreCreacionCaso(){
+     	if(sforce.console.isInConsole()){
+            sforce.console.openPrimaryTab(null, '/500/e?RecordType={!$Label.R2_LB_RT_Expediente}&ent=Case&cas5=Demora&{!$Label.R2_LB_FI_LOO_PIR}={!incidencia.Name}', true);
+        }else{
+           window.open('/500/e?RecordType={!$Label.R2_LB_RT_Expediente}&ent=Case&cas5=Demora&{!$Label.R2_LB_FI_LOO_PIR}={!incidencia.Name}','_blank');
+        }
+    }   
+    </script>
+        <!-- <apex:outputText value="{!errorResponse}"></apex:outputText> -->
+        <!-- <apex:outputText value="{! deliveryInformationDY}" />
+ -->
+
+        <apex:actionFunction name="leyendoDAH" action="{!refreshDAH}" status="loadingStatus"/>
+        <apex:actionFunction name="reabrirRCB" action="{!reopenRCB}" reRender="formScript, formImg, form" oncomplete="refreshDAH_js();" status="loadingStatus"/> <!-- oncomplete="callingModal('{!errorResponse}');" -->
+        <apex:actionFunction name="cerrarCAH" action="{!closeCAH}" reRender="formScript, formImg, form" oncomplete="refreshDAH_js();" status="loadingStatus"/>
+        <apex:actionFunction name="reasignarRIB" action="{!reassignRIB}" reRender="formScript, formImg, form" oncomplete="refreshDAH_js();" status="loadingStatus"/>
+        <apex:actionFunction name="suspenderSUS" action="{!suspendSUS}" reRender="formScript, formImg, form" oncomplete="refreshDAH_js();" status="loadingStatus"/>
+        <apex:actionFunction name="convertirCFD" action="{!reinstateCFD}" reRender="formScript, formImg, form" oncomplete="refreshDAH_js();" status="loadingStatus"/>
+        <apex:actionFunction name="informePIR" action="{!informePIR}" reRender="formScript, formImg, form" oncomplete="informeMuestra()" status="loadingStatus"/>
+        <apex:actionFunction name="modificarAAH" action="{!modifyDAH}" reRender="formScript, formImg, form" oncomplete="refreshDAH_js();" status="loadingStatus"/>
+        <!-- <apex:actionFunction name="convertDeterioro" action="{!delayToDamage}" reRender="formScript, formImg, form" oncomplete="abreDeterioro_js();"/> -->
+        <!-- <apex:actionFunction name="refresVar" action="" reRender="formScript" oncomplete="refreshDAH_js();"/>  -->
+
+        <apex:actionFunction name="modalAF" oncomplete="callingModal('{! errorResponse }');" reRender="formScript, formImg, form"/>
+<!--         <apex:actionFunction name="readNewValues" action="{!readNewVal}" reRender="false"/>  
+'{! JSENCODE(informeCrear) }'-->
+        <apex:actionFunction name="" action="{!modifyDAH}" reRender="formScript, formImg, form" oncomplete="refreshDAH_js();"/>
+<!-- NUEVOS MODALES: -->
+        <apex:actionFunction name="leeMR" action="{!getMR}" reRender="formScript, formImg, form" oncomplete="displayMR();"/>
+        <apex:actionFunction name="leeMG" action="{!getMG}" reRender="formScript, formImg, form" oncomplete="displayMG();"/>
+        <apex:actionFunction name="leeCR" action="{!getCR}" reRender="formScript, formImg, form" oncomplete="displayCR();"/>
+        <apex:actionFunction name="leeFF" action="{!getFF}" reRender="formScript, formImg, form" oncomplete="displayFF();"/> 
+        <apex:actionFunction name="leeUC" action="{!getUC}" reRender="formScript, formImg, form" oncomplete="displayUC();"/>
+        <apex:actionFunction name="leeDY" action="{!getDY}" reRender="formScript, formImg, form" oncomplete="displayDY();"/>
+        <apex:actionFunction name="leeDS" action="{!getDS}" reRender="formScript, formImg, form" oncomplete="displayDS();"/>
+        <apex:actionFunction name="leeIR" action="{!getIR}" reRender="formScript, formImg, form" oncomplete="displayIR();"/>
+
+        <apex:actionFunction name="mrROWajax" action="{!addRow}" reRender="formScript, formImg, form" oncomplete="rowGuardado();">
+            <apex:param name="param" value="" assignTo="{!valorNuevoMR}"/>
+        </apex:actionFunction>
+        <apex:actionFunction name="ucROWajax" action="{!addRow}" reRender="formScript, formImg, form" oncomplete="rowGuardado();">
+            <apex:param name="param" value="" assignTo="{!valorNuevoUC}"/>
+        </apex:actionFunction>
+        <apex:actionFunction name="ffROWajax" action="{!addRow}" reRender="formScript, formImg, form" oncomplete="rowGuardado();">
+            <apex:param name="param" value="" assignTo="{!valorNuevoFF}"/>
+        </apex:actionFunction>
+
+    </apex:form>
+
+
+
+    <apex:slds />
+    <div id="title" class="slds-scope">
+        <div class="slds-box">
+            {!IncidentHeader} 
+        </div>
+
+        <div class="slds-box">
+            <apex:form id="formButtons">
+
+            <div class="slds-box">
+                <div class="slds-button-group">
+                    <div class="slds-button-group" role="group">
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Cambiar de escala (RIB)" action="{!switchBoolCambiaEscala}" style="" reRender="panelDetalles, panelConfirm">
+                        </apex:commandButton>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Reabrir Incidencia (RCB)" action="{!switchBoolReabrir}" style="" reRender="panelDetalles, panelConfirm">
+                        </apex:commandButton>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Refrescar PIR (DAH)" reRender="false" >
+                            <apex:actionSupport event="oncomplete" action="{!readRefreshDAH}"/>
+                        </apex:commandButton>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Cerrar PIR (CAH)" action="{!switchBoolCloseEnabled}" style="" reRender="panelDetalles, panelConfirm">
+                        </apex:commandButton>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Restablecer PIR (RIT)" oncomplete="restablecerRIT_js()" reRender="false">
+                        </apex:commandButton>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Suspender PIR (SUS)" oncomplete="suspendDAH_js();" reRender="false" >
+                        </apex:commandButton>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Informe PIR (PIR)" oncomplete="informeDAH_js();" reRender="false" >
+                        </apex:commandButton>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Modificar (AAH)" action="{!switchBoolEnabled}" style="" reRender="panelDetalles, panelConfirm, formScript, formImg, form">
+                        </apex:commandButton>                        
+                    </div>
+
+
+                    <div id="station_communication" class="slds-button-group" role="group">
+                        <button id="pxf_buttom" class="slds-button slds-button_neutral" onclick="abre_PXF_Message_js();" >PXF Message</button>
+                        <button id="tty_buttom" class="slds-button slds-button_neutral" onclick="abre_TTY_Message_js();" >TTY Message</button>
+                        <!-- <button id="teletype_buttom" class="slds-button slds-button_neutral" onclick="alert('Este botón desaparecerá, los mensajes entrantes se verán desde la lista relacionada');">DXF</button> -->
+                       <!--  <button id="stationList_buttom" class="slds-button slds-button_neutral" onclick="abre_Stations_js();">Stations</button> -->
+                         <apex:commandButton id="stationList_buttom" styleClass="slds-button slds-button_neutral" value="Stations" onclick="abre_Stations_js();" reRender="false"/> 
+                    </div>
+                    <div id="creaCasoDiv" class="slds-button-group" role="group">
+                       
+                        <apex:commandButton id="creaCasoBoton" styleClass="slds-button slds-button_brand" value="Crear caso" onclick="abreCreacionCaso();" reRender="false"/>
+                       <!--  <apex:commandButton id="pasarADeterioro" styleClass="slds-button slds-button_neutral" value="Convertir en DPR(CFD)" action="{!delayToDamage}" oncomplete="abreDeterioro_js();" reRender="formScript, formImg, form" status="loadingStatus"/>
+                         -->
+                         <apex:commandButton id="pasarADeterioro" styleClass="slds-button slds-button_neutral" value="Convertir en DPR(CFD)" action="{!switchBoolDelayToDam}" reRender="formScript, formImg, form, panelConfirm" />
+               
+                    </div>
+                </div>
+                <apex:outputPanel id="panelConfirm">
+                <!-- DELAYtoDAMAGE SECTION -->
+                    <apex:outputPanel id="botonesDelayToDam" rendered="{!boolDelayToDam}" >
+                        <div style="text-align: center;">
+                            <h1>Conversión de Extravío a Deterioro</h1>
+                            <apex:commandButton styleClass="slds-button slds-button_neutral slds-m-right_xx-small" value="Cancelar" action="{! switchBoolDelayToDam}" reRender="panelDetalles, panelConfirm" style=""  immediate="true" html-novalidate="formnovalidate" oncomplete="return false;"/>
+                            <apex:commandButton styleClass="slds-button slds-button_brand slds-m-left_xx-small" value="Convertir en DPR(CFD)" action="{!delayToDamage}" oncomplete="abreDeterioro_js();" reRender="formScript, formImg, form" style="" status="loadingStatus"/>
+                        </div>
+                    </apex:outputPanel>
+                     <!-- CAMPOS requeridos para DELAYtoDAMAGE -->
+                    <apex:outputPanel id="ConvertirToDamage" rendered="{!boolDelayToDam}" >
+                        <div id="camposVU" style="text-align: center;" class="slds-grid">
+                            <div id="nuevoRL" class="slds-form-element slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 ">               
+                                <label class="slds-form-element__label" for="text-input-id-1">Razón de la pérdida (RL)</label>
+                                <div class="slds-form-element__control">
+                                    <apex:input type="text"  id="nuevoRLinput" styleClass="slds-input" value="{!newRL}" onfocus="this.select();"  style="width:5rem;"/>
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                <!-- CERRAR SECTION -->
+                    <apex:outputPanel id="botonesClose" rendered="{!boolCloseEnabled}" >
+                        <div style="text-align: center;">
+                            <h1>Cerrar PIR</h1>
+                            <apex:commandButton styleClass="slds-button slds-button_neutral slds-m-right_xx-small" value="Cancelar" action="{! switchBoolCloseEnabled}" reRender="panelDetalles, panelConfirm" style=""  immediate="true" html-novalidate="formnovalidate" oncomplete="return false;"/>
+                            <apex:commandButton styleClass="slds-button slds-button_brand slds-m-left_xx-small" value="Cerrar PIR (CAH)" oncomplete="closeDAH_js();" reRender="false" style="" />
+                        </div>
+                    </apex:outputPanel>      
+                <!-- EDITAR SECTION -->
+                    <apex:outputPanel id="botonesEdit" rendered="{! boolEnabled}" >
+                     <!--style="{!if(boolEnabled, '','display:none')}">  rendered="{! boolEnabled}"> -->
+                        <div style="text-align: center;">
+                            <h1>Edición de PIR</h1>
+                            <apex:commandButton styleClass="slds-button slds-button_neutral slds-m-right_xx-small" value="Cancelar" action="{! switchBoolEnabled}" reRender="formScript, formImg, form, panelDetalles, panelConfirm" style="" immediate="true" html-novalidate="formnovalidate"/>
+                            <apex:commandButton styleClass="slds-button slds-button_brand slds-m-left_xx-small" value="Modificar (AAH)" oncomplete="modifyDAH_js();" reRender="false" style="" />
+                        </div>
+                    </apex:outputPanel>
+                        <!-- CAMPOS VUELO Y RUTA AL MODIFICAR POR KO EN PRORRATEOS -->
+                    <apex:outputPanel id="CambiarVueloRuta" rendered="{!boolModifyEnabled}" >
+                        <div id="camposVU" style="text-align: center;" class="slds-grid">
+                            <div id="contieneNuevoVuelo" class="slds-form-element slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 ">               
+                                <label class="slds-form-element__label" for="text-output-id-1">Vuelos actuales</label>
+                                <div class="slds-form-element__control">
+                                    <apex:outputText id="actVuelos" styleClass="slds-output " value="{!actFlight}" />
+                                </div>
+                            </div>
+                            <div id="contienenuevaRuta" class="slds-form-element slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 ">               
+                                <label class="slds-form-element__label" for="text-output-id-1">Rutas actuales</label>
+                                <div class="slds-form-element__control">
+                                    <apex:outputText id="actRutas" styleClass="slds-output" value="{!actRoute}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="camposVU" style="text-align: center;" class="slds-grid">
+                            <div id="contieneNuevoVuelo" class="slds-form-element slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 ">               
+                                <label class="slds-form-element__label" for="text-input-id-1">Nuevos vuelos</label>
+                                <div class="slds-form-element__control">
+                                    <apex:input type="text"  id="nuevosVuelos" styleClass="slds-input " value="{!newFlight}" onfocus="this.select();" />
+                                </div>
+                            </div>
+                            <div id="contienenuevaRuta" class="slds-form-element slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 ">               
+                                <label class="slds-form-element__label" for="text-input-id-1">Nuevas rutas</label>
+                                <div class="slds-form-element__control">
+                                    <apex:input type="text"  id="nuevasRutas" styleClass="slds-input" value="{!newRoute}" onfocus="this.select();"  />
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                <!-- CAMBIAR ESCALA SECTION -->
+                    <apex:outputPanel id="botonesCambiarEscala" rendered="{! boolCambiaEscala}" >
+                        <div style="text-align: center;">
+                            <h1>Cambiar de Escala</h1>
+                            <apex:commandButton styleClass="slds-button slds-button_neutral slds-m-right_xx-small" value="Cancelar" action="{! switchBoolCambiaEscala}" reRender="panelDetalles, panelConfirm" style="" immediate="true" />
+                            <apex:commandButton id="buttonCE" styleClass="slds-button slds-button_brand slds-m-left_xx-small" value="Cambiar de escala (RIB)" onclick="validaCambiaEscala();" oncomplete="cambiaEscalaDAH_js();" reRender="false" />                                    
+                        </div>
+                        <div id="camposCE" style="text-align: center;" class="slds-grid">
+                             <div id="contieneNewStaCE" class="slds-form-element slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 requiredClass">               
+                                <label class="slds-form-element__label" for="text-input-id-1">Nueva Estación</label>
+                                <div class="slds-form-element__control">
+                                    <apex:input type="text"  id="nuevaStationCE" styleClass="slds-input " value="{! newStation}" onfocus="this.select();" />
+                                </div>
+                            </div>
+                            <div id="contieneNewAirCE" class="slds-form-element slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 requiredClass">               
+                                <label class="slds-form-element__label" for="text-input-id-1">Nueva Aerolínea</label>
+                                <div class="slds-form-element__control">
+                                    <apex:input type="text"  id="nuevaAirlineCE" styleClass="slds-input" value="{! newAirline}" onfocus="this.select();"  />
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                <!-- REABRIR INCIDENCIA SECTION -->
+                    <apex:outputPanel id="botonesReabrir" rendered="{! boolReabrir}" >
+                        <div style="text-align: center;">
+                            <h1>Reabrir Incidencia</h1>
+                            <apex:commandButton styleClass="slds-button slds-button_neutral slds-m-right_xx-small" value="Cerrar" action="{! switchBoolReabrir}" reRender="panelDetalles, panelConfirm" style="" />
+                            <apex:commandButton styleClass="slds-button slds-button_brand slds-m-left_xx-small" value="Reabrir Incidencia (RCB)" onclick="validaReabrir();" oncomplete="reopenDAH_js();" reRender="false" />  
+                        </div>
+                        <div style="text-align: center;" class="slds-grid">                    
+                            <div class="slds-form-element slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 requiredClass">               
+                                <label class="slds-form-element__label" for="text-input-id-1">Nueva Estación</label>
+                                <div class="slds-form-element__control">
+                                    <apex:input type="text"  id="nuevaStationRea" styleClass="slds-input " value="{! newStation}" onfocus="this.select();"  />
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 requiredClass">               
+                                <label class="slds-form-element__label" for="text-input-id-1">Nueva Aerolínea</label>
+                                <div class="slds-form-element__control">
+                                    <apex:input type="text"  id="nuevaAirlineRea" styleClass="slds-input" value="{! newAirline}" onfocus="this.select();"  />
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </apex:outputPanel>  
+            </div>
+            
+
+            <apex:outputPanel id="panelDetalles">
+            <div class="slds-box ">
+            
+                <div id="lght_section_1" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_1, svg_section_1);return false;" reRender="false">
+                            <svg id="svg_section_1" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Diario/DRY/">Diario/DRY/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_1">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection1}" var="fieldIndex" id="fieldLoop">
+                                        <!-- <div class="{! if(fieldIndex.required == TRUE, 'slds-form-element requiredClass' , 'slds-form-element' )}" > -->
+                                        <!-- <div class="slds-form-element" > -->
+                                        <div class="{! if(fieldIndex.required == TRUE && (boolCloseEnabled == TRUE || (boolEnabled == TRUE && boolModifyEnabled == FALSE)), 'requiredClass slds-form-element ' , 'slds-form-element' )}" >
+                                            <label class="slds-form-element__label" for="text-input-id-1">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <!-- <input type="text" id="text-input-id-1" class="slds-input" placeholder="{!fieldIndex.value}"/> -->
+                                                 <!--  <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-1" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}"/required="{!fieldIndex.required}" > -->
+                                                <!-- {!fieldIndex.name} - BOLEANCOMENTADO -->
+                                                <!-- Datetime -->
+                                                <apex:inputField value="{!fieldIndex.incident[fieldIndex.Name]}" rendered="{!fieldIndex.type == 'datetime'}" onfocus="this.select();" html-disabled="{!fieldIndex.disabled}" showDatePicker="false" id="text-input-id-datetime" styleClass="slds-input"/>
+                                                <!-- TEXT -->
+                                                <apex:input type="{!IF(CONTAINS(fieldIndex.type, 'date'), 'date', IF(CONTAINS(fieldIndex.type, 'datetime'), 'datetime' ,  IF(CONTAINS(fieldIndex.type, 'tel'), 'tel' ,  IF(CONTAINS(fieldIndex.type, 'number'), 'number' , 'text'))))}" value="{!fieldIndex.value}" id="text-input-id-text" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'text' || fieldIndex.type == 'date' || fieldIndex.type == 'tel' || fieldIndex.type == 'number'}" />
+
+                                                <!-- styleClass="{! if(fieldIndex.required == TRUE, 'slds-form-element requiredClass' , 'slds-form-element' )}" -->
+                                                 <!-- CHEKBOX -->
+                                                <apex:inputCheckbox value="{!fieldIndex.value}" id="text-input-id-chk" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'checkbox'}"/>
+                                                <!-- BUTTON / POPUP --> 
+                                                 <apex:commandButton value="Abrir Detalles del Campo" id="text-input-id-button" styleClass="slds-input"  onfocus="this.select();" rendered="{!fieldIndex.type == 'button'}" onClick="{!fieldIndex.method}(); return false;"/>                                      <!-- PICKLIST -->
+                                                <apex:selectList value="{!fieldIndex.value}" id="text-input-id-pkl" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'picklist'}" size="1">
+                                                    <apex:selectOptions value="{!fieldIndex.items}"/>
+                                                </apex:selectList>
+                                                <!-- LOOKUP -->
+                                                <apex:inputField id="Lookup" value="{!fieldIndex.incident[fieldIndex.Name]}" styleClass="slds-button slds-button_neutral" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'lookup'}" onfocus="this.select();">
+                                                    <apex:actionSupport action="{!getLookupField}" event="onchange">
+                                                        <!--<apex:param name="api" assignTo="{!fieldLookUp}" value="fieldIndex" />-->                     
+                                                    </apex:actionSupport>
+                                                </apex:inputField>
+                                               <!--  <apex:inputField id="Lookup" value="{!incidencia.R2_INC_LOO_Case__c}" styleClass="slds-button slds-button_neutral hideMyBro" html-disabled="true "/> -->
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="lght_section_2" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_2, svg_section_2);return false">
+                            <svg id="svg_section_2" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Pasajero/PAX/">Pasajero/PAX/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_2">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection2}" var="fieldIndex" id="fieldLoop2">
+                                        <!-- <div class="slds-form-element"> -->
+                                        <div class="{! if(fieldIndex.required == TRUE && (boolCloseEnabled == TRUE || (boolEnabled == TRUE && boolModifyEnabled == FALSE)), 'requiredClass slds-form-element ' , 'slds-form-element' )}" >
+                                            <label class="slds-form-element__label" for="text-input-id-2">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <!-- <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-2" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}"/required="{!fieldIndex.required}" > -->
+                                                <!-- {!fieldIndex.name} - BOLEANCOMENTADO -->
+                                                <!-- Datetime -->
+                                                <apex:inputField value="{!fieldIndex.incident[fieldIndex.Name]}" rendered="{!fieldIndex.type == 'datetime'}" onfocus="this.select();" html-disabled="{!fieldIndex.disabled}" showDatePicker="false" id="text-input-id-datetime" styleClass="slds-input"/>
+                                                <!-- TEXT -->
+                                                <apex:input type="{!IF(CONTAINS(fieldIndex.type, 'date'), 'date', IF(CONTAINS(fieldIndex.type, 'datetime'), 'datetime' ,  IF(CONTAINS(fieldIndex.type, 'tel'), 'tel' ,  IF(CONTAINS(fieldIndex.type, 'number'), 'number' , 'text'))))}" value="{!fieldIndex.value}" id="text-input-id-text" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'text' || fieldIndex.type == 'date' || fieldIndex.type == 'tel' || fieldIndex.type == 'number'}" />
+                                                 <!-- CHEKBOX -->
+                                                <apex:inputCheckbox value="{!fieldIndex.value}" id="text-input-id-chk" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'checkbox'}"/>
+                                                <!-- BUTTON / POPUP --> 
+                                                 <apex:commandButton value="Abrir Detalles del Campo" id="text-input-id-button" styleClass="slds-input"  onfocus="this.select();" rendered="{!fieldIndex.type == 'button'}" onClick="{!fieldIndex.method}(); return false;"/>                                      <!-- PICKLIST -->
+                                                <apex:selectList value="{!fieldIndex.value}" id="text-input-id-pkl" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'picklist'}" size="1">
+                                                    <apex:selectOptions value="{!fieldIndex.items}"/>
+                                                </apex:selectList>
+                                                <!-- LOOKUP -->
+                                                <apex:inputField id="Lookup" value="{!fieldIndex.incident[fieldIndex.Name]}" styleClass="slds-button slds-button_neutral hideMyBro" html-disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'lookup'}" onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="lght_section_3" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_3, svg_section_3);return false">
+                            <svg id="svg_section_3" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Información Direcciones">Información Direcciones</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_3">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection3}" var="fieldIndex" id="fieldLoop3">
+                                        <!-- <div class="slds-form-element"> -->
+                                        <div class="{! if(fieldIndex.required == TRUE && (boolCloseEnabled == TRUE || (boolEnabled == TRUE && boolModifyEnabled == FALSE)), 'requiredClass slds-form-element ' , 'slds-form-element' )}" >
+                                            <label class="slds-form-element__label" for="text-input-id-3">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <!-- <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-3" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}"/required="{!fieldIndex.required}" > -->
+                                                <!-- {!fieldIndex.name} - BOLEANCOMENTADO -->
+                                                <!-- Datetime -->
+                                                <apex:inputField value="{!fieldIndex.incident[fieldIndex.Name]}" rendered="{!fieldIndex.type == 'datetime'}" onfocus="this.select();" html-disabled="{!fieldIndex.disabled}" showDatePicker="false" id="text-input-id-datetime" styleClass="slds-input"/>
+                                                <!-- TEXT -->
+                                                <apex:input type="{!IF(CONTAINS(fieldIndex.type, 'date'), 'date', IF(CONTAINS(fieldIndex.type, 'datetime'), 'datetime' ,  IF(CONTAINS(fieldIndex.type, 'tel'), 'tel' ,  IF(CONTAINS(fieldIndex.type, 'number'), 'number' , 'text'))))}" value="{!fieldIndex.value}" id="text-input-id-text" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'text' || fieldIndex.type == 'date' || fieldIndex.type == 'tel' || fieldIndex.type == 'number'}" />
+                                                 <!-- CHEKBOX -->
+                                                <apex:inputCheckbox value="{!fieldIndex.value}" id="text-input-id-chk" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'checkbox'}"/>
+                                                <!-- BUTTON / POPUP --> 
+                                                 <apex:commandButton value="Abrir Detalles del Campo" id="text-input-id-button" styleClass="slds-input"  onfocus="this.select();" rendered="{!fieldIndex.type == 'button'}" onClick="{!fieldIndex.method}(); return false;"/>                                      <!-- PICKLIST -->
+                                                <apex:selectList value="{!fieldIndex.value}" id="text-input-id-pkl" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'picklist'}" size="1">
+                                                    <apex:selectOptions value="{!fieldIndex.items}"/>
+                                                </apex:selectList>
+                                                <!-- LOOKUP -->
+                                                <apex:inputField id="Lookup" value="{!fieldIndex.incident[fieldIndex.Name]}" styleClass="slds-button slds-button_neutral hideMyBro" html-disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'lookup'}" onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="lght_section_4" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_4, svg_section_4);return false">
+                            <svg id="svg_section_4" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Vuelos /RTI">Vuelos /RTI/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_4">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection4}" var="fieldIndex" id="fieldLoop4">
+                                        <!-- <div class="slds-form-element"> -->
+                                        <div class="{! if(fieldIndex.required == TRUE && (boolCloseEnabled == TRUE || (boolEnabled == TRUE && boolModifyEnabled == FALSE)), 'requiredClass slds-form-element ' , 'slds-form-element' )}" >
+                                            <label class="slds-form-element__label" for="text-input-id-4">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <!-- <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-4" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}"/required="{!fieldIndex.required}" > -->
+                                                <!-- {!fieldIndex.name} - BOLEANCOMENTADO -->
+                                                <!-- Datetime -->
+                                                <apex:inputField value="{!fieldIndex.incident[fieldIndex.Name]}" rendered="{!fieldIndex.type == 'datetime'}" onfocus="this.select();" html-disabled="{!fieldIndex.disabled}" showDatePicker="false" id="text-input-id-datetime" styleClass="slds-input"/>
+                                                <!-- TEXT -->
+                                                <apex:input type="{!IF(CONTAINS(fieldIndex.type, 'date'), 'date', IF(CONTAINS(fieldIndex.type, 'datetime'), 'datetime' ,  IF(CONTAINS(fieldIndex.type, 'tel'), 'tel' ,  IF(CONTAINS(fieldIndex.type, 'number'), 'number' , 'text'))))}" value="{!fieldIndex.value}" id="text-input-id-text" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'text' || fieldIndex.type == 'date' || fieldIndex.type == 'tel' || fieldIndex.type == 'number'}" />
+                                                 <!-- CHEKBOX -->
+                                                <apex:inputCheckbox value="{!fieldIndex.value}" id="text-input-id-chk" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'checkbox'}"/>
+                                                <!-- BUTTON / POPUP --> 
+                                                 <apex:commandButton value="Abrir Detalles del Campo" id="text-input-id-button" styleClass="slds-input"  onfocus="this.select();" rendered="{!fieldIndex.type == 'button'}" onClick="{!fieldIndex.method}(); return false;"/>                                      <!-- PICKLIST -->
+                                                <apex:selectList value="{!fieldIndex.value}" id="text-input-id-pkl" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'picklist'}" size="1">
+                                                    <apex:selectOptions value="{!fieldIndex.items}"/>
+                                                </apex:selectList>
+                                                <!-- LOOKUP -->
+                                                <apex:inputField id="Lookup" value="{!fieldIndex.incident[fieldIndex.Name]}" styleClass="slds-button slds-button_neutral hideMyBro" html-disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'lookup'}" onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="lght_section_5" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_5, svg_section_5);return false">
+                            <svg id="svg_section_5" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Otra Información /OSI/">Otra Información /OSI/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_5">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection5}" var="fieldIndex" id="fieldLoop5">
+                                        <!-- <div class="slds-form-element"> -->
+                                        <div class="{! if(fieldIndex.required == TRUE && (boolCloseEnabled == TRUE || (boolEnabled == TRUE && boolModifyEnabled == FALSE)), 'requiredClass slds-form-element ' , 'slds-form-element' )}" >
+                                            <label class="slds-form-element__label" for="text-input-id-5">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <!-- <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-5" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}"/required="{!fieldIndex.required}" > -->
+                                                <!-- {!fieldIndex.name} - BOLEANCOMENTADO -->
+                                                <!-- Datetime -->
+                                                <apex:inputField value="{!fieldIndex.incident[fieldIndex.Name]}" rendered="{!fieldIndex.type == 'datetime'}" onfocus="this.select();" html-disabled="{!fieldIndex.disabled}" showDatePicker="false" id="text-input-id-datetime" styleClass="slds-input"/>
+                                                <!-- TEXT -->
+                                                <apex:input type="{!IF(CONTAINS(fieldIndex.type, 'date'), 'date', IF(CONTAINS(fieldIndex.type, 'datetime'), 'datetime' ,  IF(CONTAINS(fieldIndex.type, 'tel'), 'tel' ,  IF(CONTAINS(fieldIndex.type, 'number'), 'number' , 'text'))))}" value="{!fieldIndex.value}" id="text-input-id-text" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'text' || fieldIndex.type == 'date' || fieldIndex.type == 'tel' || fieldIndex.type == 'number'}" />
+                                                 <!-- CHEKBOX -->
+                                                <apex:inputCheckbox value="{!fieldIndex.value}" id="text-input-id-chk" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'checkbox'}"/>
+                                                <!-- BUTTON / POPUP --> 
+                                                 <apex:commandButton value="Abrir Detalles del Campo" id="text-input-id-button" styleClass="slds-input"  onfocus="this.select();" rendered="{!fieldIndex.type == 'button'}" onClick="{!fieldIndex.method}(); return false;"/>                                      <!-- PICKLIST -->
+                                                <apex:selectList value="{!fieldIndex.value}" id="text-input-id-pkl" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'picklist'}" size="1">
+                                                    <apex:selectOptions value="{!fieldIndex.items}"/>
+                                                </apex:selectList>
+                                                <!-- LOOKUP -->
+                                                <apex:inputField id="Lookup" value="{!fieldIndex.incident[fieldIndex.Name]}" styleClass="slds-button slds-button_neutral hideMyBro" html-disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'lookup'}" onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="lght_section_6" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_6, svg_section_6);return false">
+                            <svg id="svg_section_6" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Reparto /DLV/">Reparto /DLV/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_6">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection6}" var="fieldIndex" id="fieldLoop6">
+                                        <!-- <div class="slds-form-element"> -->
+                                        <div class="{! if(fieldIndex.required == TRUE && (boolCloseEnabled == TRUE || (boolEnabled == TRUE && boolModifyEnabled == FALSE)), 'requiredClass slds-form-element ' , 'slds-form-element' )}" >
+                                            <label class="slds-form-element__label" for="text-input-id-6">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <!-- <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-6" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}"/required="{!fieldIndex.required}" > -->
+                                                <!-- {!fieldIndex.name} - BOLEANCOMENTADO -->
+                                                <!-- Datetime -->
+                                                <apex:inputField value="{!fieldIndex.incident[fieldIndex.Name]}" rendered="{!fieldIndex.type == 'datetime'}" onfocus="this.select();" html-disabled="{!fieldIndex.disabled}" showDatePicker="false" id="text-input-id-datetime" styleClass="slds-input"/>
+                                                <!-- TEXT -->
+                                                <apex:input type="{!IF(CONTAINS(fieldIndex.type, 'date'), 'date', IF(CONTAINS(fieldIndex.type, 'datetime'), 'datetime' ,  IF(CONTAINS(fieldIndex.type, 'tel'), 'tel' ,  IF(CONTAINS(fieldIndex.type, 'number'), 'number' , 'text'))))}" value="{!fieldIndex.value}" id="text-input-id-text" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'text' || fieldIndex.type == 'date' || fieldIndex.type == 'tel' || fieldIndex.type == 'number'}" />
+                                                 <!-- CHEKBOX -->
+                                                <apex:inputCheckbox value="{!fieldIndex.value}" id="text-input-id-chk" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'checkbox'}"/>
+                                                <!-- BUTTON / POPUP --> 
+                                                 <apex:commandButton value="Abrir Detalles del Campo" id="text-input-id-button" styleClass="slds-input"  onfocus="this.select();" rendered="{!fieldIndex.type == 'button'}" onClick="{!fieldIndex.method}(); return false;"/>                                      <!-- PICKLIST -->
+                                                <apex:selectList value="{!fieldIndex.value}" id="text-input-id-pkl" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'picklist'}" size="1">
+                                                    <apex:selectOptions value="{!fieldIndex.items}"/>
+                                                </apex:selectList>
+                                                <!-- LOOKUP -->
+                                                <apex:inputField id="Lookup" value="{!fieldIndex.incident[fieldIndex.Name]}" styleClass="slds-button slds-button_neutral hideMyBro" html-disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'lookup'}" onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="lght_section_7" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_7, svg_section_7);return false">
+                            <svg id="svg_section_7" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Equipaje /BAG/">Equipaje /BAG/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_7">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection7}" var="fieldIndex" id="fieldLoop7">
+                                        <!-- <div class="slds-form-element"> -->
+                                        <div class="{! if(fieldIndex.required == TRUE && (boolCloseEnabled == TRUE || (boolEnabled == TRUE && boolModifyEnabled == FALSE)), 'requiredClass slds-form-element ' , 'slds-form-element' )}" >
+                                            <label class="slds-form-element__label" for="text-input-id-7">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <!-- <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-7" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}"/required="{!fieldIndex.required}" > -->
+                                                <!-- {!fieldIndex.name} - BOLEANCOMENTADO -->
+                                                <!-- Datetime -->
+                                                <apex:inputField value="{!fieldIndex.incident[fieldIndex.Name]}" rendered="{!fieldIndex.type == 'datetime'}" onfocus="this.select();" html-disabled="{!fieldIndex.disabled}" showDatePicker="false" id="text-input-id-datetime" styleClass="slds-input"/>
+                                                <!-- TEXT -->
+                                                <apex:input type="{!IF(CONTAINS(fieldIndex.type, 'date'), 'date', IF(CONTAINS(fieldIndex.type, 'datetime'), 'datetime' ,  IF(CONTAINS(fieldIndex.type, 'tel'), 'tel' ,  IF(CONTAINS(fieldIndex.type, 'number'), 'number' , 'text'))))}" value="{!fieldIndex.value}" id="text-input-id-text" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'text' || fieldIndex.type == 'date' || fieldIndex.type == 'tel' || fieldIndex.type == 'number'}" />
+                                                 <!-- CHEKBOX -->
+                                                <apex:inputCheckbox value="{!fieldIndex.value}" id="text-input-id-chk" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'checkbox'}"/>
+                                                <!-- BUTTON / POPUP --> 
+                                                 <apex:commandButton value="Abrir Detalles del Campo" id="text-input-id-button" styleClass="slds-input"  onfocus="this.select();" rendered="{!fieldIndex.type == 'button'}" onClick="{!fieldIndex.method}(); return false;"/>                                      <!-- PICKLIST -->
+                                                <apex:selectList value="{!fieldIndex.value}" id="text-input-id-pkl" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'picklist'}" size="1">
+                                                    <apex:selectOptions value="{!fieldIndex.items}"/>
+                                                </apex:selectList>
+                                                <!-- LOOKUP -->
+                                                <apex:inputField id="Lookup" value="{!fieldIndex.incident[fieldIndex.Name]}" styleClass="slds-button slds-button_neutral hideMyBro" html-disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'lookup'}" onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="lght_section_8" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_8, svg_section_8);return false">
+                            <svg id="svg_section_8" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Reclamación /CLAIM/">Reclamación /CLAIM/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_8">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection8}" var="fieldIndex" id="fieldLoop8">
+                                        <!-- <div class="slds-form-element"> -->
+                                        <div class="{! if(fieldIndex.required == TRUE && (boolCloseEnabled == TRUE || (boolEnabled == TRUE && boolModifyEnabled == FALSE)), 'requiredClass slds-form-element ' , 'slds-form-element' )}" >
+                                            <label class="slds-form-element__label" for="text-input-id-8">{!fieldIndex.label}</label> 
+                                            <div class="slds-form-element__control">
+                                                <!-- <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-8" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}"/required="{!fieldIndex.required}" > -->
+                                                <!-- {!fieldIndex.name} - BOLEANCOMENTADO -->
+                                                <!-- Datetime -->
+                                                <apex:inputField value="{!fieldIndex.incident[fieldIndex.Name]}" rendered="{!fieldIndex.type == 'datetime'}" onfocus="this.select();" html-disabled="{!fieldIndex.disabled}" showDatePicker="false" id="text-input-id-datetime" styleClass="slds-input"/>
+                                                <!-- TEXT -->
+                                                <apex:input type="{!IF(CONTAINS(fieldIndex.type, 'date'), 'date', IF(CONTAINS(fieldIndex.type, 'datetime'), 'datetime' ,  IF(CONTAINS(fieldIndex.type, 'tel'), 'tel' ,  IF(CONTAINS(fieldIndex.type, 'number'), 'number' , 'text'))))}" value="{!fieldIndex.value}" id="text-input-id-text" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'text' || fieldIndex.type == 'date' || fieldIndex.type == 'tel' || fieldIndex.type == 'number'}" />
+                                                 <!-- CHEKBOX -->
+                                                <apex:inputCheckbox value="{!fieldIndex.value}" id="text-input-id-chk" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'checkbox'}"/>
+                                                <!-- BUTTON / POPUP --> 
+                                                 <apex:commandButton value="Abrir Detalles del Campo" id="text-input-id-button" styleClass="slds-input"  onfocus="this.select();" rendered="{!fieldIndex.type == 'button'}" onClick="{!fieldIndex.method}(); return false;"/>
+                                                <!-- PICKLIST -->
+                                                <apex:selectList value="{!fieldIndex.value}" id="text-input-id-pkl" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'picklist'}" size="1">
+                                                    <apex:selectOptions value="{!fieldIndex.items}"/>
+                                                </apex:selectList>
+                                                <!-- LOOKUP -->
+                                                <apex:inputField id="Lookup" value="{!fieldIndex.incident[fieldIndex.Name]}" styleClass="slds-button slds-button_neutral hideMyBro" html-disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'lookup'}" onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="slds-grid slds-wrap">   
+                        <div id="lght_section_9" class="slds-section slds-is-open slds-size--2-of-4 slds-medium-size--2-of-4 slds-large-size--6-of-12">
+                            <h3 class="slds-section__title">
+                                <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_9, svg_section_9);return false">
+                                    <svg id="svg_section_9" class="slds-button__icon" aria-hidden="true">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                                    </svg>
+                                    <span class="slds-truncate" title="Información Match /MCH/">Información Match /MCH/</span>
+                                </button>
+                            </h3>
+                            <div aria-hidden="false" class="slds-section__content" id="section_9">
+                                <div class="slds-p-horizontal_medium">
+                                    <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                        <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                            <apex:repeat value="{!incidentInformationSection9}" var="fieldIndex" id="fieldLoop9">
+                                                <!-- <div class="slds-form-element"> -->
+                                                <div class="{! if(fieldIndex.required == TRUE && (boolCloseEnabled == TRUE || (boolEnabled == TRUE && boolModifyEnabled == FALSE)), 'requiredClass slds-form-element ' , 'slds-form-element' )}" >
+                                                    <label class="slds-form-element__label" for="text-input-id-9">{!fieldIndex.label}</label>
+                                                    <div class="slds-form-element__control">
+                                                       <!--  <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-9" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}"/required="{!fieldIndex.required}" > -->
+                                                        <!-- {!fieldIndex.name} - BOLEANCOMENTADO -->
+                                                        <!-- TEXT -->
+                                                        <apex:input type="{!IF(CONTAINS(fieldIndex.type, 'date'), 'date', IF(CONTAINS(fieldIndex.type, 'datetime'), 'datetime' ,  IF(CONTAINS(fieldIndex.type, 'tel'), 'tel' ,  IF(CONTAINS(fieldIndex.type, 'number'), 'number' , 'text'))))}" value="{!fieldIndex.value}" id="text-input-id-text" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'text' || fieldIndex.type == 'date' || fieldIndex.type == 'datetime' || fieldIndex.type == 'tel' || fieldIndex.type == 'number'}"/>
+                                                         <!-- CHEKBOX -->
+                                                        <apex:inputCheckbox value="{!fieldIndex.value}" id="text-input-id-chk" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'checkbox'}"/>
+                                                        <!-- BUTTON / POPUP --> 
+                                                         <apex:commandButton value="Abrir Detalles del Campo" id="text-input-id-button" styleClass="slds-input"  onfocus="this.select();" rendered="{!fieldIndex.type == 'button'}" onClick="{!fieldIndex.method}(); return false;"/>                                      <!-- PICKLIST -->
+                                                        <apex:selectList value="{!fieldIndex.value}" id="text-input-id-pkl" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'picklist'}" size="1">
+                                                            <apex:selectOptions value="{!fieldIndex.items}"/>
+                                                        </apex:selectList>
+                                                        <!-- LOOKUP -->
+                                                        <apex:inputField id="Lookup" value="{!fieldIndex.incident[fieldIndex.Name]}" styleClass="slds-button slds-button_neutral hideMyBro" html-disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'lookup'}" onfocus="this.select();"/>
+                                                    </div>
+                                                </div>
+                                            </apex:repeat>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="lght_section_10" class="slds-section slds-is-open slds-size--2-of-4 slds-medium-size--2-of-4 slds-large-size--6-of-12">
+                            <h3 class="slds-section__title">
+                                <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_10, svg_section_10);return false">
+                                    <svg id="svg_section_10" class="slds-button__icon" aria-hidden="true">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                                    </svg>
+                                    <span class="slds-truncate" title="Información MSG /MSG/">Información MSG /MSG/</span>
+                                </button>
+                            </h3>
+                            <div aria-hidden="false" class="slds-section__content" id="section_10">
+                                <div class="slds-p-horizontal_medium">
+                                    <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                        <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                            <apex:repeat value="{!incidentInformationSection10}" var="fieldIndex" id="fieldLoop10">
+                                                <!-- <div class="slds-form-element"> -->
+                                                <div class="{! if(fieldIndex.required == TRUE && (boolCloseEnabled == TRUE || (boolEnabled == TRUE && boolModifyEnabled == FALSE)), 'requiredClass slds-form-element ' , 'slds-form-element' )}" >
+                                                    <label class="slds-form-element__label" for="text-input-id-10">{!fieldIndex.label}</label>
+                                                    <div class="slds-form-element__control">
+                                                        <!-- <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-10" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}"/required="{!fieldIndex.required}" > -->
+                                                        <!-- {!fieldIndex.name} - BOLEANCOMENTADO -->
+                                                        <!-- TEXT -->
+                                                        <apex:input type="{!IF(CONTAINS(fieldIndex.type, 'date'), 'date', IF(CONTAINS(fieldIndex.type, 'datetime'), 'datetime' ,  IF(CONTAINS(fieldIndex.type, 'tel'), 'tel' ,  IF(CONTAINS(fieldIndex.type, 'number'), 'number' , 'text'))))}" value="{!fieldIndex.value}" id="text-input-id-text" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'text' || fieldIndex.type == 'date' || fieldIndex.type == 'datetime' || fieldIndex.type == 'tel' || fieldIndex.type == 'number'}"/>
+                                                         <!-- CHEKBOX -->
+                                                        <apex:inputCheckbox value="{!fieldIndex.value}" id="text-input-id-chk" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'checkbox'}"/>
+                                                        <!-- BUTTON / POPUP --> 
+                                                         <apex:commandButton value="Abrir Detalles del Campo" id="text-input-id-button" styleClass="slds-input" onfocus="this.select();" rendered="{!fieldIndex.type == 'button'}" onClick="{!fieldIndex.method}(); return false;"/>                                      <!-- PICKLIST -->
+                                                        <apex:selectList value="{!fieldIndex.value}" id="text-input-id-pkl" styleClass="slds-input"  onfocus="this.select();" disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'picklist'}" size="1">
+                                                            <apex:selectOptions value="{!fieldIndex.items}"/>
+                                                        </apex:selectList>
+                                                        <!-- LOOKUP -->
+                                                        <apex:inputField id="Lookup" value="{!fieldIndex.incident[fieldIndex.Name]}" styleClass="slds-button slds-button_neutral hideMyBro" html-disabled="{!fieldIndex.disabled}" required="{!fieldIndex.required}" rendered="{!fieldIndex.type == 'lookup'}" onfocus="this.select();"/>
+                                                    </div>
+                                                </div>
+                                            </apex:repeat>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div></apex:outputPanel></apex:form>
+            <div class="slds" style="width: auto; border: 0px solid geyser;" >  
+     <!--  ##########################################################################################################################
+            ##########################################################################################################################
+            ##########################################################################################################################
+            #############################################         EQUIPAJE           #################################################
+            ##########################################################################################################################
+            ##########################################################################################################################
+            ##########################################################################################################################
+    -->
+      <apex:form id="formImg">
+      
+        <div class="cajaImg1" style="width: 15%; margin-top: 6%;border: 1px solid skyblue; position: absolute; display: block; ">
+          
+          <!-- Introducir las imagenes del color y tipo de maleta  -->
+          <apex:image url="{!URLFOR($Resource.BaggageImages, imgColorMaleta)}" width="100%" />
+          <apex:image url="{!URLFOR($Resource.BaggageImages, imgTipoMaleta)}" width="100%" />
+
+        </div>
+
+          <div class="cajaImg2" style="width: 15%; height: auto;border: 1px solid skyblue; position: absolute; display: block; ">
+              <apex:image id="img1" url="{!URLFOR($Resource.BaggageImages, imgMaleta1)}" width="20%" height="50%" rendered="{!imgMaleta1!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                    <apex:param value="img1" name="imgParam"/>
+                    <apex:param value="false" name="primeraCarga"/>
+                  </apex:actionSupport>
+              </apex:image>
+              
+              <apex:image id="img2" url="{!URLFOR($Resource.BaggageImages, imgMaleta2)}" width="20%" height="50%" rendered="{!imgMaleta2!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                    <apex:param value="img2" name="imgParam"/>
+                    <apex:param value="false" name="primeraCarga"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img3" url="{!URLFOR($Resource.BaggageImages, imgMaleta3)}" width="20%" height="50%" rendered="{!imgMaleta3!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img3" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img4" url="{!URLFOR($Resource.BaggageImages, imgMaleta4)}" width="20%" height="50%" rendered="{!imgMaleta4!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img4" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img5" url="{!URLFOR($Resource.BaggageImages, imgMaleta5)}" width="20%" height="50%" rendered="{!imgMaleta5!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                  <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img5" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img6" url="{!URLFOR($Resource.BaggageImages, imgMaleta6)}" width="20%" height="50%" rendered="{!imgMaleta6!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img6" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img7" url="{!URLFOR($Resource.BaggageImages, imgMaleta7)}" width="20%" height="50%" rendered="{!imgMaleta7!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img7" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img8" url="{!URLFOR($Resource.BaggageImages, imgMaleta8)}" width="20%" height="50%" rendered="{!imgMaleta8!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img8" name="imgParam"/>
+                  </apex:actionSupport>              
+              </apex:image>
+              <apex:image id="img9" url="{!URLFOR($Resource.BaggageImages, imgMaleta9)}" width="20%" height="50%" rendered="{!imgMaleta9!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img9" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img10" url="{!URLFOR($Resource.BaggageImages, imgMaleta10)}" width="20%" height="50%" rendered="{!imgMaleta10!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img10" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+        </div>
+      </apex:form>
+		
+      <apex:form id="form">
+                
+      <div class="slds-form slds-form_stacked slds-form--inline" style="width: 85%; border: 1px solid skyblue;margin-left: 16%;">
+         
+          <!-- MASTHEAD -->
+           <div class="slds-page-header" style="border: 1px solid skyblue;">
+          <h1 class="slds-text-heading--large" style="text-align: left; padding-left: 1cm; margin-bottom: 10px; font: bold; color: #A2B3C5">
+            Detalle Equipaje
+          </h1>
+          <!-- / MASTHEAD -->     
+             </div>
+            <div class="slds-form" style="width: auto; border: 1px solid skyblue; display: block; ">
+                <div class="menuPrincipal" style="margin-bottom: 5px;">                                
+              
+                  <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    <apex:commandButton StyleClass="slds-input" value="Actualizar Maleta" disabled="{!NOT(boolEnabled) || boolModifyEnabled}" rendered="{!verSaveUpdate}" reRender="formImg, form" action="{!newBag}" oncomplete="alertGuardar('{!actionBag}')">
+                    	<apex:param name="actionUpdate" value="update" assignTo="{!actionBag}"/>
+                    </apex:commandButton>
+                </div>
+                  </div>  
+               <div class="slds-form"  style=" display: inline-block; text-align: left; padding-left: 10px;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    <apex:commandButton StyleClass="slds-input" rendered="{!verSaveUpdate}" reRender="formImg, form" value="Suspender/Habilitar Maleta" action="{!suspenderBag}"/>  
+                   
+                </div>
+                   </div>
+                   <apex:outputText value="MALETA SUSPENDIDA" style="color: red;margin-left: 1em;" rendered="{!bag.R2_BAG_CHK_Suspended__c}"/>   
+               </div>
+            </div>
+          <div stylestyle="width: 100%;">
+          <div class="slds-grid slds-gutters">
+          <div class="slds-col slds-size_4-of-12" style="border: 0px solid skyblue;">
+            <h3 class="slds-text-heading--large" style="width: 100%;border: 0px solid black;padding: 5px 0 5px 1cm; background-color: #CCCCCC; font-weight: bold; height: 1cm">
+            Maleta 
+            </h3>
+
+              <div class="slds-form" style="padding-top: 10px; padding-bottom: 10px; padding-right: 5px;">
+                
+                <div class="slds-form-element__control requiredClass" style="width: 100%;margin-top: 3px;margin-left: 10px;">
+                   Nº Etiqueta:
+                    <apex:inputText required="true" disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_TXT_Ticket_number__c}" style="width: 5cm; margin-left: 5px"/>
+                    <apex:outputText value="S/" style="color: red;margin-left: 1em;" rendered="{!bag.R2_BAG_CHK_BagTag_Suspended__c}"/>
+                </div>
+                
+                <div class="slds-form-element__control slds-picklist requiredClass" style="width: 100%;margin-top: 3px;margin-left: 10px;">
+                  Tipo de la maleta:
+                    <apex:inputField required="true" rendered="{!boolEnabled && NOT(boolModifyEnabled)}" value="{!bag.R2_BAG_PKL_Type__c}" style="width: 5cm; margin-left: 5px"/> 
+                    <apex:inputText required="true" disabled="true" rendered="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_PKL_Type__c}" style="width: 5cm; margin-left: 5px"/> 
+                    <!--<apex:actionSupport action="{!getBagImageTipo}" reRender="formImg, form" event="onchange" />-->
+                 
+                </div>
+
+                <div class="slds-form-element__control slds-picklist requiredClass" style="width: 100%;margin-top: 3px;margin-left: 10px;">
+                  Color de la maleta:
+                    <apex:inputField required="true" rendered="{!boolEnabled && NOT(boolModifyEnabled)}" value="{!bag.R2_BAG_PKL_Colour__c}" style="width: 5cm; margin-left: 5px"/> 
+                    <apex:inputText required="true" disabled="true" rendered="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_PKL_Colour__c}" style="width: 5cm; margin-left: 5px"/>  
+                    <!--<apex:actionSupport action="{!getBagImageColor}" reRender="formImg, form" event="onchange"/>-->
+                 
+                </div>
+
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;margin-left: 10px;">
+                Color y Tipo(CT):
+                  <apex:inputText value="{!bag.R2_BAG_FOR_Colour_Type_Description__c}" style="width: 5cm; margin-left: 5px;" disabled="true" />
+                    <apex:outputText value="S/" style="color: red;margin-left: 1em;" rendered="{!bag.R2_BAG_CHK_Colour_Type_suspended__c}"/> 
+                </div>
+
+                <div class="slds-form-element__control requiredClass" style="width: 100%;margin-top: 10px;margin-left: 10px;">
+                Marca/Otras Caract.(BI):
+                  <apex:inputText required="true" disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_TXT_Brand_Info__c}" style="width: 5cm; margin-left: 5px"/>
+                    <apex:outputText value="S/" style="color: red;margin-left: 1em;" rendered="{!bag.R2_BAG_TXT_Brand_Info_Suspended__c}"/> 
+                </div>
+
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 5px;margin-left: 10px;">
+                  Existe Contenido(CC):
+                  <apex:inputField value="{!bag.R2_BAG_CHK_Content_exists__c}" style="width: 5cm; margin-left: 5px"/>
+                    <apex:outputText value="S/" style="color: red;margin-left: 1em;" rendered="{!bag.R2_BAG_CHK_BagContends_Suspended__c}"/>
+                </div>
+
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;margin-left: 10px;">
+                  PIR asociado(AR):
+                  <apex:inputText disabled="true" value="{!bag.R2_BAG_TXT_PIR_AR__c}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+     			<div class="slds-form-element__control" style="width: 100%;margin-top: 10px;margin-left: 10px;">
+                  Etiqueta RUSH(XT):
+                  <apex:inputText disabled="true" value="{!bag.R2_BAG_TXT_RUSH_label__c}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+              </div>
+            </div> 
+               
+            <div class="slds-col slds-size_8-of-12" style="border: 0px solid skyblue;">
+                  <h3 class="slds-text-heading--medium" style="width: 100%;border: 0px solid black;padding: 5px 0 5px 1cm; background-color: #CCCCCC; font-weight: bold; height: 1cm">
+                    Características Exteriores 
+                   </h3>
+                <div class="slds-grid">
+                    
+                
+                <div class="slds-col slds-size_6-of-12" style=" padding-top: 24px; padding-bottom: 10px;">  
+                    
+               <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                  Fecha Recepción Maleta(DR):
+                   <apex:input type="text" value="{!fecha5}" disabled="true" rendered="{!NOT(boolEnabled) || boolModifyEnabled}" style="width: 5cm; margin-left: 5px"/>
+                  <apex:inputField value="{!bag.R2_BAG_DAT_DateBagReceived__c}" rendered="{!boolEnabled && NOT(boolModifyEnabled)}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+                
+                 <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                  Fecha confirmada de reparto(OO):
+                  <apex:input type="text" value="{!fecha4}" disabled="true" rendered="{!NOT(boolEnabled) || boolModifyEnabled}" style="width: 5cm; margin-left: 5px"/>
+                  <apex:inputField value="{!bag.R2_BAG_DATH_Bag_ReceivedFromCustoms__c}" rendered="{!boolEnabled && NOT(boolModifyEnabled)}" style="width: 5cm; margin-left: 5px"/>
+                </div>    
+                    
+                     <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                  Fecha planificada de entrega(OF):
+                  <apex:input type="text" value="{!fecha3}" disabled="true" rendered="{!NOT(boolEnabled) || boolModifyEnabled}" style="width: 5cm; margin-left: 5px"/>
+                  <apex:inputField value="{!bag.R2_BAG_DAT_Scheduled_delivery_date__c}" rendered="{!boolEnabled && NOT(boolModifyEnabled)}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+
+                    
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                  Fecha Entrega Maleta(DD):
+                    <apex:input type="text" value="{!fecha2}" disabled="true" rendered="{!NOT(boolEnabled) || boolModifyEnabled}" style="width: 5cm; margin-left: 5px">
+                        
+                    </apex:input>
+                    <apex:inputField value="{!bag.R2_BAG_DAT_Suitcase_delivery_date__c}" rendered="{!boolEnabled && NOT(boolModifyEnabled)}" style="width: 5cm; margin-left: 5px"/>         
+                </div>
+
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                  Fecha de reparto(UP):
+                    <apex:input type="text" value="{!fecha1}" disabled="true" rendered="{!NOT(boolEnabled) || boolModifyEnabled}" style="width: 5cm; margin-left: 5px"/>
+                       
+                  <apex:inputField value="{!bag.R2_BAG_DATH_Bag_SentToCustoms__c}" rendered="{!boolEnabled && NOT(boolModifyEnabled)}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 25px;">
+                  Comentarios(RK):
+                  <!-- <apex:inputText disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_TXT_Comments__c}" style="width: 5cm; margin-left: 5px"/> -->
+                  <apex:inputTextarea disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_TXT_Comments__c}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+
+              </div>
+                
+                <div class="slds-col slds-size_6-of-12" style="text-align: right; padding-top: 19px; padding-bottom: 15px;">
+                
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                  Mixta, varios materiales:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_CHK_Mixed__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+               
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Piel (real o imitación):    
+                    <apex:inputCheckbox disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_CHK_Leather__c}" style="margin: 0 15% 0 15%;"/>         
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Metal:
+                    <apex:inputCheckbox disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_CHK_Metal__c}" style="margin: 0 15% 0 15%;"/>  
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Rígida:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_CHK_Rigid__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Tejido estampado:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_CHK_Printed_fabric__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Objeto Único en Caja:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_CHK_Single_object_in_box__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Maleta permitida en Cabina:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_CHK_Suitcase_allowed_cabin__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Cerradura Combinación:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_CHK_Combination_lock__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Asa Retráctil:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_CHK_Retractable_handle__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+                    <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                  Bolsillos Externos:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_CHK_External_pockets__c}" style="margin: 0 15% 0 15%;"/>
+                </div>    
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Ruedas o Rodamientos:   
+                    <apex:inputCheckbox disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_CHK_Wheels_or_bearing__c}" style="margin: 0 15% 0 15%;"/>         
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Correas Aseguradoras:
+                    <apex:inputCheckbox disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!bag.R2_BAG_CHK_Safety_belt__c}" style="margin: 0 15% 0 15%;"/>  
+                </div>
+              </div>
+                
+              </div>
+            </div>   
+              </div>
+              <div style="width: 100%;">
+                  
+              
+              <div class="slds-grid">
+                  
+          <div id="divCont" class="slds-col slds-size_12-of-12" style="border: 1px solid black; ">
+              <div style="width: 100%;margin-bottom:10px;">
+                  
+           
+            <h3 class="slds-text-heading--large" style="width: 100%;border: 0px solid black; padding: 5px 0 5px 1cm; background-color: #CCCCCC; font-weight: bold; height: 1cm">
+            Contenido de la Maleta 
+            </h3>
+                  <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    <apex:commandbutton StyleClass="slds-input" value="Relación de los contenidos de la maleta afectada" disabled="{!NOT(boolEnabled) || boolModifyEnabled}" reRender="formImg, form" oncomplete="habilitarNewObject('{!bag.R2_BAG_MSDT_Incident__c}')"/>  
+                </div>
+                   </div>
+                    
+                     <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    <apex:commandbutton StyleClass="slds-input" value="Eliminar contenidos seleccionados" disabled="{!NOT(boolEnabled) || boolModifyEnabled}" reRender="formImg, form" oncomplete="confirmarBorrado('{!wtContent}')" action="{!contWT}"/>
+              			 <apex:actionFunction name="borrarMaleta" action="{!deleteCont}"/>
+                         </div>
+                   </div>
+                    
+                    <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    <apex:commandbutton StyleClass="slds-input" disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="Actualizar contenidos" reRender="formImg, form" oncomplete="confirmarCont()"/>
+                    <apex:actionFunction name="actualizarContenido" action="{!updateContent}"/>
+                </div>
+                   </div>
+                     </div>
+              
+              <apex:repeat value="{!lstContent}" var="cont">
+                  <div style="display: block;padding-left: 10px; margin: 0.5cm 0 0.5cm 0;">
+                   <apex:outputText value="Objeto" style="color: black;margin-left: 1em;"/>
+                     <div class="slds-form-element__control" style="margin-top: 10px;margin-left:10px;">
+                      <apex:inputCheckbox rendered="{!cont.Id==null}" disabled="{!NOT(boolEnabled) || boolModifyEnabled}" value="{!cont.R2_BG_CHK_Select__c}" style="margin-left: 5px"/>
+                    </div>
+                       <div class="slds-form-element__control" style="margin-top: 10px;margin-left:10px;">
+                        Tipo de objeto:
+                      <apex:inputText rendered="{!cont.Id!=null}" disabled="true" value="{!cont.R2_CB_TXT_Type__c}" style="width: 5cm; margin-left: 5px"/>
+                          <apex:inputText rendered="{!cont.Id==null}" value="{!cont.R2_CB_TXT_Type__c}" style="width: 5cm; margin-left: 5px"/>
+                    </div>
+                   <div class="slds-form-element__control" style="margin-top: 10px;margin-left:10px;">
+                        Descripcion del objeto:
+                      <apex:inputTextarea rendered="{!cont.Id!=null}" disabled="true" value="{!cont.R2_CB_TXT_Description__c}" style="width: 5cm; margin-left: 5px"/>
+                       <apex:inputTextarea rendered="{!cont.Id==null}" value="{!cont.R2_CB_TXT_Description__c}" style="width: 5cm; margin-left: 5px"/>
+                    </div>
+                  </div>
+
+              </apex:repeat>
+              
+              <div id="newObject" style="display: none;padding-left: 10px; margin: 0.5cm 0 0.5cm 0;">
+                   <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px;">
+                <div class="slds-form-element__control" style="margin-top: 10px;">
+        	* Nuevo Objeto &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<apex:commandbutton StyleClass="slds-input" value="Guardar objeto" reRender="formImg, form" action="{!guardarContenido}"/>
+                       </div>
+                
+                    
+                    <div class="slds-form-element__control" style="margin-top: 10px;">
+                        Tipo de objeto:
+                      <apex:inputText value="{!tipoCont}" style="width: 5cm; margin-left: 5px"/>
+                    </div>
+                   <div class="slds-form-element__control" style="margin-top: 10px;">
+                        Descripcion del objeto:
+                      <apex:inputText value="{!desCont}" style="width: 5cm; margin-left: 5px"/>
+                    </div>
+                         </div>
+                  </div>
+            
+              
+                 </div>
+              </div>
+                  </div>
+              <div style="width: 100%;">
+              <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_12-of-12" style="width: 100%; border: 1px solid black;">
+            <h3 class="slds-text-heading--large" style="text-align: left; padding: 5px 0 5px 1cm; background-color: #CCCCCC; font-weight: bold; height: 1cm">
+            Petición de OHD 
+            </h3>
+              <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px; margin: 0.5cm 0 0.5cm 0;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    ROH FI:
+                  <apex:inputText value="{!bag.R2_BAG_TXT_ROH_FI__c}" disabled="true" style="width: 5cm; margin-left: 5px"/>
+                </div>
+                  </div>
+               <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px; margin: 0.5cm 0 0.5cm 0;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    ROH SI01:
+                  <apex:inputText value="{!bag.R2_BAG_TXT_ROH_SI01__c}" disabled="true" style="width: 5cm; margin-left: 5px"/>
+                </div>
+                   </div>
+                <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px; margin: 0.5cm 0 0.5cm 0;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    ROH SI02:
+                  <apex:inputText value="{!bag.R2_BAG_TXT_ROH_SI02__c}" disabled="true" style="width: 5cm; margin-left: 5px"/>
+                </div>
+                    </div>
+                <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px; margin: 0.5cm 0 0.5cm 0;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    ROH Resultado:
+                  <apex:inputText value="{!bag.R2_BAG_TXT_ROH_result__c}" disabled="true" style="width: 5cm; margin-left: 5px"/>
+                </div>
+              </div>
+            </div> 
+              </div>
+              </div>
+              </div>
+        </div>
+           <script>
+          function confirmarBorrado(objId){
+              
+              var confirmar=confirm("Are you sure?");
+              if(confirmar){
+                  if(objId=="false"){
+                      borrarMaleta();    
+                  }else{
+                      callingModal("No pudieron borrar los contenidos creados por WT"); 
+                      borrarMaleta();  
+                  }  
+              }  
+          };
+          
+          function confirmarCont(){
+              
+              
+                  callingModal("Se ha actualizado el contenido correctamente.");
+                  actualizarContenido(); 
+         
+              
+          };
+
+          function habilitarNewObject(objId){
+              if(objId == '' || objId == null || typeof objId === 'undefined'){
+                  callingModal("Debe existir la maleta para poder meter contenido"); 
+              }else{
+                  console.log('aqui ');
+                  var numContBag = "{!numCont}";
+                  if(numContBag < 12){ 
+                      var divEdit = document.getElementById("newObject");
+                      divEdit.style.display = 'inline-block';
+                  }else{
+                      callingModal('Limite de objetos. No puede añadir mas objetos en esta maleta.');
+                  }
+              }  
+          };
+          
+          function alertGuardar(action){
+              if(action=='save'){
+                 callingModal('Se ha guardado la maleta correctamente');
+              }else if(action=='update'){
+               	 callingModal('Se ha actualizado la maleta correctamente');	
+              }   
+          };
+
+      
+          </script>    
+      </apex:form>    
+    </div>
+        </div>
+    </div>   
+    
+</body>
+</html>
+</apex:page>

@@ -1,0 +1,249 @@
+<apex:page id="pageId"  showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" standardController="Case" extensions="R2_CAS_CaseSendEmail_CTRL" action="{!mostrarEmails}" >
+    <!---------------------------------------------------------------------------------------------------------------------
+    Author:         Rubén Pingarrón Jerez
+    Company:        Accenture
+    Description:    VisualForce que maneja los emails de un Caso
+    IN:             
+    OUT:            
+
+    History: 
+     <Date>                     <Author>                         <Change Description>
+    28/07/2017             Rubén Pingarrón Jerez                    Initial Version
+    29/09/2017             Sara Torres Bermúdez                     Modify Version
+    29/09/2017             Alberto Puerto Collado                   Initial Version
+    ---------------------------------------------------------------------------------------------------------------------->
+   <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+    
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+    <apex:includeScript value="/xdomain/xdomain.js"/>
+    <apex:includeScript value="/soap/ajax/33.0/connection.js"/>
+    <apex:includeScript value="/support/console/40.0/integration.js"/>
+    <apex:includeScript value="/soap/ajax/33.0/apex.js"/>
+       
+    <script type="text/javascript">
+       // Funcion que abre la vista detallada de un email
+       function openEmailViewtab(emailId) {
+           if (sforce.console.isInConsole()) {
+               console.log('PrimaryTabId:' + emailId);
+               // First find the ID of the primary tab to put the new subtab in
+               // Funcion que abre la url en un subtab pasandole la ID del primaryTab
+               var openSubtab = function openSubtab(result) {
+                       sforce.console.openSubtab(result.id , '/' + emailId, true, '', null);
+               };
+               function getPrimaryTabId(){
+                   sforce.console.getFocusedPrimaryTabId(openSubtab);
+               }    
+               getPrimaryTabId();
+           }else {
+               window.open('/' + emailId,'_blank');
+           }
+        };
+           // Funcion del popUp de confirmacion de Javascript
+           function confirmarBorrado(emailId) {
+               if (sforce.console.isInConsole()) {
+                   var confirmar=confirm("Are you sure?");
+                   if(confirmar){
+                       sforce.connection.deleteIds([''+emailId+'']);
+                   }
+               }else {
+                   window.open('/' + emailId,'_blank');
+               }
+           };
+           function checkAll(obj,receivedInputID){
+               var inputElem = document.getElementsByTagName("input");
+               for(var i=0; i<inputElem.length; i++){
+                   if(inputElem[i].id.indexOf(receivedInputID)!=-1){
+                       inputElem[i].checked = obj.checked;
+                   }
+               }
+           };
+           function abrirReplyToAll(emailId) {
+               if (sforce.console.isInConsole()) {
+                   console.log('PrimaryTabId:' + emailId);
+                   // First find the ID of the primary tab to put the new subtab in
+                   function getPrimaryTabId(){
+                       sforce.console.getFocusedPrimaryTabId(openSubtab);
+                   }
+                   // Funcion que abre la url en un subtab pasandole la ID del primaryTab
+                   var openSubtab = function openSubtab(result) {
+                       sforce.console.openSubtab(result.id , '/_ui/core/email/author/EmailAuthor?email_id=' + emailId + '&replyToAll=1', true, '', null);
+                   };
+                   getPrimaryTabId();
+               }else {
+                   window.open('/' + emailId,'_blank');
+               }
+           };
+           </script>
+       <body> <!--onload="javascript:resizeTo(500,350)"-->
+           
+<!-- REQUIRED SLDS WRAPPER -->
+           <div id="globalWrapper" class="slds " style="width: 100%;" >
+            <apex:form styleClass="slds-form" style="margin: 0 0 0 0; padding: 0 0 0 0;min-width: 100%;size: 100%;" id="formId">
+                <apex:actionFunction name="refresh" rerender="formulario" />
+                <apex:outputPanel id="enviarEmail">
+                    <apex:pageBlock id="pbId" >
+                        <div class="slds-card">
+                            <div class="slds-card__header" style="width: 100%; text-align: left; padding-left: 10px;">
+                                <h2 class="slds-text-heading--small" style=" display: inline-block; text-align: left; padding: 5px 0 5px 1cm; height: 1cm">Correos Electrónicos</h2>
+                                <!-- <button id="EnviarMails" class="slds-button slds-button_neutral" style=" display: inline-block; margin-left: 30%;padding: 2px 3px;" onClick="openEmailForm('{!Caso.Id}')">Enviar Email</button> -->
+
+                                <button id="EnviarMails" class="slds-button slds-button_neutral" style=" display: inline-block; margin-left: 30%;padding: 2px 3px;" onClick="opeanEmailTemplate('{!Caso.Id}')">Enviar Email</button>
+                                <button id="EnviarMails" class="slds-button slds-button_neutral" style=" display: inline-block;padding: 2px 3px;" onClick="openGuPostTemplate('{!Caso.Id}')">Enviar Carta</button>
+                                <!--    <apex:commandLink id="ImprimirMails" value="Imprimir Emails" onclick="recolectaCHK()"  styleClass="slds-button slds-button--brand slds-m-top--medium" >            
+                                </apex:commandLink> -->
+                                <!--   <button id="ImprimirMails" class="slds-button slds-button_neutral" style="padding: 2px 3px;"  onClick="recolectaCHK('{!casoId}');" >Imprimir Emails</button>
+                                <apex:actionFunction name="imprimeMails" action="{!imprimirEmails}"/> -->
+                                <apex:commandLink target="_blank" styleClass="slds-button slds-button_neutral" action="{!GotoPrint}">Convertir a PDF</apex:commandLink>
+                               <!-- <apex:actionFunction name="resetCheck" action="{!recorrerEmailsSelected}"/>
+                                <apex:actionFunction name="resetCheck" rerender="formId"/> -->
+                                <!--<button id="ImprimirMails" class="slds-button slds-button_neutral" style="padding: 2px 3px;"  action="{!imprimirEmails}" >Imprimir Emails</button>-->
+                            </div>
+                            <div class="slds-card__body">
+                                <apex:outputPanel id="emailPanel">
+                                    <apex:outputText rendered="{!shouldRedirect}">
+                                        <script type="text/javascript">
+                                        // Funcion que abre el formulario de creacion del email
+                                        
+                                        function openEmailForm(casoId){
+                                             if(sforce.console.isInConsole()){
+                                                console.log('casoid: '+casoId);
+                                                // First find the ID of the primary tab to put the new subtab in
+                                                function getPrimaryTabId(){
+                                                    sforce.console.getFocusedPrimaryTabId(openSubtab);
+                                                }
+                                                // Funcion que abre la url en un subtab pasandole la ID del primaryTab
+                                                var openSubtab = function openSubtab(result) {
+                                                    if(casoId!=null){
+                                                        sforce.console.openSubtab(result.id ,'/_ui/core/email/author/EmailAuthor?p2_lkid=&p3_lkid={!Caso.Id}&p24={!Caso.R2_CAS_EMA_Email__c}&p5=' , true, '', null);
+                                                        sforce.console.refreshPrimaryTabById(result.id);
+                                                    }else{
+                                                        sforce.console.openSubtab(result.id ,'/_ui/core/email/author/EmailAuthor?p2_lkid=&p3_lkid={!Caso.Id}&p24=&p5=' , true, '', null);
+                                                        sforce.console.refreshPrimaryTabById(result.id);
+                                                    }
+                                                };
+                                                getPrimaryTabId();
+                                              }else{
+                                                  if(casoId != null){
+                                                        window.open('/_ui/core/email/author/EmailAuthor?p2_lkid=&p3_lkid={!Caso.Id}&p24={!Caso.R2_CAS_EMA_Email__c}&p5=', '_blank');
+                                                    }else{
+                                                        window.open('/_ui/core/email/author/EmailAuthor?p2_lkid=&p3_lkid={!Caso.Id}&p24=&p5=', '_blank');
+                                                    }
+                                            }
+                                        };
+
+                                        function opeanEmailTemplate(casoId){
+                                             if(sforce.console.isInConsole()){
+                                                console.log('casoid: '+casoId);
+                                                // First find the ID of the primary tab to put the new subtab in
+                                                function getPrimaryTabId(){
+                                                    sforce.console.getFocusedPrimaryTabId(openSubtab);
+                                                }
+                                                // Funcion que abre la url en un subtab pasandole la ID del primaryTab
+                                                var openSubtab = function openSubtab(result) {
+                                                    if(casoId!=null){
+                                                        sforce.console.openSubtab(result.id ,'/apex/CR_VF_templateFilter?p2_lkid=&p3_lkid={!Caso.Id}&p24={!Caso.R2_CAS_EMA_Email__c}&p5=' , true, '', null);
+                                                        sforce.console.refreshPrimaryTabById(result.id);
+                                                    }else{
+                                                        sforce.console.openSubtab(result.id ,'/apex/CR_VF_templateFilter?p2_lkid=&p3_lkid={!Caso.Id}&p24=&p5=' , true, '', null);
+                                                        sforce.console.refreshPrimaryTabById(result.id);
+                                                    }
+                                                };
+                                                getPrimaryTabId();
+                                              }else{
+                                                  if(casoId != null){
+                                                        window.open('/apex/CR_VF_templateFilter?p2_lkid=&p3_lkid={!Caso.Id}&p24={!Caso.R2_CAS_EMA_Email__c}&p5=', '_blank');
+                                                    }else{
+                                                        window.open('/CR_VF_templateFilter?p2_lkid=&p3_lkid={!Caso.Id}&p24=&p5=', '_blank');
+                                                    }
+                                            }
+                                        };
+                                        
+                                        function openGuPostTemplate(casoId){
+                                             if(sforce.console.isInConsole()){
+                                                console.log('casoid: '+casoId);
+                                                // First find the ID of the primary tab to put the new subtab in
+                                                function getPrimaryTabId(){
+                                                    sforce.console.getFocusedPrimaryTabId(openSubtab);
+                                                }
+                                                // Funcion que abre la url en un subtab pasandole la ID del primaryTab
+                                                var openSubtab = function openSubtab(result) {
+                                                    if(casoId!=null){
+                                                        sforce.console.openSubtab(result.id ,'/apex/R2_VF_GuPostTemplateFilter?p2_lkid=&p3_lkid={!Caso.Id}&p24={!Caso.R2_CAS_EMA_Email__c}&p5=' , true, '', null);
+                                                        sforce.console.refreshPrimaryTabById(result.id);
+                                                    }else{
+                                                        sforce.console.openSubtab(result.id ,'/apex/R2_VF_GuPostTemplateFilter?p2_lkid=&p3_lkid={!Caso.Id}&p24=&p5=' , true, '', null);
+                                                        sforce.console.refreshPrimaryTabById(result.id);
+                                                    }
+                                                };
+                                                getPrimaryTabId();
+                                              }else{
+                                                  if(casoId != null){
+                                                        window.open('/apex/R2_VF_GuPostTemplateFilter?p2_lkid=&p3_lkid={!Caso.Id}&p24={!Caso.R2_CAS_EMA_Email__c}&p5=', '_blank');
+                                                    }else{
+                                                        window.open('/R2_VF_GuPostTemplateFilter?p2_lkid=&p3_lkid={!Caso.Id}&p24=&p5=', '_blank');
+                                                    }
+                                            }
+                                        };
+                                        </script>
+                                    </apex:outputText>
+                                </apex:outputPanel>
+                                <apex:pageBlockSection columns="1" id="pbsIs">
+                                    <apex:outputpanel style="margin: 0 0 0 0; padding: 0 0 0 0;min-width: 100%;size: 100%;" layout="block">
+                                        <apex:pageBlockTable styleClass="slds-table slds-table_bordered slds-table_cell-buffer" style="padding: 0 0 0 0;min-width: 100%;size: 100%;" value="{!mensajesMostradosList}" var="Email">
+                                            <apex:column styleClass="slds-truncate" headerValue="Acciones" >
+                                                <apex:facet name="header">
+                                                    <apex:inputCheckbox onclick="checkAll(this,'inputId')"/>
+                                                </apex:facet>
+                                                <apex:inputCheckbox id="inputId" value="{!Email.selected}"/>
+                                            </apex:column>
+                                            <apex:column styleClass="slds-truncate" headerValue="Acciones" >
+                                                <!--<a onClick="confirmarBorrado('{!Email.Id}')" href="javascript:;">Del</a>
+                                            <apex:outputLink onClick="confirmarBorrado('{!Email.Id}')" >Del</apex:outputLink> -->
+                                            <apex:commandLink style="margin-right: 15px;" value="Eliminar" onClick="confirmarBorrado('{!Email.emails.Id}')" action="{!mostrarEmails}" reRender="pbsIs, pbLink" rendered="{!perfilName == 'System Administrator' || perfilName == 'Administrador del sistema'}"/>
+                                                <apex:commandLink style="margin-right: 15px;" value="Responder" onClick="abrirReply('{!Email.emails.Id}')" reRender="pbsIs, pbLink"/>
+                                                <script type="text/javascript">
+                                                // Funcion que abre el formulario de creacion del email
+                                                function abrirReply(emailId) {
+                                                    if (sforce.console.isInConsole()) {
+                                                        console.log('PrimaryTabId:' + emailId);
+                                                        // First find the ID of the primary tab to put the new subtab in
+                                                        function getPrimaryTabId(){
+                                                            sforce.console.getFocusedPrimaryTabId(openSubtab);
+                                                        }
+                                                        // Funcion que abre la url en un subtab pasandole la ID del primaryTab
+                                                        var openSubtab = function openSubtab(result) {
+                                                            sforce.console.openSubtab(result.id , '/_ui/core/email/author/EmailAuthor?email_id=' + emailId + '&replyToAll=0', true, '', null);
+                                                        };
+                                                        getPrimaryTabId();
+                                                    }else {
+                                                        window.open('/' + emailId,'_blank');
+                                                    }
+                                                };
+                                                </script>
+                                            </apex:column>
+                                                <apex:commandLink style="margin-right: 0px;" value="Responder a todos" onClick="abrirReplyToAll('{!Email.emails.Id}')" reRender="pbsIs, pbLink"/>
+                                            <apex:Column styleClass="slds-truncate" headerValue="{!$ObjectType.EmailMessage.fields.Status.Label}">
+                                                <apex:outputfield value="{!Email.emails.Status}"></apex:outputfield>
+                                            </apex:Column>
+                                            <apex:Column styleClass="slds-truncate" headerValue="{!$ObjectType.EmailMessage.fields.Subject.Label}">
+                                                <apex:commandLink value="{!Email.emails.Subject}" onClick="openEmailViewtab('{!Email.emails.Id}')" reRender="pbsIs"/>
+                                                <!-- <a onClick="openEmailViewtab('{!Email.Id}')" href="javascript:;">{!Email.Subject}</a>-->
+                                            </apex:Column>
+                                            <apex:Column styleClass="slds-truncate" headerValue="{!$ObjectType.EmailMessage.fields.FromAddress.Label}">
+                                                <apex:outputfield value="{!Email.emails.FromAddress}"></apex:outputfield>
+                                            </apex:Column>
+                                            <apex:Column styleClass="slds-truncate" headerValue="{!$ObjectType.EmailMessage.fields.MessageDate.Label}">
+                                                <apex:outputfield value="{!Email.emails.MessageDate}"></apex:outputfield>
+                                            </apex:Column>
+                                        </apex:pageBlockTable>
+                                    </apex:outputpanel>
+                                </apex:pageBlockSection>
+                            </div>
+                        </div>
+                    </apex:pageBlock>
+                </apex:outputPanel>
+            </apex:form>
+        </div>
+       </body>
+    </html>
+</apex:page>

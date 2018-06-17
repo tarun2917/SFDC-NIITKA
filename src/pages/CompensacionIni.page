@@ -1,0 +1,406 @@
+<apex:page id="pageId"  showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" standardController="Case" extensions="CompensacionController">
+    
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+    
+    <style type="text/css">
+        .tablesorter-blue .header,
+        .tablesorter-blue .tablesorter-header {
+            /* black (unsorted) double arrow */
+            background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+            /* white (unsorted) double arrow */
+            /* background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAAP///////yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==); */
+            /* image */
+            /* background-image: url(images/black-unsorted.gif); */
+            background-repeat: no-repeat;
+            background-position: center right;
+            padding: 4px 18px 4px 4px;
+            white-space: normal;
+            cursor: pointer;
+        }
+        .tablesorter-blue .headerSortUp,
+        .tablesorter-blue .tablesorter-headerSortUp,
+        .tablesorter-blue .tablesorter-headerAsc {
+            background-color: #9fbfdf;
+            /* black asc arrow */
+            background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+            /* white asc arrow */
+            /* background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7); */
+            /* image */
+            /* background-image: url(images/black-asc.gif); */
+        }
+        .tablesorter-blue .headerSortDown,
+        .tablesorter-blue .tablesorter-headerSortDown,
+        .tablesorter-blue .tablesorter-headerDesc {
+            background-color: #8cb3d9;
+            /* black desc arrow */
+            background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
+            /* white desc arrow */
+            /* background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7); */
+            /* image */
+            /* background-image: url(images/black-desc.gif); */
+        }    
+       .cabecera{
+           background-color:#F2F2F2 !important;
+       }
+       /*.AzulClaro{
+            border-left: solid lightblue 4px !important; 
+       }
+       .Verde{
+            border-left: solid #81F781 4px !important; 
+        }
+       .Amarillo{
+            border-left: solid #FFFF00 4px !important; 
+       }
+       .Naranja{
+            border-left: solid #FFBF00 4px !important; 
+       }
+       .AzulOscuro{
+            border-left: solid #3104B4 4px !important; 
+       }
+       .Negro{
+            border-left: solid #000000 4px !important; 
+       }
+       .Violeta{
+            border-left: solid #A901DB 4px !important; 
+       }     
+       .Rosa{
+            border-left: solid #FF00FF 4px !important; 
+       }
+       .Rojo{
+            border-left: solid #FF4000 4px !important; 
+       }
+       .VerdeOscuro{
+            border-left: solid #088A08 4px !important; 
+       }
+       .Marron{
+            border-left: solid #886A08 4px !important; 
+       }
+       .Oliva{
+            border-left: solid #688A08 4px !important; 
+       }
+       .Gris{
+            border-left: solid #D8D8D8 4px !important; 
+       } 
+       .Cian{
+            border-left: solid #81F7F3 4px !important; 
+       }  */                                                              
+       .botonPrimerPlano{
+           position: fixed;
+           z-index: 999;
+       }     
+       
+    </style>
+        
+    <apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+    <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.8/js/jquery.tablesorter.min.js" />
+    <apex:includeScript value="/soap/ajax/33.0/connection.js"/>
+    <apex:includeScript value="/support/console/41.0/integration.js"/>
+    <apex:includeScript value="/soap/ajax/33.0/apex.js"/>
+    
+    
+<script type="text/javascript">
+        
+        var url;
+        j$ = jQuery.noConflict();
+
+
+        j$( document ).ready(function() {
+        
+            j$("[id$='ordenar']").tablesorter({theme: 'blue', dateFormat : "dd/mm/yyyy"});
+            j$("[id$='ordenar2']").tablesorter({theme: 'blue', dateFormat : "dd/mm/yyyy"});
+            j$("[id$='ordenar3']").tablesorter({theme: 'blue', dateFormat : "dd/mm/yyyy"});
+            
+    });       
+    url ='/setup/ui/recordtypeselect.jsp?ent={!$Label.R2_LB_OB_R2_Compensation}&save_new_url=%2F{!$Label.R2_LB_Id_Pago}%2Fe%3F&{!$Label.R2_LB_FI_Cliente}_lkid={!casoPadre.AccountId}&{!$Label.R2_LB_FI_Cliente}={!casoPadre.Account.Name}&{!$Label.R2_LB_FI_Budgetary_center}={!casoPadre.R1_CAS_TXT_Budgetary_center__c}&{!$Label.R2_LB_FI_Charge_account}={!casoPadre.R1_CAS_TXT_Charge_account__c}&{!$Label.R2_LB_FI_Case}_lkid={!casoPadre.Id}&{!$Label.R2_LB_FI_Case}={!casoPadre.CaseNumber}&{!$Label.R2_LB_FI_Reason_in_compensation}={!casoPadre.Type}-{!casoPadre.R1_CAS_PKL_Subtype__c}';
+        function testOpenSubtab() {
+        debugger;
+            //First find the ID of the primary tab to put the new subtab in
+            sforce.console.getEnclosingPrimaryTabId(openSubtab);
+        }
+        
+        var openSubtab = function openSubtab(result) {
+            //Now that we have the primary tab ID, we can open a new subtab in it
+            var primaryTabId = result.id;
+            sforce.console.openSubtab(primaryTabId , url, true, 
+                'Nueva pago Pasaje', null, openSuccess, 'salesforceSubtab');
+        };
+        
+        var openSuccess = function openSuccess(result) {
+            //Report whether we succeeded in opening the subtab
+            if (result.success == true) {
+               // alert('subtab successfully opened');
+            } else {
+               // alert('subtab cannot be opened');
+            }
+        };
+        
+        // rerender subtab
+        
+       
+        function testRefreshTab() {
+            debugger;
+            //First find the ID of the current tab to close it
+            sforce.console.getEnclosingPrimaryTabId(closeSubtab);
+        }
+        
+         var closeSubtab = function closeSubtab(result) {
+            //Now that we have the tab ID, we can close it
+            var tabId = result.id;
+            sforce.console.refreshPrimaryTabById(result.id, true, refreshSuccess);
+            
+        };
+        var refreshSuccess = function refreshSuccess(result) {
+            //Report whether refreshing the primary tab was successful
+            if (result.success == true) {
+                //alert('Primary tab refreshed successfully');
+            } else {
+                //alert('Primary did not refresh');
+            }
+        };
+    //////////////////
+    function openSubTabClick(recId) {  
+        console.log('openSubTabClick' + recId);
+        var redirectUrl = recId;
+        
+        // condition to check for Console
+        if (sforce.console.isInConsole()) {
+            sforce.console.getEnclosingTabId(function(enclosingResult) {
+                sforce.console.getEnclosingPrimaryTabId(function(primaryResult) {
+                    sforce.console.openSubtab(primaryResult.id, redirectUrl, true, '', null);
+                });
+            });
+        } else { // other than console
+            // for inline Vf
+            window.top.location.href = '/' + redirectUrl
+            // for normal vf
+            // window.location.href = '/'+redirectUrl
+        }
+    };
+
+
+    function OpenSubtabPaymentOrder() {
+        console.log('Se lanza el js');
+            //First find the ID of the primary tab to put the new subtab in
+            sforce.console.getEnclosingPrimaryTabId(openSubtabPO);
+        }
+        
+        var openSubtabPO = function openSubtabPO(result) {
+            //Now that we have the primary tab ID, we can open a new subtab in it
+            var primaryTabId = result.id;
+            sforce.console.openSubtab(primaryTabId , '/apex/FormularioCuentaC?id={!caseId}', true, 
+                'Crear Orden de Pago', null, openSuccess, 'salesforceSubtab');
+        };
+        
+        var openSuccess = function openSuccess(result) {
+            //Report whether we succeeded in opening the subtab
+            if (result.success == true) {
+            } else {
+            }
+            
+        };
+    
+    
+    
+    //////////////////
+    </script>
+    
+    
+        
+    <div>
+      <apex:form >
+        <!--Si no es un expediente y no hay datos que mostrar lo indicamos por pantalla-->
+        <apex:pageBlock rendered="{!!isExpediente && compenIni.size==0 && compenNoIni.size==0}">
+            <div class="slds-text-heading--small">{!$Label.R2_VF_NoData}</div>
+        </apex:pageBlock>
+        
+        <!--Aunque no hay datos mostramos los botones de pasaje y equipaje si compete-->
+        <apex:pageBlock rendered="{!!isExpediente && compenIni.size==0}">  
+          <apex:actionFunction name="CallApexMethod" action="{!gotoPage}"/>
+            <h3 class="slds-section-title--divider">{!$Label.R2_VF_Compensacion}</h3>
+            <apex:outputPanel rendered="{!equipajeVisible}">
+                <apex:outputLink value="/apex/R2_VF_BAG_Bag_Calculator?id={!casoPadre.Id}" styleClass="slds-button slds-button--neutral" target="_blank">Calculadora de equipaje</apex:outputLink>
+            </apex:outputPanel> 
+             
+            <apex:outputPanel rendered="{!pasajeVisible}" id="pago">
+            
+             <!--   <apex:outputLink value="/setup/ui/recordtypeselect.jsp?ent=01I7E0000005Uzx&save_new_url=%2Fa1K%2Fe%3F&{!$Label.R2_LB_FI_Cliente}+'_lkid'={!casoPadre.AccountId}&{!$Label.R2_LB_FI_Budgetary_center}={!casoPadre.R1_CAS_TXT_Budgetary_center__c}&{!$Label.R2_LB_FI_Charge_account}={!casoPadre.R1_CAS_TXT_Charge_account__c}" styleClass="slds-button slds-button--neutral" target="_blank">Nuevo pago Pasaje</apex:outputLink>
+               -->
+            
+              <apex:commandButton value="Nuevo pago Pasaje" oncomplete="testOpenSubtab();" reRender="pago" styleClass="slds-button slds-button--neutral"/> 
+           
+            </apex:outputPanel>   
+        </apex:pageBlock>
+    
+        <!--Bloque visible solo para casos hijos(Expedientes no) que muestra el listado de pagos en estado inicial-->
+        <apex:pageBlock rendered="{!!isExpediente && compenIni.size!=0}">  
+          <apex:actionFunction name="CallApexMethod" action="{!gotoPage}"/>
+            <h3 class="slds-section-title--divider">{!$Label.R2_VF_Compensacion}</h3>
+            <apex:outputPanel rendered="{!equipajeVisible}">
+                <apex:outputLink value="/apex/R2_VF_BAG_Bag_Calculator?id={!casoPadre.Id}" styleClass="slds-button slds-button--neutral" target="_blank">Calculadora de equipaje</apex:outputLink>
+            </apex:outputPanel>   
+            <apex:outputPanel rendered="{!pasajeVisible}">
+               <!-- <apex:outputLink value="/setup/ui/recordtypeselect.jsp?ent=01I7E0000005Uzx&save_new_url=%2Fa1K%2Fe%3F&{!$Label.R2_LB_FI_Cliente}+'_lkid'={!casoPadre.AccountId}&{!$Label.R2_LB_FI_Budgetary_center}={!casoPadre.R1_CAS_TXT_Budgetary_center__c}&{!$Label.R2_LB_FI_Charge_account}={!casoPadre.R1_CAS_TXT_Charge_account__c}" styleClass="slds-button slds-button--neutral" target="_blank">Nuevo pago Pasaje</apex:outputLink>
+                -->
+                 <apex:commandButton value="Nuevo pago Pasaje" oncomplete="testOpenSubtab();" reRender="pago" styleClass="slds-button slds-button--neutral"/> 
+
+            </apex:outputPanel>   
+            <table class = "slds-table slds-table_bordered slds-table_cell-buffer" id="ordenar"> 
+              <thead>       
+                <tr class="slds-text-title_caps cabecera">
+                    <apex:repeat value="{!camposList}" var="campo">
+                        <th>
+                            {!campo}
+                        </th>
+                    </apex:repeat>
+                </tr>
+              </thead> 
+              <tbody>        
+                <apex:repeat var="compen" value="{!compenIni}">        
+                <tr>                
+                    <apex:repeat var="campo" value="{!listaCampos}">
+                       <!--Controlamos si es el Id del cliente, caso en el que lo sustituiremos por el nombre con link al registro-->
+                       <apex:outputPanel rendered="{!IF(campo = 'Name',true,false)}">
+                           <td>
+                               <a href="#" onclick="openSubTabClick('{!compen['Id']}')">{!compen[campo]}</a>
+                           </td>
+                       </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(campo = 'R2_COM_LOO_Client__c',true,false)}">
+                            <td>
+                                <a href="#" onclick="openSubTabClick('{!compen[campo]}')">
+                                    {!IF(!isNull(compen[campo]),mapaNombres[compen[campo]],compen[campo])}
+                                </a>
+                            </td>
+                        </apex:outputPanel>
+                       <apex:outputPanel rendered="{!IF(campo = 'R2_COM_LOO_Client__c',false,IF(campo = 'Name',false,true))}">
+                           <td>{!compen[campo]}</td>
+                       </apex:outputPanel>  
+                    </apex:repeat>        
+                </tr>        
+                </apex:repeat> 
+              </tbody>        
+            </table>          
+        </apex:pageBlock>
+                
+        <!--Bloque visible sólo para casos hijos(Expediente no) que muestra los pagos que no estan en estado inicial -->
+        <apex:pageBlock rendered="{!!isExpediente && compenNoIni.size!=0}">
+        <h3 class="slds-section-title--divider">{!$Label.R2_VF_Pagos}</h3>
+            <table class = "slds-table slds-table_bordered slds-table_cell-buffer" id="ordenar2"> 
+              <thead>       
+                <tr class="slds-text-title_caps cabecera">
+                    <apex:repeat value="{!camposList}" var="campo">
+                        <th>
+                            {!campo}
+                        </th>
+                    </apex:repeat>
+                </tr>  
+              </thead> 
+              <tbody>      
+                <apex:repeat var="compen" value="{!compenNoIni}">        
+                <tr>                
+                    <apex:repeat var="campo" value="{!listaCampos}">
+                       <!--Controlamos si es el Id del Pago-->
+                       <apex:outputPanel rendered="{!IF(campo = 'Name',true,false)}">
+                           <td>
+                               <a href="#" onclick="openSubTabClick('{!compen['Id']}')">{!compen[campo]}</a>
+                           </td>
+                       </apex:outputPanel>
+
+                       <!--Controlamos si es el Id del cliente, caso en el que lo sustituiremos por el nombre con link al registro-->
+                        <apex:outputPanel rendered="{!IF(campo = 'R2_COM_LOO_Client__c',true,false)}">
+                            <td>
+                                <a href="#" onclick="openSubTabClick('{!compen[campo]}')">
+                                    {!IF(!isNull(compen[campo]),mapaNombres[compen[campo]],compen[campo])}
+                                </a>
+                            </td>
+                        </apex:outputPanel>
+                       <apex:outputPanel rendered="{!IF(campo = 'R2_COM_LOO_Client__c',false,IF(campo = 'Name',false,true))}">
+                           <td>{!compen[campo]}</td>
+                       </apex:outputPanel>  
+                    </apex:repeat>        
+                </tr>        
+                </apex:repeat>  
+               </tbody>        
+            </table>            
+        </apex:pageBlock>
+        
+        <!--Si es un expediente pero no hay datos que mostrar lo indicamos por pantalla-->
+        <apex:pageBlock rendered="{!isExpediente && compenEmitidoList.size==0}">
+            <div class="slds-text-heading--small">{!$Label.R2_VF_NoData}</div>
+        </apex:pageBlock>
+        
+        <!--Bloque para el padre(Expediente) que muestra los pagos en estado pendiente de emisión y emitido-->
+          <!--isExpediente && NO-->
+        <apex:pageBlock rendered="{!compenEmitidoList2.size!=0}">
+        <!--  <h3 class="slds-section-title--divider">{!$Label.R2_VF_PagosPedientes}</h3>-->
+            
+                <div class="slds-p-bottom_small slds-align_absolute-center">
+                    <apex:commandButton action="{!pendiente}"  value="A pendiente" styleClass="slds-button slds-button--neutral" id="pendiente"  />
+                    <!-- <apex:commandLink action="{!gotoPage}" target="_blank" value="Crear orden de pago" styleClass="slds-button slds-button--neutral" id="procesar"/> -->
+                    <apex:commandLink value="Crear orden de pago" styleClass="slds-button slds-button--neutral" id="paymentOrderJs" onClick="OpenSubtabPaymentOrder()"/>
+                    <apex:commandButton action="{!cancelar}"  value="Cancelar pagos" styleClass="slds-button slds-button--neutral" id="cancelar"/>
+                </div> 
+                <apex:outputPanel id="tablemain">   
+                    <table class = "slds-table slds-table_bordered slds-table_cell-buffer" id="ordenar3">  
+                      <thead>       
+                        <tr class="slds-text-title_caps cabecera">
+                            <th>
+                                {!$Label.R2_VF_Selecionar}
+                            </th>
+                            <apex:repeat value="{!camposList}" var="campo">
+                                <th>
+                                    {!campo}
+                                </th>
+                            </apex:repeat>
+                        </tr>
+                     </thead> 
+                     <tbody> 
+                        <!--Cada pasada de esta tabla crea una tabla con los pagos de un cliente-->        
+                        <apex:repeat var="compensaciones" value="{!compenEmitidoList2}">        
+                        <tr>
+                            <!--Cada pasada de este bucle crea una fila con los datos de un pago--> 
+                            <apex:repeat var="compen" value="{!compensaciones}"> 
+                              <tr>
+                                <td class="{!compen.formato}">
+                                    <apex:inputCheckbox value="{!compen.selected}"/>
+                                </td> 
+                                <!--Cada pasada de este bucle crea cada una de las columnas de un pago-->      
+                                  <apex:repeat var="campo" value="{!listaCampos}">
+                                      <!--Controlamos si es el Id del Pago-->
+                                      <apex:outputPanel rendered="{!IF(campo = 'Name',true,false)}">
+                                          <td>
+                                              <a href="#" onclick="openSubTabClick('{!compen.pago['Id']}')">{!compen.pago[campo]}</a>
+                                          </td>
+                                      </apex:outputPanel>
+                                      
+                                      <!--Controlamos si es el Id del cliente, caso en el que lo sustituiremos por el nombre con link al registro-->
+                                      <apex:outputPanel rendered="{!IF(campo = 'R2_COM_LOO_Client__c',true,false)}">
+                                          <td>
+                                              <a href="#" onclick="openSubTabClick('{!compen.pago[campo]}')">
+                                                  {!IF(!isNull(compen.pago[campo]),mapaNombres[compen.pago[campo]],compen.pago[campo])}
+                                              </a>
+                                          </td>
+                                      </apex:outputPanel>
+                                      <apex:outputPanel rendered="{!IF(campo = 'R2_COM_LOO_Client__c',false,IF(campo = 'Name',false,true))}">
+                                          <td>{!compen.pago[campo]}</td>
+                                      </apex:outputPanel>  
+                                  </apex:repeat>  
+                              </tr>       
+                            </apex:repeat>      
+                        </tr>        
+                        </apex:repeat>  
+                      </tbody>          
+                    </table>  
+                   </apex:outputPanel>                      
+        </apex:pageBlock>
+     <!--   <script>
+          j$(document).ready(function()
+          {
+            j$("[id$='ordenar']").tablesorter({theme: 'blue', dateFormat : "dd/mm/yyyy"});
+            j$("[id$='ordenar2']").tablesorter({theme: 'blue', dateFormat : "dd/mm/yyyy"});
+            j$("[id$='ordenar3']").tablesorter({theme: 'blue', dateFormat : "dd/mm/yyyy"});
+          });
+        </script> -->
+      </apex:form>   
+    </div>
+    
+</apex:page>

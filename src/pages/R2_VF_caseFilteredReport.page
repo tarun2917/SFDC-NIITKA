@@ -1,0 +1,243 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" standardController="Campaign" extensions="R2_CLS_caseFilteredReport_CTRL">
+	<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+        <apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+        <apex:includeScript value="/xdomain/xdomain.js"/>
+        <apex:includeScript value="/soap/ajax/33.0/connection.js"/>
+        <apex:includeScript value="/support/console/40.0/integration.js"/>
+        <apex:includeScript value="/soap/ajax/33.0/apex.js"/>
+
+        <apex:includeScript value="{!URLFOR($Resource.CaseHistoryResources, 'js/jquery-1.6.4.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.CaseHistoryResources, 'js/jquery.tablesorter.min.js')}" />
+
+	    <script type="text/javascript">
+		    $(document).ready(function()
+		        {
+		            $("#sortThis").tablesorter();
+		        }
+		    );
+	    </script>
+	    <style type="text/css">
+    		.colStyle1 { width: 33.3%; text-align:left;}
+			.table-box {overflow-x: scroll;}
+
+    	}
+    	</style>
+		<body>
+            <div class="slds">
+			<div class="slds-box">
+             	<apex:form styleClass="slds-form-element" >
+
+				<apex:actionFunction name="actionRerende" reRender="sortThis"/>
+                <apex:actionFunction name="actionShow" action="{!mostrarCasos}"/>
+                <apex:actionFunction name="reorderTable" action="{!reorderTable}" reRender="sortThis">
+                    <apex:param name="fieldNameAPI" value="" assignTo="{!fieldNameAPI}" />
+                </apex:actionFunction>
+
+				<div class="slds-grid slds-gutters slds-box slds-box_xx-small slds-m-bottom_x-small">
+					<div class="slds-col slds-m-around_small">
+						<apex:pageBlock >
+			        <apex:pageBlockSection columns="1">
+								<!--cliente-->
+								<apex:inputText value="{!clienteCaso}" label="Cliente" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+								<!-- Localizador Resiber -->
+								<apex:inputText value="{!localizadorResiber}" label="L.Resiber" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+								<apex:selectList value="{!franjaHorariaSelected}" label="Franja horario de contacto" multiselect="false" size="1" onchange="actionRerende(); actionShow();" styleClass="slds-select">
+									<apex:selectOptions value="{!franjaHorariaCombo}"></apex:selectOptions>
+								</apex:selectList>
+								<apex:selectList value="{!aviosCashSelected}" label="Avios/Cash" multiselect="false" size="1" onchange="actionRerende(); actionShow();" styleClass="slds-select">
+									<apex:selectOptions value="{!aviosCash}"></apex:selectOptions>
+								</apex:selectList>
+
+						</apex:pageBlockSection>
+						</apex:pageBlock>
+					</div>
+					<div class="slds-col slds-m-around_small">
+						<apex:pageBlock >
+			        <apex:pageBlockSection columns="1">
+							<apex:inputText value="{!identificadorSelected}" label="Caso (identificador)" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+							<!-- Localizador Amadeus -->
+							<apex:inputText value="{!localizadorAmadeus}" label="L.Amadeus" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+							<apex:selectList value="{!paisSeEncuentraSelected}" label="País en el que se encuentra" multiselect="false" size="1" onchange="actionRerende(); actionShow();" styleClass="slds-select">
+								<apex:selectOptions value="{!paisSeEncuentra}"></apex:selectOptions>
+							</apex:selectList>
+							<apex:selectList value="{!respuestaS1yS2Selected}" label="Respuesta S1&S2" multiselect="false" size="1" onchange="actionRerende(); actionShow();" styleClass="slds-select">
+								<apex:selectOptions value="{!respuesta}"></apex:selectOptions>
+							</apex:selectList>
+
+							<!--
+							<apex:inputTextarea value="{!franjaHorariaSelected}" label="Franja horario de contacto" onchange="actionRerende(); actionShow();" styleClass="slds-textarea"/>
+							-->
+						</apex:pageBlockSection>
+						</apex:pageBlock>
+					</div>
+					<div class="slds-col slds-m-around_small">
+
+						<apex:pageBlock >
+			        <apex:pageBlockSection columns="1">
+
+							<!-- estado -->
+							<!-- <apex:inputText value="{!estadoCaso}" label="Estado" onchange="actionRerende(); actionShow();"/>estadoPkCaso-->
+							<apex:selectList value="{!estadoSelected}" label="Estado" multiselect="false" size="1" onchange="actionRerende(); actionShow();" styleClass="slds-select">
+								<apex:selectOptions value="{!estadoPkCaso}"></apex:selectOptions>
+							</apex:selectList>
+							<apex:input value="{!fechaCreacionSelected}" type="date" label="Fecha de apertura" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+							<apex:selectList value="{!idiomaSelected}" label="Idioma" multiselect="false" size="1" onchange="actionRerende(); actionShow();" styleClass="slds-select">
+								<apex:selectOptions value="{!idiomas}"></apex:selectOptions>
+							</apex:selectList>
+
+						</apex:pageBlockSection>
+						</apex:pageBlock>
+					</div>
+				</div>
+
+				<div class="slds-grid slds-gutters slds-box slds-box_xx-small slds-m-bottom_x-small">
+					<div class="slds-col slds-m-around_small">
+						<apex:pageBlock >
+								<apex:pageBlockSection columns="1">
+									<apex:input value="{!fechaVueloSegm1Selected}" type="date" label="Fecha vuelo S1" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+									<apex:input value="{!dineroBus1Selected}" label="Precio Dinero Bus S1" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+									<apex:input value="{!aviosTP1Selected}" label="Precio Avios TP S1" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+								</apex:pageBlockSection>
+						</apex:pageBlock>
+					</div>
+
+					<div class="slds-col slds-m-around_small">
+						<apex:pageBlock >
+								<apex:pageBlockSection columns="1">
+									<apex:inputText value="{!origenSegm1Selected}" label="Origen S1" maxlength="3" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+									<apex:input value="{!aviosBus1Selected}" label="Precio Avios Bus S1" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+									<apex:selectList value="{!resultadoSegmento1Selected}" label="Resultado S1" multiselect="false" size="1" onchange="actionRerende(); actionShow();" styleClass="slds-select">
+										<apex:selectOptions value="{!resultadoSegmento1}"></apex:selectOptions>
+									</apex:selectList>
+
+								</apex:pageBlockSection>
+						</apex:pageBlock>
+					</div>
+
+
+					<div class="slds-col slds-m-around_small">
+						<apex:pageBlock >
+								<apex:pageBlockSection columns="1">
+									<apex:inputText value="{!destinoSegm1Selected}" label="Destino S1" maxlength="3" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+									<apex:input value="{!dineroTP1Selected}" label="Precio Dinero TP S1" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+									<apex:selectList value="{!motivoSegmento1Selected}" label="Motivo S1" multiselect="false" size="1" onchange="actionRerende(); actionShow();" styleClass="slds-select">
+										<apex:selectOptions value="{!motivoSegmento1}"></apex:selectOptions>
+									</apex:selectList>
+								</apex:pageBlockSection>
+						</apex:pageBlock>
+					</div>
+				</div>
+
+
+				<div class="slds-grid slds-gutters slds-box slds-box_xx-small slds-m-bottom_x-small">
+					<div class="slds-col slds-m-around_small">
+						<apex:pageBlock >
+								<apex:pageBlockSection columns="1">
+								<apex:input value="{!fechaVueloSegm2Selected}" type="date" label="Fecha vuelo S2" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+								<apex:input value="{!dineroBus2Selected}" label="Precio Dinero Bus S2" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+								<apex:input value="{!aviosTP2Selected}" label="Precio Avios TP S2" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+								</apex:pageBlockSection>
+						</apex:pageBlock>
+					</div>
+
+					<div class="slds-col slds-m-around_small">
+						<apex:pageBlock >
+								<apex:pageBlockSection columns="1">
+								<apex:inputText value="{!origenSegm2Selected}" label="Origen S2" maxlength="3" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+								<apex:input value="{!aviosBus2Selected}" label="Precio Avios Bus S2" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+								<apex:selectList value="{!resultadoSegmento2Selected}" label="Resultado S2" multiselect="false" size="1" onchange="actionRerende(); actionShow();" styleClass="slds-select">
+									<apex:selectOptions value="{!resultadoSegmento2}"></apex:selectOptions>
+								</apex:selectList>
+								</apex:pageBlockSection>
+						</apex:pageBlock>
+					</div>
+
+					<div class="slds-col slds-m-around_small">
+						<apex:pageBlock >
+								<apex:pageBlockSection columns="1">
+								<apex:inputText value="{!destinoSegm2Selected}" label="Destino S2" maxlength="3" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+								<apex:input value="{!dineroTP2Selected}" label="Precio Dinero TP S2" onchange="actionRerende(); actionShow();" styleClass="slds-input"/>
+								<apex:selectList value="{!motivoSegmento2Selected}" label="Motivo S2" multiselect="false" size="1" onchange="actionRerende(); actionShow();" styleClass="slds-select">
+									<apex:selectOptions value="{!motivoSegmento2}"></apex:selectOptions>
+								</apex:selectList>
+								</apex:pageBlockSection>
+						</apex:pageBlock>
+					</div>
+				</div>
+                </apex:form>
+                <br/>
+        	<div class="slds-box table-box ">
+					<table id="sortThis" class="slds-table slds-table_bordered slds-table_cell-buffer">
+						<thead>
+							<tr class="slds-text-title_caps">
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R1_CAS_FOR_Case_Number__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Cliente</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R1_CAS_FOR_Case_Number__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Identificador</th>
+								<!-- Nº de vuelo s1-->
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R1_CAS_FOR_Case_Number__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Vuelo Seg.1</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_TXT_segment1_origin__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Origen Seg.1</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_TXT_destination_segment1__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Destino Seg.1</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_NUM_cash_bus_seg1__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Precio Dinero Bus S1</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_NUM_cash_TP_seg1__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Precio Dinero TP S1</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_NUM_avios_bus_seg1__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Precio Avios Bus S1</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_NUM_avios_TP_seg1__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Precio Avios TP S1</th>
+								<!-- Nº de vuelo s2-->
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R1_CAS_FOR_Case_Number__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Vuelo Seg.2</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_TXT_segment2_origin__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Origen Seg.2</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_TXT_destination_segment2__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Destino Seg.2</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_NUM_cash_bus_seg2__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Precio Dinero Bus S2</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_NUM_cash_TP_seg2__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Precio Dinero TP S2</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_NUM_avios_bus_seg2__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Precio Avios Bus S2</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_NUM_avios_TP_seg2__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Precio Avios TP S2</th>
+								<!--  -->
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_PK_answer_S1S2__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Respuesta S1&amp;S2</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_PK_resul__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Resultado Seg.1</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_PK_Reason__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Motivo Seg.1</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_PK_resul_Seg2__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Resultado Seg.2</th>
+								<th scope="col" class="slds-truncate" nowrap="true" onclick="reorderTable('R2_CAS_PK_Reason_Seg2__c');" onmouseover="this.style.cursor='pointer';" onmouseout="this.style.cursor='default';">Motivo Seg.2</th>
+
+							</tr>
+						</thead>
+						<tbody>
+							<apex:repeat value="{!casesToShow}" var="caso">
+								<tr class="slds-text-title_caps">
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.clienteCaso}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate">
+										<a onclick="openViewDetail('{!caso.idCaso}')"><apex:outputText value="{!caso.identificador}"></apex:outputText></a>
+									</td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.numeroVueloS1}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.origenSegm1}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.destinoSegm1}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.dineroBus1}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.dineroTP1}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.aviosBus1}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.aviosTP1}"></apex:outputText></td>
+
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.numeroVueloS2}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.origenSegm2}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.destinoSegm2}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.dineroBus2}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.dineroTP2}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.aviosBus2}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.aviosTP2}"></apex:outputText></td>
+
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.respuestaS1yS2}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.resultadoSegmento1}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.motivoSegmento1}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.resultadoSegmento2}"></apex:outputText></td>
+									<td scope="col" class="slds-truncate"><apex:outputText value="{!caso.motivoSegmento2}"></apex:outputText></td>
+								</tr>
+								<script type="text/javascript">
+									function openViewDetail(objectId) {
+										sforce.console.openPrimaryTab(null, '/' + objectId, true, '{!caso.identificador}');
+									}
+								</script>
+							</apex:repeat>
+						</tbody>
+					</table>
+				</div>
+				</div>
+            </div>
+        </body>
+    </html>
+</apex:page>

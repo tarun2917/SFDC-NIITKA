@@ -1,0 +1,705 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" standardController="Case" extensions="R2_BAG_CLS_Bag_Calculator_CTRL" >    
+<!-- ***************************************************************************************************************
+    Author:         Alberto Puerto Collado
+    Company:        Accenture
+    Description:    Visualfoce de Bag Calculator link: https://cs86.salesforce.com/0667E0000005TTh 
+    IN:             
+    OUT:            
+
+    History: 
+     <Date>                     <Author>                         <Change Description>
+    06/09/2017             Alberto Puerto Collado                   Initial Version
+**********************************************************************************************************************  -->
+
+<html  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+<head>
+    <!--Loading SLDS.css -->
+    <apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+    <meta charset="utf-8" />
+    <!-- JAVASCRIPT -->
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"/>
+    <apex:includeScript value="/soap/ajax/29.0/connection.js"/>
+    <apex:includeScript value="/soap/ajax/29.0/apex.js"/>
+    <apex:includeScript value="/xdomain/xdomain.js"/>
+    <apex:includeScript value="/support/console/22.0/integration.js"/>
+    <apex:includeScript value="/support/console/28.0/integration.js"/>
+
+
+    <script type="text/javascript">
+/*
+        $(document).ready(function() {
+
+            $("formulario").hide();
+
+            $("#preview").click(function(event) {
+                $("#menuTipos").hide();
+                $("#formulario").show();
+                alert('paso por jquery');
+                $("#title").css("background","green");
+            });
+
+            $('body').click(function(event){
+                if ( event.target.id == 'deterioro_but'){
+                    //$("#menu-formulario").removeClass('').addClass('');
+                    $("#formulario").show();         
+                    //$("#formulario").css("display","block");
+                    //$("#formulario").css("background","red");
+                    alert('paso por jquery');
+                    $("#title").css("background","green");
+                }
+            });
+        });
+*/      
+
+//prueba autofocus
+        function demora() {
+            displayForm();
+            //display 8 - todo - ok
+
+
+        }
+        function deterioro() {
+            displayForm();
+            //display 5 -> oculta (3) rebote, pasajeros, dias demora
+        }
+        function extravio() {
+            displayForm();
+            //display 6 -> oculta (2) rebote, dias demora
+        }
+        function faltaConten() {
+            displayForm();
+            //display 4 -> oculta (4) rebote, dias demora, bultos factu, bultos afect
+        }
+        function historico() {
+            //alert('incoming historico...');
+            var aviso = document.createElement('div');
+            aviso.id = 'avisoJS';
+            aviso.innerHTML = 'Próximamente historico';
+            aviso.style.color = 'red';
+            aviso.style.textAlign = 'center';
+            document.getElementById('body').appendChild(aviso); 
+            setTimeout(function(){aviso.innerHTML = ''}, 5000); 
+        }
+        function displayForm() {
+            var menuTipo = document.getElementById('{!$Component.menuTipos}');
+            var form = document.getElementById('{!$Component.formulario}');
+            //alert('form :   ' + form);
+            //menuTipo.style.display = "none";
+            menuTipo.className+=" hidden";
+            //form.className += " displayBlock";
+            //form.className.display = "block";
+            form.style.display = "block";
+            //form.innerHTML='vamosssssss';
+            //form.styleClass += " displayBlock";
+        }
+        function closeMe(){
+            //window.open(location, '_self').close();
+            window.close();
+
+            //sforce.console.closeTab(this.id);
+
+            /*var closeSubtab = function closeSubtab(result) {
+                 var tabId = result.id;
+                 sforce.console.closeTab(tabId);
+               };
+            sforce.console.getEnclosingPrimaryTabId(closeSubtab);
+            
+            var subTab = sforce.console.getFocusedSubtabId();
+            sforce.console.closeTab(subTab);*/
+        }
+        function displayWorkOrders(){
+            helper_displayMessage('Próximamente Work Orders');
+            //alert('Próximamente work orders');
+            //probablemente window.location y vf que corresponda
+        }
+        function displayPayments(){
+            helper_displayMessage('Próximamente Payments');
+            //alert('Próximamente payments');
+            //probablemente window.location y vf que corresponda
+        }
+        function helper_displayMessage(aux) { 
+            //provisional
+            var aviso = document.createElement('div');
+            aviso.id = 'avisoJS';
+            aviso.innerHTML = aux;
+            aviso.style.color = 'red';
+            aviso.style.textAlign = 'center';
+            document.getElementById('wr_Global').appendChild(aviso);    
+            setTimeout(function(){aviso.innerHTML = ''}, 5000);   
+            /* revisar si adaptar esto o mostrar de forma distinta el mensaje ahroa que hay botón de confirmar
+            var existe = document.getElementById(divId);//'avisoJS');
+            if(existe){
+                existe.innerHTML = aux;
+                setTimeout(function(){existe.innerHTML = ''}, 5000); 
+            }else{
+                document.getElementById(contenedor).appendChild(aviso); 
+                setTimeout(function(){aviso.innerHTML = ''}, 5000); 
+            } 
+            */      
+        }
+
+        function insertObjetoJS() {
+            insertando(); 
+            location.reload();
+            helper_displayMessage('Registro correctamente insertado');
+
+            //cleaner();
+            //refreshJS(); //optional
+/*
+            var aviso = document.createElement('div');
+            aviso.innerHTML = 'Registro correctamente guardado';
+            aviso.style.color = 'blue';
+            document.getElementById('wr_Global').appendChild(aviso);
+            
+            setTimeout(closeMe(), 5000);*/
+            //closeMe();
+        }
+        function insertObjetoAviosJS() {
+            insertandoAvios();
+            location.reload();
+            helper_displayMessage('Registro de avios correctamente insertado');
+        }
+        function refreshJS() {
+            //console.log('JS entro en refresh');
+            refresh();
+            //console.log('JS salgo de refresh');
+        }
+        function validaTotal() {
+            var importeTotal = document.getElementById('{!maximoEUR}'); //'MaxPermEUR');impTOTAL
+            var maxEUR = document.getElementById('{!importeFinal}');
+            if(importeTotal > maxEUR){
+                importeTotal = maxEUR;
+            }
+            //html-max=
+        }
+        // var foco = null;
+        // function guardaFoco() {
+        //     foco.focus();
+        // }
+        function getIdFIJA() {
+            var fijo = document.getElementById('textImpSolicitado');
+            //var fijo = document.getElementById('{!$Component.textImpSolicitado}');
+            //var fijo = "{!$Component.textImpSolicitado}";
+            //alert('probando');
+            //alert('por component '+{!$Component.textImpSolicitado});
+            //alert('por document gete '+ document.getElementById('textImpSolicitado');
+            fijo.focus();
+        }
+        var elementFocused = null;
+        function guardaFoco(){
+            console.log('entro en guardaFoco');
+            this.elementFocused = document.activeElement.id; //instanceof HTMLElement ? document.activeElement : document;
+            console.log(elementFocused + ' actualizado');
+        }
+        function devuelveFocus(){
+            console.log('entro en devuelveFocus - elemento: ' + elementFocused);
+            this.elementFocused = document.getElementById(elementFocused).focus();
+            console.log(elementFocused + ' focused');
+        }
+        // onbeforedomupdate="elementFocused = document.activeElement" oncomplete="devuelveFocus()"/>
+    </script>
+    <!-- CSS -->
+    <style type="text/css">
+        body{
+            background-color: #d8dde6; /* #cce7ea; */
+        }
+        #menu{
+            background-color: inherit;
+        }
+        #botonesTipo{
+            background-color: #d8dde9;
+        }
+        #wr_Global{
+            width: 98%; 
+            padding: 5px;
+        }
+        label{
+            font-size: 0.8 rem;
+            font-weight: bold;
+            text-align: right;
+        }
+        .hidden{
+            display: none;
+        }
+        .translucido{
+            opacity: '50%';
+        }
+        .displayBlock{
+            display: block;
+        }
+      .datosRellenar label{
+        color: blue;
+      }
+      .datosRellenar span{
+        font-size: 0.8 rem;
+        color: blue;
+      }
+      .calculoSDR label{    
+        color: #ff6600; /* #e65c00;     */      
+      }
+      .calculoVerde label{
+        color: green;
+      }
+      .calculoRojo label{
+        color: red;
+      }
+      .apartado{
+        font-size: 1.1 rem;
+        color: blue;
+        font-style: bold;
+        background-color: #c7c4c2;
+      }
+      .disabledCustom{
+        pointer-events: none;
+        cursor: default;
+
+        background-color: #e0e6e9;
+      }
+      /* revisar abajo*/
+      input.left{
+        width: auto;
+        box-shadow: none;
+
+      }
+      .right{
+        text-align: right;
+        align-content: right;
+      }
+      input[type="checkbox"]{
+        margin-left: 1.2rem; /* calibrar */
+      }
+      input[type="number"]{
+        -webkit-appearance: textfield;
+
+      }
+      /* without spinners*/
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+    }
+      button{
+        text-align: center;
+
+      }
+
+      /*revisar arriba */
+      input[type="text"]:disabled{
+        background-color: #e0e6e9;
+      }
+    </style>
+
+    
+    <title>Calculadora de Equipajes</title>
+</head>
+<body id="body">
+      <!-- LETS GO !! -->
+    <h1 id='title' style="text-align: center; color: grey; font-size: 2.5rem">Calculadora de equipaje</h1> 
+        <!-- Menu tipos -->
+        <!-- style="{!if(disp_menu, 'display: block','display:none')}" -->
+   <apex:outputPanel id="theMenu" style="{!if(disp_menu, 'display: block','display:none')}">
+     <apex:form id="menuTipos" styleClass="slds-form--stacked"  > <!-- rendered="{!disp_menu}" -->
+        <div id="botonesTipo" class="slds-grid slds-context-bar "> <!-- slds-grid- -vertical-align-center  _> si quiero cambiar estilo del botón, elegir al gusto(quitar space) --> 
+            <apex:commandButton value="Demora" action="{!changeBooleans}" reRender="thePanel,theMenu" styleClass="slds-button slds-button_brand">
+                <apex:param name="parametro1" value="Demora" assignTo="{!stringAuxiliar}"/>
+            </apex:commandButton>
+            <apex:commandButton value="Deterioro" action="{!changeBooleans}" reRender="thePanel,theMenu" styleClass="slds-button slds-button_brand">
+                <apex:param name="parametro1" value="Deterioro" assignTo="{!stringAuxiliar}"/>
+            </apex:commandButton> 
+            <apex:commandButton value="Extravío" action="{!changeBooleans}" reRender="thePanel,theMenu" styleClass="slds-button slds-button_brand">
+                <apex:param name="parametro1" value="Extravío" assignTo="{!stringAuxiliar}"/>
+            </apex:commandButton> 
+            <apex:commandButton value="Falta contenido" action="{!changeBooleans}" reRender="thePanel,theMenu" styleClass="slds-button slds-button_brand">
+                <apex:param name="parametro1" value="FaltaContenido" assignTo="{!stringAuxiliar}"/>
+            </apex:commandButton> 
+            <apex:commandButton value="Histórico" onclick="historico();" reRender="thePanel" styleClass="slds-button slds-button_brand">
+            </apex:commandButton>      
+        </div>
+     </apex:form>
+  </apex:outputPanel>
+  <apex:outputPanel id="thePanel" style="{!if(disp_form, 'display: block','display:none')}">
+        <!-- FORM   -->
+    <apex:form id="formulario" styleClass="slds-form--stacked " > <!-- style="display: none"  rendered="{!disp_form}" -->
+            <!-- Llamada a insertObjeto, doble filtro cliente-controlador (js/controller)  -->
+        <apex:actionFunction name="insertando" action="{!insertObjeto}" oncomplete="refresh;"/>
+        <apex:actionFunction name="insertandoAvios" action="{!insertObjetoAvios}" oncomplete="refresh;"/>
+
+        <!-- <apex:actionFunction name="refresh" action="{!asignaValores}" rerender="formulario"  />   -->
+        <apex:actionFunction name="refresh" action="{!asignaValores}" rerender="formulario" onbeforedomupdate="guardaFoco();" oncomplete="devuelveFocus();" />
+        <!-- onbeforedomupdate="elementFocused = document.activeElement" oncomplete="devuelveFocus()" -->
+
+            <!--actualizo var foco, calculo en controlador y llamo a siguiente funcion-->   
+        <apex:actionFunction name="refresh2" onbeforedomupdate="foco = $(document.activeElement)" action="{!asignaValores}" rerender="formulario" oncomplete="keepFocus();" />  
+        <!-- recupero variable tras rerender para mantener foco-->
+        <apex:actionfunction name="keepFocus"  oncomplete="getIdFIJA();"/> 
+        <!-- wr_Global -->
+        <div id="wr_Global" class="slds " >
+            <!-- Botones -->
+            <div id="menu" class="slds-context-bar">
+                <div id="botones" class="slds-grid "> <!-- slds-grid- -vertical-align-center  _> si quiero cambiar estilo del botón, elegir al gusto(quitar space)--> 
+                    <!-- <apex:commandButton id="guardar" value="Guardar" onclick="insertObjetoJS();"  styleClass="slds-button slds-button_brand" style="{!if(bool_AviosDisplayed, 'display:none','display:block')};" oncomplete="">         
+                    </apex:commandButton>  -->
+                    <apex:commandButton id="guardar" value="Enviar Pago" action="{!switchBoolConfirmaPagoComp}" styleClass="slds-button slds-button_brand" style="{!if(bool_AviosDisplayed, 'display:none','display:block')};" reRender="formulario" >         
+                    </apex:commandButton>
+                    <!-- rendered="{! existFF}" -->
+
+                    
+
+                    <!-- <apex:commandButton id="guardaAvios" value="Guarda Avios" onclick="insertObjetoAviosJS()"  styleClass="slds-button slds-button_brand" style="{!if(bool_AviosDisplayed, 'display:block','display:none')};" oncomplete="">         
+                    </apex:commandButton> -->
+                    <apex:commandButton id="guardaAvios" value="Enviar Pago Avios" action="{!switchBoolConfirmaPagoAvios}" styleClass="slds-button slds-button_brand" style="{!if(bool_AviosDisplayed, 'display:block','display:none')};" reRender="formulario" rendered="{! existFF}">         
+                    </apex:commandButton>
+
+
+                    <button id="cerrar" class="slds-button slds-button_brand" onClick="closeMe();">Cerrar</button>
+<!-- BOTÓN AVIOS-->        
+                    <apex:commandButton value="Cálculo en avios" action="{!changeBooleans}" reRender="thePanel,theMenu" styleClass="slds-button slds-button_brand" style="{!if(bool_AviosTab, '','display:none')}">
+                        <apex:param name="parametro1" value="DisplayAvios" assignTo="{!stringAuxiliar}"/>
+                        <apex:param name="actualizaDelayDays" value="0" assignTo="{!delayDaysAvios}"/>
+                    </apex:commandButton>
+<!--
+style="{!if(bool_AviosTab, '','display:none')},{!if(bool_AviosDisplayed, 'display:none','display:block')};"
+            -->                         
+                    <apex:commandButton id="pagos" value="Pagos" onclick="displayPayments();" reRender="body" styleClass="slds-button slds-button_brand">
+                    </apex:commandButton>               
+                    <apex:commandButton id="ordenesPagos" value="Órdenes de Pagos" onclick="displayWorkOrders();" reRender="body" styleClass="slds-button slds-button_brand">
+                    </apex:commandButton>    
+                </div>
+            </div>
+            <!-- wr_Contenido -->
+            <div id="wr_Contenido" class="slds slds-grid slds-wrap slds-grid_pull-padded-medium"  >
+                <!-- wr_Primero -->
+                <div id="wr_Primero" class=" slds-col slds-size--1-of-2 slds-small-size--1-of-1 slds-medium-size--2-of-4 slds-p-horizontal_medium " >
+                    <div id="deterioro" class="apartado" >
+                        <apex:outputText id="tySel" value="{!tipoSelected} "></apex:outputText>
+                    </div>
+                    <!-- BLOQUE PAR 1 -->
+                <apex:outputPanel id="NOavios" style="{!if(bool_AviosDisplayed, 'display:none','display:block')}"> 
+                    <div id="bloquePar1" class=" slds-col slds-grid slds-wrap " >
+                        <!-- col_Primera -->
+                        <div id="col_Primera" class="slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 "  >
+                            <!-- DATOS A CUMPLIMENTAR -->
+                            <div class="slds-col slds-size--4-of-8 slds-small-size--1-of-2 slds-medium-size--2-of-4 slds-p-horizontal_medium apartado slds-m-around--xx-small">
+                                <h4>DATOS A CUMPLIMENTAR</h4>
+                            </div>
+                            <!-- VIP -->
+                            <div id="EquipajeEspecial" class="datosRellenar" >
+                                 <div class="slds-grid ">
+                                    <label class="slds-checkbox__label slds-col slds-size--1-of-2" for="checkboxVIP">
+                                        <span class="slds-form-element__label right">VIP:</span>
+                                        <span class="slds-checkbox_faux"></span>
+                                    </label>
+                                    <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:inputCheckbox value="{!vip}" id="checkboxVIP" title="VIP" styleClass="left slds-checkbox " onchange="refreshJS()">
+                                        </apex:inputCheckbox> 
+                                    </div>                          
+                                 </div>
+                             </div>
+                              <!-- REBOTE rendered="{!disp_rebote}" -->
+                            <div id="Rebote" class="datosRellenar" style="{!if(bool_reb, '','display:none')}" >
+                                 <div class="slds-grid">
+                                    <label class="slds-checkbox__label slds-col slds-size--1-of-2" for="checkboxRebote">
+                                        <span class="slds-form-element__label right">Rebote:</span>
+                                        <span class="slds-checkbox_faux"></span>
+                                    </label>
+                                    <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:inputCheckbox value="{!rebote}" id="checkboxRebote" title="Rebote" styleClass="left" onchange="refreshJS()">
+                                        <!--    <apex:actionSupport event="onchange" action="{!asignaValores}" />   -->     
+                                        </apex:inputCheckbox> 
+                                    </div>                          
+                                 </div>
+                             </div>
+                             <!-- Equipaje Especial - borrado, sin uso - -->
+
+                             <!-- Número pasajeros -->
+                             <div id="NumPass" class="datosRellenar"  style="{!if(bool_pas, '','display:none')}">
+                                 <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="textNumPass">Número de pasajeros:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:input type="number" value="{!paxAffect}" id="textNumPass" styleClass="slds-input slds-size--1-of-1" onchange="refreshJS()" onfocus="this.select();" html-min="0"/>    
+                        <!--                <input id="textNumPass" type="number" min="0"  value="{!paxAffect}" class="slds-input slds-size--1-of-1" onchange="refreshJS()" onfocus="this.select();" />     -->         
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Días de demora -->
+                             <div id="DelayD" class="datosRellenar"  style="{!if(bool_Days, '','display:none')}">
+                                 <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="textDelayD">Días de demora:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:input type="number" value="{!delayDays}" id="textDelayD" styleClass="slds-input slds-size--1-of-1" onchange="refreshJS()" onfocus="this.select();"/>  
+                                      </div>
+                                </div>
+                            </div>
+                             <!-- Bultos facturados -->
+                             <div id="BultosFacturados" class="datosRellenar" style="{!if(bool_bF, '','display:none')}">
+                                 <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="textBultosFact">Bultos facturados:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:input type="number" value="{!bagFacturados}" id="textBultosFact" styleClass="slds-input slds-size--1-of-1" onchange="refreshJS()" onfocus="this.select();"/>                                  
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Bultos afectados -->
+                            <div id="BultosAfectados" class="datosRellenar" style="{!if(bool_bF, '','display:none')}">
+                                 <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="textBultosAfect">Bultos afectados:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:input type="number" value="{!bagAfectados}" id="textBultosAfect" styleClass="slds-input slds-size--1-of-1" onchange="refreshJS()" onfocus="this.select();"/> 
+                                    <!--    <input id="textBultosAfect" type="number" min="0"  value="{!bagAfectados}" class="slds-input slds-size--1-of-1" onchange="refreshJS()" onfocus="this.select();" />-->
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Importe solicitado Pax  -->
+                            <div id="solicitado" class="datosRellenar">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="textImpSolicitado">Importe solicitado Pax:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                       <apex:input type="number" value="{!importeSolicitado}" id="textImpSolicitado" styleClass="slds-input slds-size--1-of-1"  onchange="refreshJS()" onfocus="this.select();"/> 
+                                      <!--   <input id="textImpSolicitado" type="number" min="0"  value="{!importeSolicitado}" class="slds-input slds-size--1-of-1" onchange="refreshJS()" onfocus="this.select();" />-->
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Moneda solicitada -->
+                            <div id="MonedaPKL" class="datosRellenar">
+                                <div class="slds-grid">
+                                    <label class="slds-form-element__label slds-col slds-size--1-of-1" for="inputMonPKL">Moneda solicitada:</label>
+                                    <div class="slds-form-element__control slds-col slds-size--1-of-1">     
+                                        <apex:selectList id="moneda" value="{!monedaSeleccionada}" size="1" styleClass="slds-input slds-size--1-of-1" onchange="refreshJS()" >
+                                            <apex:selectOption itemValue="EUR" itemLabel="EUR"/>
+                                            <apex:selectOption itemValue="SDR" itemLabel="SDR"/>
+                                        </apex:selectList> 
+                                    </div>
+                                </div>
+                            </div>        
+                        </div>
+
+                        <!-- col_Segunda -->
+                        <div id="col_Segunda" class="slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 " >
+                            <!-- CÁLCULO -->
+                            <div class="slds-col slds-size--4-of-8 slds-small-size--1-of-2 slds-medium-size--2-of-4 slds-p-horizontal_medium apartado slds-m-around--xx-small">
+                                <h3>CÁLCULO</h3>
+                            </div>
+                            <!-- Máximo Permitido SDR -->
+                            <div id="MaxPermSDR" class="calculoSDR">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--4-of-8 slds-size--1-of-2 " for="inputMaxPermSDR">Máximo Permitido SDR:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <!-- <input type="text" id="inputMaxPermSDR" class="slds-input" disabled="true"></input> -->
+                                        <apex:inputText value="{!maximoSDR}" id="inputMaxPermSDR" styleClass="slds-input slds-size--1-of-1 disabledCustom"  tabindex="-1" />
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Máximo Permitido EUR -->
+                            <div id="MaxPermEUR" class="calculoVerde">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="inputMaxPermEUR">Máximo Permitido EUR:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                         <apex:inputText value="{!maximoEUR}" id="inputMaxPermEUR" styleClass="slds-input slds-size--1-of-1 disabledCustom" tabindex="-1"/>
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Importe solicitado EUR -->
+                            <div id="ImpSolEUR" class="calculoVerde">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="inputImpSolEUR">Importe solicitado EUR:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2"> 
+                                        <apex:inputText value="{!solicitadoEUR}" id="inputImpSolEUR" styleClass="slds-input slds-size--1-of-1 disabledCustom" tabindex="-1"/>
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Importe Recomendado Pax -->
+                            <div id="ImpRecom" class="calculoRojo">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="imputImpRecom">Importe Recomendado:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">  
+                                        <apex:inputText value="{!recomendado}" id="imputImpRecom" styleClass="slds-input slds-size--1-of-1 disabledCustom" tabindex="-1"/>
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Importe TOTAL -->
+                            <div id="impTOTAL" class="calculoRojo">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="inputimpTOTAL">IMPORTE TOTAL:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:input type="number" value="{!importeFinal}" id="inputimpTOTAL" styleClass="slds-input slds-size--1-of-1"   onfocus="this.select();" />
+                                      </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               
+            </apex:outputPanel>
+            <!-- wr_AVIOSPANEL left -->
+            <apex:outputPanel id="aviosPanel" style="{!if(bool_AviosDisplayed, 'display:block','display:none')}">
+                <div id="bloquePar1" class=" slds-col slds-grid slds-wrap " >
+                    <!-- col_Primera -->
+                    <div id="col_Primera" class="slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 "  >
+                <!-- Días de demora -->
+                             <div id="DelayD_avios" class="datosRellenar"  style="{!if(bool_Days, 'false','display:none')}">
+                                 <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="textDelayD_avios">Días de demora:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:input type="number" value="{!delayDaysAvios}" id="textDelayD_avios" styleClass="slds-input slds-size--1-of-1" onchange="refreshJS()" onfocus="this.select();"/>               
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Clase Volada -->
+                            <div id="claseVolada" class="datosRellenar">
+                                <div class="slds-grid">
+                                    <label class="slds-form-element__label slds-col slds-size--1-of-2" for="inputClaseVolada">Clase volada:</label>
+                                    <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:selectList id="pklVuelosV" value="{!vuelosVolados}" styleClass="slds-input slds-size--1-of-1" size="1" onchange="refreshJS()">
+                                            <apex:selectOption itemValue="Business" itemLabel="Business"/>
+                                            <apex:selectOption itemValue="Turista" itemLabel="Turista"/>
+                                            <apex:selectOption itemValue="Tur. Intercontinental" itemLabel="Tur. Intercontinental"/>
+                                            <apex:selectOption itemValue="Desconocida" itemLabel="Desconocida"/>
+                                        </apex:selectList> 
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                        <!-- col_Segunda -->
+                        <div id="col_Segunda" class="slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 " >
+                            <!-- Avios ya abonados -->
+                            <div id="AviosAbonados" class="">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="imputAviosAbonados">Avios ya abonados:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">   
+                                            <apex:inputText value="{!aviosAbonados}" id="imputAviosAbonados" styleClass="slds-input slds-size--1-of-1 disabledCustom" tabindex="-1" onchange="refreshJS()"/>
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Importe Avios -->
+                            <div id="ImporteAvios" class="calculoRojo">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="imputImporteAvios">Importe Avios:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">   
+                                            <apex:inputText value="{!aviosImporte}" id="imputImporteAvios" styleClass="slds-input slds-size--1-of-1" onfocus="this.select();"/>
+                                      </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </apex:outputPanel>
+                </div>
+                <!-- wr_Segundo -->
+                <div id="wr_Segundo" class="slds-col slds-size--1-of-2 slds-small-size--1-of-1 slds-medium-size--2-of-4  slds-wrap ">
+                    <div id="deterioro" class="apartado " >`
+                    </div>
+            <!-- BLOQUE PAR 2 -->
+            <apex:outputPanel id="NOavios2" style="{!if(bool_AviosDisplayed, 'display:none','display:block')}"> 
+                    <div id="bloquePar2" class=" slds-col slds-grid slds-wrap " >
+                    <!-- col_Tercera -->
+                        <!-- HISTÓRICO PAGOS --> 
+                        <div id="col_Tercera" class="slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 "  >
+                            <div class="slds-col slds-size--4-of-8 slds-small-size--1-of-2 slds-medium-size--2-of-4 slds-p-horizontal_medium apartado slds-m-around--xx-small">
+                                <h3>HISTÓRICO PAGOS</h3>
+                            </div>
+                            <!-- Efectivo ya abonado -->
+                            <div id="EfectAbonado" class="">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="inputEfectAbonado">Efectivo ya abonado:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:input type="number" value="{!efectAbonado}" id="inputEfectAbonado" styleClass="slds-input slds-size--1-of-1 disabledCustom"  tabindex="-1"/>
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Avíos ya abonados -->
+                            <div id="AviosAbonados" class="">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="inputAviosAbonados">Avíos ya abonados:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:input type="number" value="{!aviosAbonados}" id="inputAviosAbonados" styleClass="slds-input slds-size--1-of-1 disabledCustom"  tabindex="-1" />
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Órdenes de trabajo ya cursadas -->
+                            <div id="OrdenesCursadas" class="">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="inputOrdenesCursadas">Órdenes de trabajo ya cursadas:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:input type="number" value="{!ordenesCursadas}" id="inputOrdenesCursadas" styleClass="slds-input slds-size--1-of-1 disabledCustom" tabindex="-1"/>
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Comentarios -->
+                            <div id="Comentarios" class="">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="imputComments">Comentarios:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:inputTextarea id="imputComments" value="{!comentarios}" styleClass="slds-textarea " /><p/>
+                                        <apex:inputTextarea id="hiddeninput" value="{!tipoSelected}" styleClass="slds-textarea " style="display:none"/><p/> 
+                                      </div>
+                                </div>
+                            </div>
+                        </div>
+                    <!-- col_Cuarta -->
+                        <!-- FÓRMULA -->
+                        <div id="col_Cuarta" class="slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 "  >
+                            <div class="slds-col slds-size--4-of-8 slds-small-size--1-of-2 slds-medium-size--2-of-4 slds-p-horizontal_medium apartado slds-m-around--xx-small">
+                                <h3>FÓRMULA</h3>
+                            </div>
+                            <!-- Fórmula -->
+                            <div id="Formula" class="">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="FormulaSDR">Fórmula:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:input type="number" value="{!formulaSDR}" id="inputFormula" styleClass="slds-input slds-size--1-of-1 disabledCustom" tabindex="-1" />
+                                      </div>
+                                </div>
+                            </div>
+                            <!-- Fórmula EUR -->
+                            <div id="FormulaEUR" class="">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-size--1-of-2" for="FormulaEUR">Fórmula EUR:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2">
+                                        <apex:input type="number" value="{!formulaEUR}" id="inputFormulaEUR" styleClass="slds-input slds-size--1-of-1 disabledCustom" tabindex="-1"/>
+                                      </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </apex:outputPanel>
+            <!-- wr_AVIOSPANEL right -->
+            <apex:outputPanel id="aviosPanel2" style="{!if(bool_AviosDisplayed, 'display:block','display:none')}">  
+                <!-- Comentarios AVIOS -->
+                            <div id="Comentarios_Avios" class="slds-form-element__label slds-col slds-size--1-of-2 slds-small-size--1-of-1 slds-medium-size--2-of-4">
+                                <div class="slds-grid">
+                                      <label class="slds-form-element__label slds-col slds-small-size--1-of-2 " for="imputComments_Avios">Comentarios:</label>
+                                      <div class="slds-form-element__control slds-col slds-size--1-of-2 ">
+                                        <apex:inputTextarea id="imputComments_Avios" value="{!comentariosAvios}" styleClass="slds-textarea slds-col slds-size--1-of-1"/>
+                                      </div>
+                                </div>
+                            </div>                          
+            </apex:outputPanel>
+                </div>
+            </div>             
+        </div>      
+        <!-- CONFIRMAR PAGO SECTION -->
+        <apex:outputPanel id="botonesConfirmaPago" rendered="{! boolConfirmaPago}" >
+            <div style="text-align: center;">
+                <h1>¿Está seguro de querer ejecutar el pago?</h1>
+                <apex:commandButton id="buttonCancelaPago" styleClass="slds-button slds-button_neutral slds-m-right_xx-small" value="Cancelar" action="{! switchBoolConfirmaPagoComp}" reRender="formulario" style="" immediate="true" />
+                <apex:commandButton id="buttonConfirmaPagoComp" styleClass="slds-button slds-button_brand slds-m-left_xx-small" value="Confirmar el Pago" onclick="insertObjetoJS()" oncomplete=";" reRender="false" />                                 
+            </div>
+        </apex:outputPanel>
+        <!-- CONFIRMAR AVIOS SECTION -->
+        <apex:outputPanel id="botonesConfirmaAvios" rendered="{! boolConfirmaPagoAvios}" >
+            <div style="text-align: center;">
+                <h1>¿Está seguro de querer ejecutar el pago de avios?</h1>
+                <apex:commandButton id="buttonCancelaPagoAvios" styleClass="slds-button slds-button_neutral slds-m-right_xx-small" value="Cancelar" action="{! switchBoolConfirmaPagoAvios}" reRender="formulario" style="" immediate="true" />
+                <apex:commandButton id="buttonConfirmaPagoAvios" styleClass="slds-button slds-button_brand slds-m-left_xx-small" value="Confirmar el Pago" onclick="insertObjetoAviosJS()" oncomplete=";" reRender="false" />                                 
+            </div>
+        </apex:outputPanel>
+         <!-- CONFIRMAR PAGO SECTION -->
+            <apex:outputPanel id="mensajeNoFF" rendered="{! (bool_AviosDisplayed == true && existFF == false)}" >
+                <div style="text-align: center;">
+                    <h1 style="color: red;">DRAFT</h1>
+                    <p>No existe un <span style="color: red;"><strong>Número de Iberia Plus asociado</strong></span>, no se podrá gestionar el pago hasta que lo tenga</p>               
+                </div>
+            </apex:outputPanel>
+    <!--</form> -->
+    </apex:form></apex:outputPanel>
+  </body>
+</html>
+</apex:page>

@@ -1,0 +1,270 @@
+<apex:page language="es-ES" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false"
+    docType="html-5.0" Controller="R2_CLS_CaseReport_CTRL">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <head>
+        <apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+        <apex:includeScript value="/xdomain/xdomain.js" />
+        <apex:includeScript value="/soap/ajax/33.0/connection.js" />
+        <apex:includeScript value="/support/console/40.0/integration.js" />
+        <apex:includeScript value="/soap/ajax/33.0/apex.js" />
+
+        <!--
+        <apex:includeScript value="{!URLFOR($Resource.CaseHistoryResources, 'js/jquery-1.6.4.min.js')}" />
+        <apex:includeScript value="{!URLFOR($Resource.CaseHistoryResources, 'js/jquery.tablesorter.min.js')}" />
+        <script type="text/javascript">
+        $(document).ready(function() {
+            $("#sortThis").tablesorter();
+            $("#sortThis2").tablesorter();
+        });
+        </script>
+        -->
+        <script type="text/javascript">
+            function openViewDetail(objectId, identificador) {
+                sforce.console.openPrimaryTab(null, '/' + objectId, true, identificador);
+            };
+
+            function openViewTelex(objectId) {
+                sforce.console.openPrimaryTab(null, '/' + objectId, true);
+            };
+        </script>
+
+        <style>
+            table thead th {
+                font-weight: bold !important;
+                color: #54698d;
+            }
+
+            table thead th.reorder-action {
+                cursor: pointer;
+            }
+
+            table thead th.reorder-action:hover {
+                background-color: #e6eaea;
+            }
+
+            table tbody td.slds-truncate {
+                max-width: 200px;
+            }
+        </style>
+
+    </head>
+
+    <body>
+
+        <div class="slds">
+
+            <apex:actionStatus id="loadingStatus">
+                <apex:facet name="start">
+                    <apex:outputPanel >
+                        <div class="slds-spinner_container slds-is-fixed">
+                            <div role="status" class="slds-spinner slds-spinner_medium">
+                                <span class="slds-assistive-text">Loading</span>
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </apex:facet>
+            </apex:actionStatus>
+
+            <div class="slds-box">
+
+                <apex:form >
+                    <apex:actionFunction name="actionReloadData" action="{!reRenderTables}" reRender="formTable,controlsFilter" status="loadingStatus"
+                    />
+
+                    <apex:actionFunction name="sortTableAction" action="{!reorderTable}" reRender="formTable" status="loadingStatus">
+                        <apex:param name="orderbyFieldCas" value="" assignTo="{!orderbyFieldCas}" />
+                    </apex:actionFunction>
+
+                    <apex:actionFunction name="sortTableActionTelex" action="{!reorderTable}" reRender="formTable" status="loadingStatus">
+                        <apex:param name="orderbyFieldTelex" value="" assignTo="{!orderbyFieldTelex}" />
+                    </apex:actionFunction>
+
+                    <apex:pageBlock id="controlsFilter">
+
+                        <div class="slds-grid slds-gutters">
+
+                            <div class="slds-col slds-m-around_small">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label">Propietario-Cola:</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <apex:selectList value="{!ownerSelected}" styleClass="slds-select" multiselect="false" size="1" onchange="actionReloadData();">
+                                                <apex:selectOptions value="{!owners}"></apex:selectOptions>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-col slds-m-around_small">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label">Categoría:</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <apex:selectList disabled="{!ownerSelected=='SYR Action File'}" styleClass="slds-select" value="{!categoriaSelected}" multiselect="false"
+                                                size="1" onchange="actionReloadData();">
+                                                <apex:selectOptions value="{!categorias}"></apex:selectOptions>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-col slds-m-around_small">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label">Idioma:</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <apex:selectList disabled="{!ownerSelected=='SYR Action File'}" styleClass="slds-select" value="{!idiomaSelected}" multiselect="false"
+                                                size="1" onchange="actionReloadData();">
+                                                <apex:selectOptions value="{!idiomas}"></apex:selectOptions>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-col slds-m-around_small">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label">Mostrar:</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <apex:selectList value="{!totalPageSelected}" styleClass="slds-select" multiselect="false" size="1" onchange="actionReloadData();">
+                                                <apex:selectOptions value="{!totalPage}"></apex:selectOptions>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </apex:pageBlock>
+                </apex:form>
+
+                <div class="slds-box slds-box_xx-small" style="overflow-x:scroll">
+                    <apex:form id="formTable">
+                        <apex:pageBlock rendered="{!ownerSelected!='SYR Action File'}">
+                            <table id="sortThis" class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <thead id="columCaso">
+                                    <tr class="slds-text-title_caps">
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableAction('R1_CAS_FOR_Case_Number__c');">Identificador</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableAction('Status');">Estado</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableAction('Subject');">Asunto</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableAction('Origin');">Canal de entrada</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableAction('R2_CAS_PKL_Vip_Type__c');">Categoría</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableAction('R1_CAS_PKL_Idioma__c');">Idioma</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableAction('R2_CAS_FOR_carrier_code_oper__c');">Compañía operadora</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableAction('CreatedDate');">Fecha de apertura</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableAction('RecordType.Name');">Tipo de registro del caso</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableAction('Owner.Name');">Propietario del caso</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <apex:repeat value="{!casesToShow}" rendered="{!ownerSelected!='SYR Action File'}" var="caso">
+                                        <tr class="slds-text-title_caps">
+                                            <td scope="col" class="slds-truncate">
+                                                <a onclick="openViewDetail('{!caso.idCaso}', '{!caso.identificador}')">
+                                                    <apex:outputText value="{!caso.identificador}"></apex:outputText>
+                                                </a>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!caso.estado}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!LEFT(caso.asunto, 100)}"></apex:outputText>
+                                                <apex:outputText value="..." rendered="{!LEN(caso.asunto)> 100}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!caso.canal}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!caso.categoria}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!caso.idioma}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!caso.carrier}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!caso.fechaCreacion}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!caso.tipo}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!caso.owner}"></apex:outputText>
+                                            </td>
+                                        </tr>
+                                    </apex:repeat>
+                                </tbody>
+                            </table>
+                        </apex:pageBlock>
+
+                        <apex:pageBlock rendered="{!ownerSelected=='SYR Action File'}">
+                            <table id="sortThis2" class="slds-table slds-table_bordered slds-table_cell-buffer">
+
+                                <thead id="columTelex">
+                                    <tr class="slds-text-title_caps">
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableActionTelex('Name');">Identificador Telex</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableActionTelex('R2_MG_PKL_Type__c');">Tipo</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableActionTelex('RecordType.Name');">Tipo De Registro</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableActionTelex('R2_MG_TXT_Area__c');">Área</th>
+                                        <th scope="col" class="slds-truncate" nowrap="true">Observaciones</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableActionTelex('R2_MG_TXT_XF__c');">XF (Action File Address)</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableActionTelex('R2_MG_TXT_TX__c');">TX (Direcciones Telemáticas)</th>
+                                        <th scope="col" class="slds-truncate reorder-action" nowrap="true" onclick="sortTableActionTelex('R2_MG_HOU_DT_Hour__c');">DT - Hora de envio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <apex:repeat value="{!telexToShow}" var="telex">
+                                        <tr class="slds-text-title_caps">
+                                            <td scope="col" class="slds-truncate">
+                                                <a onclick="openViewTelex('{!telex.idsf}')">
+                                                    <apex:outputText value="{!telex.identificador}"></apex:outputText>
+                                                </a>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!telex.type}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!telex.recordType}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!telex.area}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!LEFT(telex.observaciones, 100)}"></apex:outputText>
+                                                <apex:outputText value="..." rendered="{!LEN(telex.observaciones)> 100}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!telex.xf}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!telex.tx}"></apex:outputText>
+                                            </td>
+                                            <td scope="col" class="slds-truncate">
+                                                <apex:outputText value="{!telex.dt}"></apex:outputText>
+                                            </td>
+
+                                        </tr>
+
+                                    </apex:repeat>
+
+                                </tbody>
+                            </table>
+                        </apex:pageBlock>
+                    </apex:form>
+                </div>
+
+            </div>
+        </div>
+    </body>
+
+    </html>
+</apex:page>

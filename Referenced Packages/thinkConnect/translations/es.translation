@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customLabels>
+        <label><!-- Softphone All Campaigns Close --></label>
+        <name>Softphone_All_Campaigns_Close</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone All Campaigns NotReady --></label>
+        <name>Softphone_All_Campaigns_NotReady</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone All Campaigns Open --></label>
+        <name>Softphone_All_Campaigns_Open</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone All Campaigns Ready --></label>
+        <name>Softphone_All_Campaigns_Ready</name>
+    </customLabels>
+    <customLabels>
+        <label>La siguiente extensión está forzada para este usuario:</label>
+        <name>Softphone_Altitude</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Autologin_loading --></label>
+        <name>Softphone_Autologin_loading</name>
+    </customLabels>
+    <customLabels>
+        <label>Añadir línea</label>
+        <name>Softphone_Button_Add_Line</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Button_Cancel_transfer --></label>
+        <name>Softphone_Button_Cancel_transfer</name>
+    </customLabels>
+    <customLabels>
+        <label>Completar conferencia</label>
+        <name>Softphone_Button_Complete_Conference</name>
+    </customLabels>
+    <customLabels>
+        <label>Completar transferencia</label>
+        <name>Softphone_Button_Complete_Transfer</name>
+    </customLabels>
+    <customLabels>
+        <label>Continuar llamada</label>
+        <name>Softphone_Button_Continue_Call</name>
+    </customLabels>
+    <customLabels>
+        <label>Colgar llamada</label>
+        <name>Softphone_Button_HangUp</name>
+    </customLabels>
+    <customLabels>
+        <label>Pausar llamada</label>
+        <name>Softphone_Button_Hold_Call</name>
+    </customLabels>
+    <customLabels>
+        <label>Realizar llamada</label>
+        <name>Softphone_Button_Make_Call</name>
+    </customLabels>
+    <customLabels>
+        <label>Abrir agenda</label>
+        <name>Softphone_Button_Open_Agenda</name>
+    </customLabels>
+    <customLabels>
+        <label>Abrir el teclado de marcación</label>
+        <name>Softphone_Button_Open_Dialpad</name>
+    </customLabels>
+    <customLabels>
+        <label>Responder llamada</label>
+        <name>Softphone_Button_PickUp</name>
+    </customLabels>
+    <customLabels>
+        <label>Enviar tonos DTMF</label>
+        <name>Softphone_Button_SendDTFM</name>
+    </customLabels>
+    <customLabels>
+        <label>Mostrar opciones de multi-línea</label>
+        <name>Softphone_Button_Transfer</name>
+    </customLabels>
+    <customLabels>
+        <label>Atrás</label>
+        <name>Softphone_Button_back</name>
+    </customLabels>
+    <customLabels>
+        <label>Iniciar sesión</label>
+        <name>Softphone_Button_login</name>
+    </customLabels>
+    <customLabels>
+        <label>Aceptar</label>
+        <name>Softphone_Button_submit</name>
+    </customLabels>
+    <customLabels>
+        <label>Información de Llamada</label>
+        <name>Softphone_Call_Info</name>
+    </customLabels>
+    <customLabels>
+        <label>Registro de Llamada</label>
+        <name>Softphone_Call_Log</name>
+    </customLabels>
+    <customLabels>
+        <label>Resultado de la llamada</label>
+        <name>Softphone_Call_result</name>
+    </customLabels>
+    <customLabels>
+        <label>Volver a la lista</label>
+        <name>Softphone_Call_result_root</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Call_without_service --></label>
+        <name>Softphone_Call_without_service</name>
+    </customLabels>
+    <customLabels>
+        <label>Campañas</label>
+        <name>Softphone_Campaign</name>
+    </customLabels>
+    <customLabels>
+        <label>Campaña</label>
+        <name>Softphone_Campaign_Simple</name>
+    </customLabels>
+    <customLabels>
+        <label>No preparado en ninguna campaña</label>
+        <name>Softphone_Campaign_State_Closed</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Campaign_State_Open --></label>
+        <name>Softphone_Campaign_State_Open</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Cancel_call --></label>
+        <name>Softphone_Cancel_call</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone Conference --></label>
+        <name>Softphone_Conference</name>
+    </customLabels>
+    <customLabels>
+        <label>Conferencia entre líneas</label>
+        <name>Softphone_Conference_between_lines</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Conference_controller --></label>
+        <name>Softphone_Conference_controller</name>
+    </customLabels>
+    <customLabels>
+        <label>Conexión perdida. Reconectando</label>
+        <name>Softphone_Connection_Lost</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone Consult --></label>
+        <name>Softphone_Consult</name>
+    </customLabels>
+    <customLabels>
+        <label>Crear registro</label>
+        <name>Softphone_Create_record</name>
+    </customLabels>
+    <customLabels>
+        <label>Emplee esta página para crear o actualizar las credenciales de los usuarios en el sistema telefónico.</label>
+        <name>Softphone_Credentials_Page_message</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Credentials_Select_callcenter --></label>
+        <name>Softphone_Credentials_Select_callcenter</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Custom_Actions --></label>
+        <name>Softphone_Custom_Actions</name>
+    </customLabels>
+    <customLabels>
+        <label>Inicio de jornada</label>
+        <name>Softphone_Day_Start</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Directory_Search --></label>
+        <name>Softphone_Directory_Search</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Empty_element --></label>
+        <name>Softphone_Empty_element</name>
+    </customLabels>
+    <customLabels>
+        <label>Finalizar preview</label>
+        <name>Softphone_End_preview</name>
+    </customLabels>
+    <customLabels>
+        <label>Línea extendida</label>
+        <name>Softphone_Extended_line</name>
+    </customLabels>
+    <customLabels>
+        <label>Extensión</label>
+        <name>Softphone_Extension</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone Filter Placeholder --></label>
+        <name>Softphone_Filter_Placeholder</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Filter_services --></label>
+        <name>Softphone_Filter_services</name>
+    </customLabels>
+    <customLabels>
+        <label>Entrante</label>
+        <name>Softphone_Inbound</name>
+    </customLabels>
+    <customLabels>
+        <label>Introduce Número</label>
+        <name>Softphone_Introduce_number</name>
+    </customLabels>
+    <customLabels>
+        <label>ANI</label>
+        <name>Softphone_Label_ANI</name>
+    </customLabels>
+    <customLabels>
+        <label>DNIS</label>
+        <name>Softphone_Label_DNIS</name>
+    </customLabels>
+    <customLabels>
+        <label>Últimas llamadas</label>
+        <name>Softphone_Last_calls</name>
+    </customLabels>
+    <customLabels>
+        <label>Llamada</label>
+        <name>Softphone_Line_call</name>
+    </customLabels>
+    <customLabels>
+        <label>Llamada Desde</label>
+        <name>Softphone_Line_callFrom</name>
+    </customLabels>
+    <customLabels>
+        <label>Llamando A</label>
+        <name>Softphone_Line_callTo</name>
+    </customLabels>
+    <customLabels>
+        <label>Conferencia</label>
+        <name>Softphone_Line_conference</name>
+    </customLabels>
+    <customLabels>
+        <label>Línea</label>
+        <name>Softphone_Line_name</name>
+    </customLabels>
+    <customLabels>
+        <label>Número</label>
+        <name>Softphone_Line_number</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Link_call_to_service --></label>
+        <name>Softphone_Link_call_to_service</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Loading --></label>
+        <name>Softphone_Loading</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Loading_thinkConnect --></label>
+        <name>Softphone_Loading_thinkConnect</name>
+    </customLabels>
+    <customLabels>
+        <label>Comentarios</label>
+        <name>Softphone_Log_Comment</name>
+    </customLabels>
+    <customLabels>
+        <label>Nombre</label>
+        <name>Softphone_Log_Name</name>
+    </customLabels>
+    <customLabels>
+        <label>Relacionado con</label>
+        <name>Softphone_Log_Related</name>
+    </customLabels>
+    <customLabels>
+        <label>Asunto</label>
+        <name>Softphone_Log_Subject</name>
+    </customLabels>
+    <customLabels>
+        <label>Usuario</label>
+        <name>Softphone_Logged_as</name>
+    </customLabels>
+    <customLabels>
+        <label>Ext</label>
+        <name>Softphone_Login_Extension</name>
+    </customLabels>
+    <customLabels>
+        <label>Contraseña</label>
+        <name>Softphone_Login_Password</name>
+    </customLabels>
+    <customLabels>
+        <label>Usuario</label>
+        <name>Softphone_Login_Username</name>
+    </customLabels>
+    <customLabels>
+        <label>Iniciar sesión en</label>
+        <name>Softphone_Login_in</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Login_site --></label>
+        <name>Softphone_Login_site</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Login_team --></label>
+        <name>Softphone_Login_team</name>
+    </customLabels>
+    <customLabels>
+        <label>Cierre de sesión</label>
+        <name>Softphone_Logout</name>
+    </customLabels>
+    <customLabels>
+        <label>Motivo del cierre de sesión</label>
+        <name>Softphone_Logout_reason</name>
+    </customLabels>
+    <customLabels>
+        <label>Se han encontrado múltiples registros</label>
+        <name>Softphone_Multiple_records</name>
+    </customLabels>
+    <customLabels>
+        <label>Resultado Múltiple</label>
+        <name>Softphone_Multiple_result</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone No Campaigns --></label>
+        <name>Softphone_No_Campaigns</name>
+    </customLabels>
+    <customLabels>
+        <label>No hay un número almacenado para reprogramar la llamada</label>
+        <name>Softphone_No_Number_To_Schedule</name>
+    </customLabels>
+    <customLabels>
+        <label>No se han realizado llamadas hoy</label>
+        <name>Softphone_No_calls_today</name>
+    </customLabels>
+    <customLabels>
+        <label>Sin Resultado</label>
+        <name>Softphone_No_result</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Notification_close --></label>
+        <name>Softphone_Notification_close</name>
+    </customLabels>
+    <customLabels>
+        <label>Abierta</label>
+        <name>Softphone_Opened</name>
+    </customLabels>
+    <customLabels>
+        <label>Saliente</label>
+        <name>Softphone_Outbound</name>
+    </customLabels>
+    <customLabels>
+        <label>Participante</label>
+        <name>Softphone_Party_device</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Pause_Control --></label>
+        <name>Softphone_Pause_Control</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Play_Control --></label>
+        <name>Softphone_Play_Control</name>
+    </customLabels>
+    <customLabels>
+        <label>Campaña Preview</label>
+        <name>Softphone_Preview_Campaign</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Preview_accept --></label>
+        <name>Softphone_Preview_accept</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Preview_reject --></label>
+        <name>Softphone_Preview_reject</name>
+    </customLabels>
+    <customLabels>
+        <label>Cola</label>
+        <name>Softphone_Queue</name>
+    </customLabels>
+    <customLabels>
+        <label>No puedes estar listo al cerrar la sesión</label>
+        <name>Softphone_Ready_on_logout</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Recording_Control --></label>
+        <name>Softphone_Recording_Control</name>
+    </customLabels>
+    <customLabels>
+        <label>Buscar</label>
+        <name>Softphone_Search</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Search_or_number --></label>
+        <name>Softphone_Search_or_number</name>
+    </customLabels>
+    <customLabels>
+        <label>Segmento</label>
+        <name>Softphone_Segment</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone Select Option --></label>
+        <name>Softphone_Select_Option</name>
+    </customLabels>
+    <customLabels>
+        <label>thinkConnect no se encuentra habilitado en la barra lateral</label>
+        <name>Softphone_Side_bar_message</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone Skill --></label>
+        <name>Softphone_Skill</name>
+    </customLabels>
+    <customLabels>
+        <label>Estado</label>
+        <name>Softphone_Status</name>
+    </customLabels>
+    <customLabels>
+        <label>Pausada</label>
+        <name>Softphone_Status_Held</name>
+    </customLabels>
+    <customLabels>
+        <label>Sonando</label>
+        <name>Softphone_Status_Ringing</name>
+    </customLabels>
+    <customLabels>
+        <label>Reposo</label>
+        <name>Softphone_Status_Standby</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Status_Transferred --></label>
+        <name>Softphone_Status_Transferred</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Status_cleared --></label>
+        <name>Softphone_Status_cleared</name>
+    </customLabels>
+    <customLabels>
+        <label>En llamada</label>
+        <name>Softphone_Status_onCall</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Stop_Control --></label>
+        <name>Softphone_Stop_Control</name>
+    </customLabels>
+    <customLabels>
+        <label>Tarea actualizada</label>
+        <name>Softphone_Task_updated</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Transfer --></label>
+        <name>Softphone_Transfer</name>
+    </customLabels>
+    <customLabels>
+        <label>Transferencia entre líneas</label>
+        <name>Softphone_Transfer_between_lines</name>
+    </customLabels>
+    <customLabels>
+        <label>Transferencia ciega</label>
+        <name>Softphone_Transfer_blind</name>
+    </customLabels>
+    <customLabels>
+        <label>Transferencia con consulta</label>
+        <name>Softphone_Transfer_consult</name>
+    </customLabels>
+    <customLabels>
+        <label>Transferir línea</label>
+        <name>Softphone_Transfer_line</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Transfer_number --></label>
+        <name>Softphone_Transfer_number</name>
+    </customLabels>
+    <customLabels>
+        <label>Opciones de Transferencia</label>
+        <name>Softphone_Transfer_options</name>
+    </customLabels>
+    <customLabels>
+        <label>Seleccione Opción</label>
+        <name>Softphone_Transfer_select_option</name>
+    </customLabels>
+    <customLabels>
+        <label>Actualizar Tarea</label>
+        <name>Softphone_Update_Task</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone VDN --></label>
+        <name>Softphone_VDN</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone VDN Desc --></label>
+        <name>Softphone_VDN_Desc</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_Wrong_extension --></label>
+        <name>Softphone_Wrong_extension</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone clicktodial alert --></label>
+        <name>Softphone_clicktodial_alert</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Finish session transaction --></label>
+        <name>Softphone_finish_session_transaction</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone multiline options --></label>
+        <name>Softphone_multiline_options</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_service_state_description_SS_EMPTY --></label>
+        <name>Softphone_service_state_description_SS_EMPTY</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_service_state_description_SS_HOURS --></label>
+        <name>Softphone_service_state_description_SS_HOURS</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_service_state_description_SS_PAUSED --></label>
+        <name>Softphone_service_state_description_SS_PAUSED</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_service_state_description_SS_PHANTOM --></label>
+        <name>Softphone_service_state_description_SS_PHANTOM</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_service_state_description_SS_STARTED --></label>
+        <name>Softphone_service_state_description_SS_STARTED</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_service_state_description_SS_STOPPED --></label>
+        <name>Softphone_service_state_description_SS_STOPPED</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_state_AFTER_CALL_WORK --></label>
+        <name>Softphone_state_AFTER_CALL_WORK</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_state_AVAILABLE --></label>
+        <name>Softphone_state_AVAILABLE</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_state_LOGIN --></label>
+        <name>Softphone_state_LOGIN</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_state_LOGOUT --></label>
+        <name>Softphone_state_LOGOUT</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_state_RINGING --></label>
+        <name>Softphone_state_RINGING</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_state_SERVICING_CONTACT --></label>
+        <name>Softphone_state_SERVICING_CONTACT</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_state_STARTED --></label>
+        <name>Softphone_state_STARTED</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Softphone_state_STOPPED --></label>
+        <name>Softphone_state_STOPPED</name>
+    </customLabels>
+</Translations>

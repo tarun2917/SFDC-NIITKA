@@ -1,0 +1,1116 @@
+<apex:page StandardController="R1_Incident__c" extensions="R2_CLS_INC_InactiveDamagedController" showHeader="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+<head>
+<apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+    <meta charset="utf-8" />
+    <apex:includeScript value="/soap/ajax/40.0/connection.js"/>
+    <apex:includeScript value="/soap/ajax/29.0/apex.js"/>
+    <apex:includeScript value="/support/console/40.0/integration.js"/>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"/>
+
+
+
+    <style>
+        .slds-form-element{
+        margin-right: 3.2%;
+        width: 21.8%;
+        }
+        .slds-section__content{
+        margin-left: 3%;
+        }
+        .hidden{
+        display: none;
+        }
+        .open{
+        display: block;
+        }
+        .slds-scope .slds-button--neutral, .slds-scope .slds-button_neutral {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        }
+		.requiredClass{
+            border-left: 3px solid #E40909;
+            padding-left: 2px;
+        }
+    </style>
+</head>
+<body id="bodyDetail">
+
+    <apex:form id="formScript">
+
+    <script id="js_scripts" type="text/javascript">
+    /*---------------------------------------------------------------------------------------------------------------------
+    Author:         Alberto Puerto Collado
+    Company:        Accenture
+    Description:    several javascript methods
+    IN:
+    OUT:
+
+    History:
+     <Date>                     <Author>                         <Change Description>
+    10/11/2017             Alberto Puerto Collado                  Initial Version
+    ----------------------------------------------------------------------------------------------------------------------*/
+    function hideSection(htmlSection, svg){
+        console.log(htmlSection.id);
+        console.log(svg.id);
+        var element = document.getElementById(htmlSection.id);
+        var svgElement = document.getElementById(svg.id);
+        if (element.classList.contains("slds-is-open")) {
+            element.classList.remove("slds-is-open");
+            svgElement.innerHTML="<use xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#right')}\" />";
+        } else {
+            element.classList.add("slds-is-open");
+            svgElement.innerHTML="<use xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}\" />";
+        }
+    }
+    /*function toggleMenu(){
+        var menuId = document.getElementById("menu");
+        console.log(menuId);
+        if (menuId.classList.contains("hidden")) {
+            menuId.classList.remove("hidden");
+            menuId.classList.add("open");
+        } else {
+            menuId.classList.add("hidden");
+            menuId.classList.remove("open");
+        }
+    }*/
+/*
+     $j = jQuery.noConflict();
+     $j(document).ready(function() {
+     $j( document.getElementById('page1:formScript:pg1:testSample')).click(function(){
+         alert('Bingo');
+         });
+     });
+*/
+
+    function abre_PXF_Message_js(){
+        console.log('Entra en abre_PXF_Message');
+
+        console.log('##RP## Primary Id: ' + sforce.console.getFocusedPrimaryTabId());
+        console.log('##RP## Subtab Id: ' + sforce.console.getFocusedSubtabId());
+        console.log('##RP## Enclosing tab Id: ' + sforce.console.getEnclosingTabId());
+
+        //debugger;
+        if (sforce.console.isInConsole()) {
+            function getPrimaryTabId(){
+               sforce.console.getFocusedPrimaryTabId(openSubtab);
+            }
+            var openSubtab = function openSubtab(result) {
+               sforce.console.openSubtab(result.id , '/apex/R2_VF_PXFMessages?', true,
+               'Telex TTY Message', null);
+            };
+            getPrimaryTabId();
+        }else {
+           window.open('/apex/R2_VF_PXFMessages?id','_blank');
+        }
+         //window.open('/apex/R2_VF_PXFMessage?id','_blank');
+        // if (sforce.console.isInConsole()) { //REVISAR
+        //     var openSubtab = function openSubtab(result) {
+        //        sforce.console.openSubtab(result.id , '/apex/R2_VF_PXFMessages?', true,
+        //        'Telex PXF Message', null);
+        //     };
+        //     //function getPrimaryTabId(){
+        //        sforce.console.getPrimaryTabIds(openSubtab);
+        //     //}
+
+        //     //getPrimaryTabId();
+        // }else {
+        //    window.open('/apex/R2_VF_PXFMessages?id','_blank');
+        // }
+    }
+    function abre_TTY_Message_js(){
+        //window.open('/apex/R2_VF_TTY_Messages?id','_blank');
+        if (sforce.console.isInConsole()) {
+            function getPrimaryTabId(){
+               sforce.console.getFocusedPrimaryTabId(openSubtab);
+            }
+            var openSubtab = function openSubtab(result) {
+               sforce.console.openSubtab(result.id , '/apex/R2_VF_TTY_Messages?', true,
+               'Telex TTY Message', null);
+            };
+            getPrimaryTabId();
+        }else {
+           window.open('/apex/R2_VF_TTY_Messages?id','_blank');
+        }
+    }
+    function abre_Stations_js(){
+        //window.open('/apex/R2_VF_TTY_Messages?id','_blank');
+        if (sforce.console.isInConsole()) {
+            function getPrimaryTabId(){
+               sforce.console.getFocusedPrimaryTabId(openSubtab);
+            }
+            var openSubtab = function openSubtab(result) {
+               sforce.console.openSubtab(result.id , '/apex/R2_VF_WT_Stations?', true,
+               'Stations', null);
+            };
+            getPrimaryTabId();
+        }else {
+           window.open('/apex/R2_VF_WT_Stations?id','_blank');
+        }
+    }
+//     function reopenDAH_js(){
+//      //   callingModal('Actualizando el PIR tras ser reabierto, fase beta sin mostrar el warning',1);
+//         // closeMessage();
+//         //var resp =
+//         console.log('Reabrir --> llamando a controller y actual resp---->'+resp);
+//         reabrirRCB();
+
+//         //console.log(`errorResponse---->+${errorResponse}`);
+// //descomentar para warnings
+//         var resp = '{!errorResponse}';
+//         // alert(resp);
+//         // console.log('errorResponse---->'+resp);
+//         // if(resp == '1'){
+//         //     callingModal('Actualizando el PIR tras ser reabierto',1);
+//         //     leyendoDAH();
+//         // }else{
+//         //     callingModal(resp);
+//         // }
+
+//         //leyendoDAH();
+//     }
+    function cambiaEscalaDAH_js(){
+        console.log('Cambio escala --> llamando a controller y actual resp---->'+resp);
+        reasignarRIB();
+        var resp = '{!errorResponse}';
+        //leyendoDAH();
+    }
+    // function restablecerRIT_js(){
+    //     console.log('Convertir --> llamando a controller y actual resp---->'+resp);
+    //     convertirCFD();
+    //     var resp = '{!errorResponse}';
+    //     // callingModal('PIR correctamente convertido', 1);
+    // }
+    // function abreConvertido_js(){
+    //     debugger;
+    //     refresVar();
+    //     //var resp = '{!errorResponse}';
+    // }
+
+    // function suspendDAH_js(){
+    //     console.log('Suspender --> llamando a controller y actual resp---->'+resp);
+    //     suspenderSUS();
+    //     var resp = '{!errorResponse}';
+    // }
+    function informeDAH_js(){
+        // callingModal('Informe: "PARTE DE IRREGULARIDAD DE EQUIPAJE\n\nNUMERO DE REFERENCIA        - MADIB67999/27SEP17/1147GMT\nNOMBRE                      - MANI/\nTITULO/INICIALES            - CMN:TITLE/U/\nGIVEN NAME                  -\nVUELO/FECHA                 - IB3170/13SEP/\nNUMERO DE EQUIPAJES         - 1\nNUMERO DEL BILLETE          - 1256984\nCOLOR/TIPO                  - BN05BWX\nNUMERO ETIQUETA FACTURACION - ON556985/\n\nPOR FAVOR CONSERVE SU BILLETE Y EL COMPROBANTE DEL\nEQUIPAJE. ESTE INFORME NO IMPLICA RECONOCIMIENTO DE\nRESPONSABILIDAD.\n"');
+
+        console.log('Informe --> llamando a controller y actual resp---->'+resp);
+        informePIR();
+        var resp = '{!errorResponse}';
+        console.log('{!errorResponse}');
+        // modalAF();
+        // console.log('llamando a controller y actual resp---->'+resp);
+        // ();
+    }
+    function informeMuestra(){
+        var resp = '{!errorResponse}';
+        console.log('{!errorResponse}');
+        modalAF();
+    }
+    function closeDAH_js(){
+        //callingModal('Actualizando el PIR tras ser cerrado',1);
+        // cerrarCAH();
+        // var resp = '{!errorResponse}';
+        // //alert(resp);
+        // console.log('errorResponse---->'+resp);
+        // if(resp == '1'){
+        //     callingModal('Actualizando el PIR tras ser cerrado',1);
+        //     leyendoDAH();
+        // }else{
+        //     callingModal(resp);
+        // }
+        //callingModal('Actualizando el PIR tras ser cerrado, fase beta sin mostrar el warning',1);
+        console.log('Cerrar --> llamando a controller y actual resp---->'+resp);
+        cerrarCAH();
+        var resp = '{!errorResponse}';
+        //leyendoDAH();
+    }
+    function modifyDAH_js(){
+        // callingModal('Enviando datos a WorldTracer y actualizando el PIR',1);
+        console.log('Modificar --> llamando a controller y actual resp---->'+resp);
+        modificarAAH();
+        var resp = '{!errorResponse}';
+    }
+    function refreshDAH_js(){
+        debugger;
+        if('{!errorResponse}' == '1'){
+            callingModal('Actualizando el PIR con WorldTracer',1);
+            leyendoDAH();
+        // }else if('{!errorResponse}' == '2'){
+        //     window.parent.location.reload();
+        }else{
+            modalAF();
+            //callingModal('{!errorResponse}');
+        }
+        // callingModal('Espere para visualizar los datos actualizados por favor', 1);
+        // leyendoDAH();
+        //location.reload();
+    }
+    /*---------------------------------------------------------------------------------------------------------------------
+    Author:         Alberto Puerto Collado
+    Company:        Accenture
+    Description:    Calling Refresh delayed bag on WT
+    IN:
+    OUT:
+
+    History:
+     <Date>                     <Author>                         <Change Description>
+    14/11/2017             Alberto Puerto Collado                  Initial Version
+    ----------------------------------------------------------------------------------------------------------------------*/
+     function callingModal(string, loading){
+        var text = string;
+        //sforce.debug.trace=true;
+
+        //_************CREATING MODAL PR:***************
+        //HTML: Creating ELEMENTS
+        var wrapper = document.createElement("div");
+        wrapper.id = "Wrapper";
+        wrapper.addEventListener("click", closeModal, false);
+        var div = document.createElement("div");
+        div.id = "modal_custom";
+        var wrapperTexto = document.createElement("div");
+        wrapperTexto.id = "Texto_Det_Passenger";
+        var wrap_Variable = document.createElement("div");
+        wrap_Variable.id = "Datos_Recibidos_PR";
+        var title = document.createElement("h1");
+        var titText = document.createTextNode("Conectando con WorldTracer:");
+        var parraf = document.createElement("pre"); //pre instead p (preformat text)
+        if(loading == 1){
+            var divSpinner = document.createElement("div");
+            divSpinner.id = "divSpinner";
+            divSpinner.className = "slds-spinner slds-spinner_medium";
+            divSpinner.position = "fixed";
+            var spanSpin = document.createElement("span");
+            spanSpin.id = "spanSpin";
+            spanSpin.className ="slds-assistive-text";
+            var spanSpinTextin = document.createTextNode("Conectando con WorldTracer");
+            spanSpin.appendChild(spanSpinTextin);
+            var aSpin = document.createElement("div");
+            aSpin.id = "aSpin";
+            aSpin.className = "slds-spinner__dot-a";
+            var bSpin = document.createElement("div");
+            bSpin.id = "bSpin";
+            bSpin.className = "slds-spinner__dot-b";
+            divSpinner.appendChild(spanSpin);
+            divSpinner.appendChild(aSpin);
+            divSpinner.appendChild(bSpin);
+            div.appendChild(divSpinner);
+        }
+
+        var contenido = document.createTextNode(text);
+
+        var boton = document.createElement("button");
+        boton.style.id= "Exit_button";
+        boton.innerHTML= "Cerrar";
+        boton.addEventListener("click", closeModal, false);
+
+        //DOM: structure
+        div.appendChild(wrapperTexto);
+        wrapperTexto.appendChild(title);
+        wrapperTexto.appendChild(wrap_Variable);
+        wrap_Variable.appendChild(parraf);
+        wrapperTexto.appendChild(boton);
+        title.appendChild(titText);
+        parraf.appendChild(contenido);
+
+        //CSS
+        wrapper.style.position= "fixed";
+        wrapper.style.zIndex= "8888";
+        wrapper.style.background= "black";
+        wrapper.style.opacity= "0.5";
+        wrapper.style.height= "100%";
+        wrapper.style.width= "100%";
+
+        div.style.position= "fixed";
+        div.style.boxSizing = "border-box";
+        div.style.border= "2px solid grey";
+        div.style.zIndex= "9999";
+        div.style.background= "white";
+        div.style.minHeight= "20%";
+        div.style.maxHeight= "80%";
+        div.style.maxWidth= "80%";
+        div.style.align= "center";
+        div.style.textAlign= "center";
+        div.style.fontSize= "1.3rem";
+        //div.style.overflow= "auto"; //better only scroll on wrap_Variable
+        div.style.margin= "auto";
+        div.style.left= "50%";
+        div.style.top= "50%";
+        //transform for all browsers
+        div.style.webkitTransform = "translate(-50%, -50%)";
+        div.style.webkitTransform = "translate(-50%, -50%)";
+        div.style.MozTransform = "translate(-50%, -50%)";
+        div.style.msTransform = "translate(-50%, -50%)";
+        div.style.OTransform = "translate(-50%, -50%)";
+        div.style.transform = "translate(-50%, -50%)";
+
+        wrapperTexto.style.padding= "0.6em";
+
+        wrap_Variable.style.height= "70vh";
+        wrap_Variable.style.overflow= "auto";
+        wrap_Variable.marginBottom= "5vh";
+
+        parraf.style.textAlign= "left";
+        parraf.style.fontSize= "1.1rem";
+
+        boton.style.position= "fixed";
+        boton.style.bottom= "0";
+        boton.style.align= "center";
+        boton.style.fontSize= "1rem";
+        //transform for all browsers
+        boton.style.webkitTransform = "translate(-50%, -10%)";
+        boton.style.webkitTransform = "translate(-50%, -10%)";
+        boton.style.MozTransform = "translate(-50%, -10%)";
+        boton.style.msTransform = "translate(-50%, -10%)";
+        boton.style.OTransform = "translate(-50%, -10%)";
+        boton.style.transform = "translate(-50%, -10%)";
+
+        //DOM: Insert
+        if(!document.getElementById("modal_custom")){
+            document.body.insertBefore(wrapper, document.body.firstChild);
+            document.body.insertBefore(div, document.body.firstChild);
+        }
+        //Auxiliary function to close modal called from two addEventListeners (wrapper & boton)
+        function closeModal() {
+            document.body.removeChild(wrapper);
+            document.body.removeChild(div);
+        }
+
+    }
+    // function closeMessage() {
+    //         document.body.removeChild(wrapper);
+    //         document.body.removeChild(div);
+    // }
+        
+      function abreCreacionCaso(){
+     	if(sforce.console.isInConsole()){
+            sforce.console.openPrimaryTab(null, '/500/e?RecordType={!$Label.R2_LB_RT_Expediente}&ent=Case&cas5=Deterioro&{!$Label.R2_LB_FI_LOO_PIR}={!incidencia.Name}', true);
+        }else{
+           window.open('/500/e?RecordType={!$Label.R2_LB_RT_Expediente}&ent=Case&cas5=Deterioro&{!$Label.R2_LB_FI_LOO_PIR}={!incidencia.Name}','_blank');
+        }
+    } 
+    </script>
+
+
+
+        <!-- <apex:outputText value="{!errorResponse}"></apex:outputText>
+        <apex:actionFunction name="leyendoDAH" action="{!refreshDAH}" />
+        <apex:actionFunction name="cerrarCAH" action="{!closeCAH}" reRender="formScript" oncomplete="refreshDAH_js();"/>
+        <apex:actionFunction name="reasignarRIB" action="{!reassignRIB}" reRender="formScript" oncomplete="refreshDAH_js();"/>
+        <apex:actionFunction name="informePIR" action="{!informePIR}" reRender="formScript" oncomplete="informeMuestra()"/>
+        <apex:actionFunction name="modalAF" oncomplete="callingModal('{!errorResponse}');" reRender="formScript"/> -->
+        <apex:actionFunction name="modificarAAH" action="{!modifyDAH}" reRender="formScript, formImg, form" oncomplete="refreshDAH_js();"/>
+
+    </apex:form>
+
+
+
+    <apex:slds />
+    <div id="title" class="slds-scope">
+        <div class="slds-box">
+            {!IncidentHeader}
+        </div>
+
+        <div class="slds-box">
+            <apex:form >
+            <div class="slds-box">
+                <div class="slds-button-group">
+                    <div class="slds-button-group" role="group">
+                      <!--   <apex:commandButton styleClass="slds-button slds-button_neutral" value="Cambiar de escala (RIB)" oncomplete="cambiaEscalaDAH_js();" reRender="false" >
+                        </apex:commandButton>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Refrescar PIR (DAH)" reRender="false" >
+                            <apex:actionSupport event="oncomplete" action="{!readRefreshDAH}"/>
+                        </apex:commandButton>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Cerrar PIR (CAH)" oncomplete="closeDAH_js();" reRender="false" >
+                        </apex:commandButton>
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Informe PIR (PIR)" oncomplete="informeDAH_js();" reRender="false" >
+                        </apex:commandButton> -->
+                        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Modificar (AAH)" oncomplete="modifyDAH_js();" reRender="false" style="">
+                        </apex:commandButton>
+                    </div>
+
+
+                    <div id="station_communication" class="slds-button-group" role="group">
+                        <button id="pxf_buttom" class="slds-button slds-button_neutral" onclick="abre_PXF_Message_js();" >PXF Message</button>
+                        <button id="tty_buttom" class="slds-button slds-button_neutral" onclick="abre_TTY_Message_js();" >TTY Message</button>
+                        <button id="teletype_buttom" class="slds-button slds-button_neutral" onclick="alert('Prueba retrieve InboxMessageRead(DXF)');">DXF</button>
+                         <apex:commandButton id="stationList_buttom" styleClass="slds-button slds-button_neutral" value="Stations" onclick="abre_Stations_js();" reRender="false" />
+
+                    </div>
+                    <div id="creaCasoDiv" class="slds-button-group" role="group">
+                       
+                         <apex:commandButton id="creaCasoBoton" styleClass="slds-button slds-button_neutral" value="Crear caso" onclick="abreCreacionCaso();" reRender="false"/>
+
+               
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="slds-box">
+                <div id="lght_section_1" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_1, svg_section_1);return false;" reRender="false">
+                            <svg id="svg_section_1" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Diario/DRY/">Diario/DRY/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_1">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection1}" var="fieldIndex" id="fieldLoop">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="text-input-id-1">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <!-- <input type="text" id="text-input-id-1" class="slds-input" placeholder="{!fieldIndex.value}"/> -->
+                                                <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-1" styleClass="slds-input"  onfocus="this.select();"/>
+                                                <!-- </apex:input> -->
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="lght_section_2" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_2, svg_section_2);return false">
+                            <svg id="svg_section_2" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Pasajero/PAX/">Pasajero/PAX/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_2">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection2}" var="fieldIndex" id="fieldLoop2">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="text-input-id-2">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-2" styleClass="slds-input"  onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="lght_section_3" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_3, svg_section_3);return false">
+                            <svg id="svg_section_3" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Información Direcciones">Información Direcciones</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_3">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection3}" var="fieldIndex" id="fieldLoop3">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="text-input-id-3">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-3" styleClass="slds-input"  onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="lght_section_4" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_4, svg_section_4);return false">
+                            <svg id="svg_section_4" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Vuelos /RTI">Vuelos /RTI/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_4">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection4}" var="fieldIndex" id="fieldLoop4">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="text-input-id-4">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-4" styleClass="slds-input"  onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="lght_section_5" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_5, svg_section_5);return false">
+                            <svg id="svg_section_5" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Otra Información /OSI/">Otra Información /OSI/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_5">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection5}" var="fieldIndex" id="fieldLoop5">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="text-input-id-5">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-5" styleClass="slds-input"  onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="lght_section_6" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_6, svg_section_6);return false">
+                            <svg id="svg_section_6" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Reparto /DLV/">Reparto /DLV/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_6">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection6}" var="fieldIndex" id="fieldLoop6">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="text-input-id-6">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-6" styleClass="slds-input"  onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="lght_section_7" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_7, svg_section_7);return false">
+                            <svg id="svg_section_7" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Equipaje /BAG/">Equipaje /BAG/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_7">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection7}" var="fieldIndex" id="fieldLoop7">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="text-input-id-7">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-7" styleClass="slds-input"  onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="lght_section_8" class="slds-section slds-is-open">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_8, svg_section_8);return false">
+                            <svg id="svg_section_8" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Reclamación /CLAIM/">Reclamación /CLAIM/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_8">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection8}" var="fieldIndex" id="fieldLoop8">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="text-input-id-8">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-8" styleClass="slds-input"  onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                 <div id="lght_section_9" class="slds-section slds-is-open slds-size--1-of-4 slds-medium-size--1-of-4 slds-large-size--5-of-12">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_9, svg_section_9);return false">
+                            <svg id="svg_section_9" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Información Match /MCH/">Información Match /MCH/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_9">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection9}" var="fieldIndex" id="fieldLoop9">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="text-input-id-9">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-9" styleClass="slds-input"  onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="lght_section_10" class="slds-section slds-is-open slds-size--2-of-4 slds-medium-size--2-of-4 slds-large-size--6-of-12">
+                    <h3 class="slds-section__title">
+                        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" onclick="hideSection(lght_section_10, svg_section_10);return false">
+                            <svg id="svg_section_10" class="slds-button__icon" aria-hidden="true">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#down')}" />
+                            </svg>
+                            <span class="slds-truncate" title="Información MSG /MSG/">Información MSG /MSG/</span>
+                        </button>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content" id="section_10">
+                        <div class="slds-p-horizontal_medium">
+                            <div class="slds-size--4-of-4 slds-medium-size--4-of-4 slds-large-size--12-of-12" >
+                                <div class="slds-grid slds-wrap slds-grid_pull-padded-medium">
+                                    <apex:repeat value="{!incidentInformationSection10}" var="fieldIndex" id="fieldLoop10">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="text-input-id-10">{!fieldIndex.label}</label>
+                                            <div class="slds-form-element__control">
+                                                <apex:input type="text" value="{!fieldIndex.value}" id="text-input-id-10" styleClass="slds-input"  onfocus="this.select();"/>
+                                            </div>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div></apex:form>
+            <div class="slds" style="width: auto; border: 0px solid geyser;" >  
+     
+      <apex:form id="formImg">
+      
+        <div class="cajaImg1" style="width: 15%; margin-top: 6%;border: 1px solid skyblue; position: absolute; display: block; ">
+          
+          <!-- Introducir las imagenes del color y tipo de maleta  -->
+          <apex:image url="{!URLFOR($Resource.BaggageImages, imgColorMaleta)}" width="100%" />
+          <apex:image url="{!URLFOR($Resource.BaggageImages, imgTipoMaleta)}" width="100%" />
+
+        </div>
+
+          <div class="cajaImg2" style="width: 15%; height: auto;border: 1px solid skyblue; position: absolute; display: block; ">
+                
+                <apex:image id="img1" url="{!URLFOR($Resource.BaggageImages, imgMaleta1)}" width="20%" height="50%" rendered="{!imgMaleta1!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                    <apex:param value="img1" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              
+              <apex:image id="img2" url="{!URLFOR($Resource.BaggageImages, imgMaleta2)}" width="20%" height="50%" rendered="{!imgMaleta2!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                    <apex:param value="img2" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img3" url="{!URLFOR($Resource.BaggageImages, imgMaleta3)}" width="20%" height="50%" rendered="{!imgMaleta3!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img3" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img4" url="{!URLFOR($Resource.BaggageImages, imgMaleta4)}" width="20%" height="50%" rendered="{!imgMaleta4!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img4" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img5" url="{!URLFOR($Resource.BaggageImages, imgMaleta5)}" width="20%" height="50%" rendered="{!imgMaleta5!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                  <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img5" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img6" url="{!URLFOR($Resource.BaggageImages, imgMaleta6)}" width="20%" height="50%" rendered="{!imgMaleta6!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img6" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img7" url="{!URLFOR($Resource.BaggageImages, imgMaleta7)}" width="20%" height="50%" rendered="{!imgMaleta7!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img7" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img8" url="{!URLFOR($Resource.BaggageImages, imgMaleta8)}" width="20%" height="50%" rendered="{!imgMaleta8!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img8" name="imgParam"/>
+                  </apex:actionSupport>              
+              </apex:image>
+              <apex:image id="img9" url="{!URLFOR($Resource.BaggageImages, imgMaleta9)}" width="20%" height="50%" rendered="{!imgMaleta9!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img9" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+              <apex:image id="img10" url="{!URLFOR($Resource.BaggageImages, imgMaleta10)}" width="20%" height="50%" rendered="{!imgMaleta10!='ImagenesMaletas/maleta-vacia.gif'}" style="padding-left: 5px;padding-top: 5px;">
+                    <apex:actionSupport event="onclick" reRender="formImg, form" action="{!cargarImgMaletaOn}">
+                        <apex:param value="img10" name="imgParam"/>
+                  </apex:actionSupport>
+              </apex:image>
+    
+    
+        </div>
+      
+      </apex:form>
+		
+      <apex:form id="form">
+                
+      <div class="slds-form slds-form_stacked slds-form--inline" style="width: 85%; border: 1px solid skyblue;margin-left: 16%;">
+         
+          <!-- MASTHEAD -->
+           <div class="slds-page-header" style="border: 1px solid skyblue;">
+          <h1 class="slds-text-heading--large" style="text-align: left; padding-left: 1cm; margin-bottom: 10px; font: bold; color: #A2B3C5">
+            Detalle Equipaje
+          </h1>
+          <!-- / MASTHEAD -->     
+             </div>
+            <div class="slds-form" style="width: auto; border: 1px solid skyblue; display: block; ">
+                <div class="menuPrincipal" style="margin-bottom: 5px;">                                
+              
+                  <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    <apex:commandButton StyleClass="slds-input" value="Actualizar Maleta" disabled="{!NOT(boolEnabled) || boolModifyEnabled}" rendered="{!verSaveUpdate}" reRender="formImg, form" action="{!newBag}" oncomplete="alertGuardar('{!actionBag}')">
+                    	<apex:param name="actionUpdate" value="update" assignTo="{!actionBag}"/>
+                    </apex:commandButton>
+                </div>
+                  </div>  
+               
+               </div>
+            </div>
+          <div stylestyle="width: 100%;">
+          <div class="slds-grid slds-gutters">
+          <div class="slds-col slds-size_3-of-12" style="border: 0px solid skyblue;">
+            <h3 class="slds-text-heading--large" style="width: 100%;border: 0px solid black;padding: 5px 0 5px 1cm; background-color: #CCCCCC; font-weight: bold; height: 1cm">
+            Maleta 
+            </h3>
+
+              <div class="slds-form" style="font-size: 12px;text:align:left;padding-top: 10px; padding-bottom: 10px; padding-right: 5px;">
+                
+                <div class="slds-form-element__control requiredClass" style="width: 100%;margin-top: 5px;margin-left: 10px;">
+                   Nº Etiqueta:
+                  <apex:inputText required="true" disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_TXT_Ticket_number__c}" style="width: 5cm; margin-left: 5px"/>
+                    
+                </div>
+                
+                <div class="slds-form-element__control slds-picklist requiredClass" style="width: 100%;margin-top: 3px;margin-left: 10px;">
+                  Tipo de la maleta:
+                        <apex:inputField required="true" rendered="{!boolEnabled}" value="{!bag.R2_BAG_PKL_Type__c}" style="width: 5cm; margin-left: 5px"/> 
+                    <apex:inputText required="true" disabled="true" rendered="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_PKL_Type__c}" style="width: 5cm; margin-left: 5px"/> 
+                    <!--<apex:actionSupport action="{!getBagImageTipo}" reRender="formImg, form" event="onchange" />-->
+                 
+                </div>
+
+                <div class="slds-form-element__control slds-picklist requiredClass" style="width: 100%;margin-top: 3px;margin-left: 10px;">
+                  Color de la maleta:
+                    <apex:inputField required="true" rendered="{!boolEnabled}" value="{!bag.R2_BAG_PKL_Colour__c}" style="width: 5cm; margin-left: 5px"/> 
+                    <apex:inputText required="true" disabled="true" rendered="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_PKL_Colour__c}" style="width: 5cm; margin-left: 5px"/>  
+                    <!--<apex:actionSupport action="{!getBagImageColor}" reRender="formImg, form" event="onchange"/>-->
+                 
+                </div>
+
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;margin-left: 10px;">
+                Color y Tipo(CT):
+                  <apex:inputText value="{!bag.R2_BAG_FOR_Colour_Type_Description__c}" style="width: 5cm; margin-left: 5px;" disabled="true" />
+                  
+                </div>
+
+                <div class="slds-form-element__control requiredClass" style="width: 100%;margin-top: 10px;margin-left: 10px;">
+                Marca/Otras Caract.(BI):
+                  <apex:inputText required="true" disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_TXT_Brand_Info__c}" style="width: 5cm; margin-left: 5px"/>
+                 
+                </div>
+
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 5px;margin-left: 10px;">
+                  Existe Contenido(CC):
+                  <apex:inputField value="{!bag.R2_BAG_CHK_Content_exists__c}" style="width: 5cm; margin-left: 5px"/>
+
+                </div>
+
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;margin-left: 10px;">
+                  PIR asociado(AR):
+                  <apex:inputText disabled="true" value="{!bag.R2_BAG_TXT_PIR_AR__c}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+     			<div class="slds-form-element__control" style="width: 100%;margin-top: 10px;margin-left: 10px;">
+                  Etiqueta RUSH(XT):
+                  <apex:inputText disabled="true" value="{!bag.R2_BAG_TXT_RUSH_label__c}" style="width: 5cm; margin-left: 5px"/>
+                </div>                  
+                
+              </div>
+            </div> 
+               
+            <div class="slds-col slds-size_9-of-12" style="border: 0px solid skyblue;">
+                  <h3 class="slds-text-heading--medium" style="width: 100%;border: 0px solid black;padding: 5px 0 5px 1cm; background-color: #CCCCCC; font-weight: bold; height: 1cm">
+                    Características Exteriores 
+                   </h3>
+                <div class="slds-grid">
+                    
+                
+                <div class="slds-col slds-size_4-of-12" style="font-size: 12px;text:align:left;padding-top: 10px; padding-bottom: 10px;">  
+                    
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;">
+                  Antigüedad(años):
+                  <apex:inputText value="{!bag.R2_BAG_NUM_Age__c}" disabled="{!NOT(boolEnabled)}" style="width: 5cm;margin-left: 5px"/>
+                </div>
+				
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                  Valor y Moneda:
+                    <apex:inputText value="{!bag.R2_BAG_TXT_Value_and_coin__c}" disabled="{!NOT(boolEnabled)}" style="width: 5cm; margin-left: 5px"/>  
+                </div>       
+                    
+              <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                  Fecha Recepción Maleta(DR):
+                   <apex:input type="text" value="{!fecha5}" disabled="true" rendered="{!NOT(boolEnabled)}" style="width: 5cm; margin-left: 5px"/>
+                  <apex:inputField value="{!bag.R2_BAG_DAT_DateBagReceived__c}" rendered="{!boolEnabled}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+                
+                 <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                  Fecha confirmada de reparto(OO):
+                  <apex:input type="text" value="{!fecha4}" disabled="true" rendered="{!NOT(boolEnabled)}" style="width: 5cm; margin-left: 5px"/>
+                  <apex:inputField value="{!bag.R2_BAG_DATH_Bag_ReceivedFromCustoms__c}" rendered="{!boolEnabled}" style="width: 5cm; margin-left: 5px"/>
+                </div>    
+                    
+                     <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                  Fecha planificada de entrega(OF):
+                  <apex:input type="text" value="{!fecha3}" disabled="true" rendered="{!NOT(boolEnabled)}" style="width: 5cm; margin-left: 5px"/>
+                  <apex:inputField value="{!bag.R2_BAG_DAT_Scheduled_delivery_date__c}" rendered="{!boolEnabled}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+
+                    
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                  Fecha Entrega Maleta(DD):
+                    <apex:input type="text" value="{!fecha2}" disabled="true" rendered="{!NOT(boolEnabled)}" style="width: 5cm; margin-left: 5px">
+                        
+                    </apex:input>
+                    <apex:inputField value="{!bag.R2_BAG_DAT_Suitcase_delivery_date__c}" rendered="{!boolEnabled}" style="width: 5cm; margin-left: 5px"/>         
+                </div>
+
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                  Fecha de reparto(UP):
+                    <apex:input type="text" value="{!fecha1}" disabled="true" rendered="{!NOT(boolEnabled)}" style="width: 5cm; margin-left: 5px"/>
+                       
+                  <apex:inputField value="{!bag.R2_BAG_DATH_Bag_SentToCustoms__c}" rendered="{!boolEnabled}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 25px;">
+                  Comentarios(RK):
+                  <!-- <apex:inputText disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_TXT_Comments__c}" style="width: 5cm; margin-left: 5px"/> -->
+                  <apex:inputTextarea disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_TXT_Comments__c}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+               
+              </div>
+                
+               <div class="slds-col slds-size_4-of-12" style="font-size: 12px;text-align: right;padding-top: 10px; padding-bottom: 10px;">
+                
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                  Mixta, varios materiales:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_CHK_Mixed__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+               
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Piel (real o imitación):    
+                    <apex:inputCheckbox disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_CHK_Leather__c}" style="margin: 0 15% 0 15%;"/>         
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Metal:
+                    <apex:inputCheckbox disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_CHK_Metal__c}" style="margin: 0 15% 0 15%;"/>  
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Rígida:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_CHK_Rigid__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Tejido estampado:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_CHK_Printed_fabric__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Objeto Único en Caja:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_CHK_Single_object_in_box__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Maleta permitida en Cabina:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_CHK_Suitcase_allowed_cabin__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Cerradura Combinación:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_CHK_Combination_lock__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Asa Retráctil:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_CHK_Retractable_handle__c}" style="margin: 0 15% 0 15%;"/>
+                </div>
+                    <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                  Bolsillos Externos:
+                  <apex:inputCheckbox disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_CHK_External_pockets__c}" style="margin: 0 15% 0 15%;"/>
+                </div>    
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Ruedas o Rodamientos:   
+                    <apex:inputCheckbox disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_CHK_Wheels_or_bearing__c}" style="margin: 0 15% 0 15%;"/>         
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;padding-bottom: 5px;">
+                    Correas Aseguradoras:
+                    <apex:inputCheckbox disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_CHK_Safety_belt__c}" style="margin: 0 15% 0 15%;"/>  
+                </div>
+              </div>
+                <div class="slds-col slds-size_4-of-12" style="font-size: 12px;text:align:right;padding-top: 10px; padding-bottom: 10px;"> 
+                
+                    <div class="slds-form-element__control" style="width: 100%;padding-top: 5px;">
+                 Detalle del deterioro(TD):
+                  <apex:inputText disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_TXT_Damage_detail__c}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                 Info. adicional deterioro(BD):
+                  <apex:inputText disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_TXT_Aditional_damage_information__c}" style="width: 5cm; margin-left: 5px"/>
+                </div>        
+                    
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    Codificación daño 1:
+                  <apex:inputText disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_TXT_Damage1_coding__c}" style="width: 5cm; margin-left: 5px;"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    Localización daño 1:
+                  <apex:inputText disabled="true" rendered="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_PKL_Damage_1_Location__c}" style="width: 5cm; margin-left: 5px"/>
+                  <apex:inputField rendered="{!boolEnabled}"  value="{!bag.R2_BAG_PKL_Damage_1_Location__c}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                   Magnitud daño 1:
+                 <apex:inputText disabled="true" rendered="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_PKL_Damage1_scale__c}" style="width: 5cm; margin-left: 5px"/>
+                  <apex:inputField rendered="{!boolEnabled}" value="{!bag.R2_BAG_PKL_Damage1_scale__c}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    Codificación daño 2:
+                  <apex:inputText disabled="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_TXT_Damage2_coding__c}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    Localización daño 2:
+                    <apex:inputText disabled="true" rendered="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_PKL_Damage_2_Location__c}" style="width: 5cm; margin-left: 5px"/>
+                  <apex:inputField rendered="{!boolEnabled}"  value="{!bag.R2_BAG_PKL_Damage_2_Location__c}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    Magnitud daño 2:
+                    <apex:inputText disabled="true" rendered="{!NOT(boolEnabled)}" value="{!bag.R2_BAG_PKL_Damage2_scale__c}" style="width: 5cm; margin-left: 5px"/>
+                  <apex:inputField rendered="{!boolEnabled}" value="{!bag.R2_BAG_PKL_Damage2_scale__c}" style="width: 5cm; margin-left: 5px"/>
+                </div>
+              </div>
+              </div>
+            </div>  
+              </div>
+             
+              <div style="width: 100%;">
+              <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_12-of-12" style="width: 100%; border: 1px solid black;">
+            <h3 class="slds-text-heading--large" style="text-align: left; padding: 5px 0 5px 1cm; background-color: #CCCCCC; font-weight: bold; height: 1cm">
+            Petición de OHD 
+            </h3>
+              <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px; margin: 0.5cm 0 0.5cm 0;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    ROH FI:
+                  <apex:inputText value="{!bag.R2_BAG_TXT_ROH_result__c}" disabled="true" style="width: 5cm; margin-left: 5px"/>
+                </div>
+                  </div>
+               <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px; margin: 0.5cm 0 0.5cm 0;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    ROH SI01:
+                  <apex:inputText value="{!bag.R2_BAG_TXT_ROH_result__c}" disabled="true" style="width: 5cm; margin-left: 5px"/>
+                </div>
+                   </div>
+                <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px; margin: 0.5cm 0 0.5cm 0;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    ROH SI02:
+                  <apex:inputText value="{!bag.R2_BAG_TXT_ROH_result__c}" disabled="true" style="width: 5cm; margin-left: 5px"/>
+                </div>
+                    </div>
+                <div class="slds-form" style=" display: inline-block; text-align: left; padding-left: 10px; margin: 0.5cm 0 0.5cm 0;">
+                <div class="slds-form-element__control" style="width: 100%;margin-top: 10px;">
+                    ROH Resultado:
+                  <apex:inputText value="{!bag.R2_BAG_TXT_ROH_result__c}" disabled="true" style="width: 5cm; margin-left: 5px"/>
+                </div>
+              </div>
+            </div> 
+              </div>
+              </div>
+              </div>
+        </div>
+           <script>
+          function confirmarBorrado(objId){
+              
+              var confirmar=confirm("Are you sure?");
+              if(confirmar){
+                  if(objId=="false"){
+                      borrarMaleta();    
+                  }else{
+                      callingModal("No pudieron borrar los contenidos creados por WT"); 
+                      borrarMaleta();  
+                  }  
+              }  
+          };
+          
+          function confirmarCont(){
+              
+              callingModal("Se ha actualizado el contenido correctamente.");
+              actualizarContenido(); 
+              
+          };
+
+          function habilitarNewObject(objId){
+              if(objId == '' || objId == null || typeof objId === 'undefined'){
+                  callingModal("Debe existir la maleta para poder meter contenido"); 
+              }else{
+                  console.log('aqui ');
+                  var numContBag = "{!numCont}";
+                  if(numContBag < 12){ 
+                      var divEdit = document.getElementById("newObject");
+                      divEdit.style.display = 'inline-block';
+                  }else{
+                      callingModal('Limite de objetos. No puede añadir mas objetos en esta maleta.');
+                  }
+              }  
+          };
+          
+          function alertGuardar(action){
+              if(action=='save'){
+                 callingModal('Se ha guardado la maleta correctamente');
+              }else if(action=='update'){
+               	 callingModal('Se ha actualizado la maleta correctamente');	
+              }   
+          };
+          </script>
+          
+      </apex:form>    
+    </div>
+        </div>
+    </div>
+</body>
+</apex:page>

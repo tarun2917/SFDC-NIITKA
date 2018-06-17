@@ -1,0 +1,115 @@
+<!-- ***************************************************************************************************************
+    Author:         Ismael Yubero Moreno
+    Company:        Accenture
+    Description:    
+    IN:             
+    OUT:            
+
+    History: 
+     <Date>                     <Author>                         <Change Description>
+    18/09/2017             Ismael Yubero Moreno                  Initial Version
+********************************************************************************************************************** -->
+<apex:page StandardController="Task" extensions="R2_CLS_TSK_New_SMS_CTRL" standardStylesheets="true"  docType="html-5.0"> 
+ <apex:pageMessages /> 
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">    
+
+<head>
+  <title>Nuevo SMS</title>
+  <apex:stylesheet value="{!URLFOR($Resource.SLDS_IB, 'assets/styles/salesforce-lightning-design-system.css')}" />
+
+  <script type="text/javascript">
+    function refreshJS(){
+      refresh();
+      }
+</script>
+ 
+  <style type="text/css">
+      
+      fieldset.slds-form-element {
+        border-bottom: 1px dotted #a8b7c7;
+        padding: 0.5rem 0.2rem;
+      }
+      
+      div.slds-form{
+        margin: 0em 0em 0em 0em;
+        padding: 0em 0em 0em 0em;
+      }
+      .iberia_lightning_resource hr {
+        margin-bottom: 1rem;
+        margin-top: 0.5rem;
+      }
+
+      #resultado_busqueda_vias{
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+      }
+
+      .italics {
+        font-style: italic;
+      }
+    </style>
+
+</head>    
+
+<body>
+
+<apex:form > 
+<apex:outputPanel id="inicio">
+<div class="slds-grid slds-grid_pull-padded-medium">
+  <div class="slds-col slds-p-horizontal_medium">
+    <div class="slds-form-element" >
+        <label class="slds-form-element__label" for="select-01">Telefono: </label>             
+                <div class="slds-form-element__control" >
+                    <div class="slds-select_container" >
+                          <apex:selectList id="ChoosePhone" value="{!telefono}" size="1" styleClass="slds-input slds-size--1-of-1" onchange="refreshJS()" >
+                              <apex:selectOption itemValue="Selecciona un teléfono" itemLabel="Selecciona un teléfono"/>
+                              <apex:selectOption itemValue="Teléfono Operacional" itemLabel="Teléfono Operacional"/>
+                              <apex:selectOption itemValue="Teléfono Marketing" itemLabel="Teléfono Marketing"/>
+                              <apex:selectOption itemValue="Otro" itemLabel="Otro"/>
+                          </apex:selectList>
+                          <apex:actionFunction name="refresh" action="{!tratarTelefono}" reRender="inicio"/>
+                    </div>
+                </div>
+    </div>
+  </div>
+  <div class="slds-col slds-p-horizontal_medium">
+      
+        <div class="slds-grid slds-wrap slds-grid_pull-padded">
+            <div class="slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_2-of-12">
+                <label class="slds-form-element__label" for="select-01">Código País: </label>
+                <apex:input value="{!codigoPais}" disabled="{!if(editar,'false', 'true')}" type="tel" styleClass="slds-input slds-size--1-of-1"/>
+            </div>
+        
+          
+            <div class="slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_5-of-6 slds-large-size_10-of-12">
+                <label class="slds-form-element__label" for="select-01">Teléfono real: </label>
+                <apex:input value="{!numTlf}" type="tel" disabled="{!if(editar,'false', 'true')}" styleClass="slds-input slds-size--1-of-1"/>
+            </div>
+        </div>        
+  </div>
+</div>
+</apex:outputPanel>
+<div>      
+    <div class="slds-form-element">
+        <label class="slds-form-element__label" for="textarea-id-01">Contenido del Mensaje</label>
+        <div class="slds-form-element__control">
+            <apex:inputTextarea value="{!body}" id="textarea-id-01" styleClass="slds-input slds-size--1-of-1"/>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<apex:commandButton action="{!guardarTask}" value="Enviar SMS"></apex:commandButton>
+
+
+
+        
+
+
+</apex:form>
+</body>
+</html>
+</apex:page>

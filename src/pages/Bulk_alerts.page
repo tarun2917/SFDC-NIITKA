@@ -1,0 +1,50 @@
+<apex:page showHeader="false" controller="R1_Bulk_alerts_CTRL">
+<style>
+    11
+    Summary of Recipes Salesforce Console Recipes
+    body {
+        padding: 10px;
+    }
+</style>
+<div style="margin-left:auto; margin-right:auto;width:50%;">
+    <apex:form >
+    <apex:commandButton value="Start" id="startBtn" onclick="scrollButtonText();
+    return false;" style="margin-left:10px"/>
+    <apex:commandButton value="Stop" id="stopBtn" onclick="setButtonText();
+    return false;" style="margin-left:10px"/>
+</apex:form>
+</div>
+<apex:includeScript value="/support/console/29.0/integration.js"/>
+<!--//Here’s the unique ID of a Chatter feed from the feed’s URL.-->
+<!-- <chatter:feed entityId="0F96E0000008OyK" rendered="true"/> -->
+<chatter:feed entityId="{!collaborationGroupId}" rendered="true"/>
+<script>
+    function srcUp(url) {
+        sforce.console.openPrimaryTab(null, url, true);
+    }
+    setInterval(function(){window.location.href = window.location.href;},60000);
+    function getFeedItemBody() {
+        var feeds = [];
+        var elements = document.getElementsByClassName('feeditemtext');
+        for (var i=0; i<elements.length; i++) {
+            if (elements[i].innerHTML) feeds.push(elements[i].innerText);
+        }
+        return feeds.join(" | ");
+    }
+    var feedItems = getFeedItemBody();
+    scrollButtonText();
+    function scrollButtonText() {
+        if (! feedItems)
+            setButtonText();
+        else {
+            sforce.console.setCustomConsoleComponentButtonText(feedItems, function() {
+                sforce.console.scrollCustomConsoleComponentButtonText(150, 5,
+                    true, function(result){});
+            });
+        }
+    }
+    function setButtonText() {
+        sforce.console.setCustomConsoleComponentButtonText('Alerts');
+    }
+</script>
+</apex:page>

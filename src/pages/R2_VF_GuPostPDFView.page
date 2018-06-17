@@ -1,0 +1,17 @@
+<apex:page controller="R2_CLS_GuPostPreviewer_CTRL" renderAs="PDF" showHeader="false" standardStylesheets="false" sidebar="false" applyBodyTag="false" applyHtmlTag="false">
+<head>
+    <style>
+    @page{
+        size: A4;
+    }
+    body{
+        font-family: Verdana !important;
+    }
+    </style>
+</head>  
+
+<body>
+ <apex:outputText value="{!bodyPreview}" escape="false"/>
+</body>
+
+</apex:page>

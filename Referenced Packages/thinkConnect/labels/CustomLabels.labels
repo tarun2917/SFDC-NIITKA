@@ -1,0 +1,1095 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Softphone_All_Campaigns_Close</fullName>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone All Campaigns Close</shortDescription>
+        <value>Cerrar</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_All_Campaigns_NotReady</fullName>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone All Campaigns NotReady</shortDescription>
+        <value>Not ready</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_All_Campaigns_Open</fullName>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone All Campaigns Open</shortDescription>
+        <value>Abrir</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_All_Campaigns_Ready</fullName>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone All Campaigns Ready</shortDescription>
+        <value>Ready</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Altitude</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Altitude</shortDescription>
+        <value>The following extension is forced for this user:</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Autologin_loading</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Autologin_loading</shortDescription>
+        <value>Inicio de sesión automático en curso</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_Add_Line</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Button_Add_Line</shortDescription>
+        <value>Add line</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_Cancel_transfer</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Button_Cancel_transfer</shortDescription>
+        <value>Cancelar consulta</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_Complete_Conference</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Button_Complete_Conference</shortDescription>
+        <value>Complete conference</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_Complete_Transfer</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Button_Complete_Transfer</shortDescription>
+        <value>Complete transfer</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_Continue_Call</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Button_Continue_Call</shortDescription>
+        <value>Continue call</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_HangUp</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Button_HangUp</shortDescription>
+        <value>Hang up call</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_Hold_Call</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Button_Hold_Call</shortDescription>
+        <value>Hold call</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_Make_Call</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Button_Make_Call</shortDescription>
+        <value>Make call</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_Open_Agenda</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Button_Open_Agenda</shortDescription>
+        <value>Open agenda</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_Open_Dialpad</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Button_Open_Dialpad</shortDescription>
+        <value>Open dial pad</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_PickUp</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Button_PickUp</shortDescription>
+        <value>Pick up call</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_SendDTFM</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Button_SendDTFM</shortDescription>
+        <value>Send DTMF tones</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_Transfer</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Button_Transfer</shortDescription>
+        <value>Show multi-line options</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_back</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Button back</shortDescription>
+        <value>Back</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_login</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Button login</shortDescription>
+        <value>Login</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Button_submit</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Button submit</shortDescription>
+        <value>Submit</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Call_Info</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Call Info</shortDescription>
+        <value>Call Info</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Call_Log</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Call Log</shortDescription>
+        <value>Call Log</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Call_result</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Call result</shortDescription>
+        <value>Call result</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Call_result_root</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Call_result_root</shortDescription>
+        <value>Return to the list</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Call_without_service</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Call_without_service</shortDescription>
+        <value>Llamar sin servicio</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Campaign</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Campaign</shortDescription>
+        <value>Campaigns</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Campaign_Simple</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Campaign_Simple</shortDescription>
+        <value>Campaign</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Campaign_State_Closed</fullName>
+        <categories>thinkConnect-SIN-USO</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Campaign_State_Closed</shortDescription>
+        <value>Not ready in any campaign</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Campaign_State_Open</fullName>
+        <categories>thinkConnect-SIN-USO</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Campaign_State_Open</shortDescription>
+        <value>Ready in campaigns</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Cancel_call</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Cancel_call</shortDescription>
+        <value>Cancelar llamada</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Conference</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Conference</shortDescription>
+        <value>Conferenciar</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Conference_between_lines</fullName>
+        <categories>thinkConnect-SIN-USO</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Conference_between_lines</shortDescription>
+        <value>Conference between lines</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Conference_controller</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Conference_controller</shortDescription>
+        <value>Controlador de la conferencia</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Connection_Lost</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Connection_Lost</shortDescription>
+        <value>Connection lost. Reconnecting</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Consult</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Consult</shortDescription>
+        <value>Consultar</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Create_record</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Create record</shortDescription>
+        <value>Create record</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Credentials_Page_message</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Credentials Page message</shortDescription>
+        <value>Use this page to create or update users&apos; credentials in the telephony system.</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Credentials_Select_callcenter</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Credentials_Select_callcenter</shortDescription>
+        <value>Elija el proveedor de la centralita para la que va a guardar credenciales:</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Custom_Actions</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Custom_Actions</shortDescription>
+        <value>Acciones personalizadas</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Day_Start</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Day_Start</shortDescription>
+        <value>Day start</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Directory_Search</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Directory_Search</shortDescription>
+        <value>Introduce un número al que llamar o un nombre para buscar en el directorio</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Empty_element</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Empty_element</shortDescription>
+        <value>-- Ninguno --</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_End_preview</fullName>
+        <categories>thinkConnect-SIN-USO</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_End_preview</shortDescription>
+        <value>End preview</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Extended_line</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Extended_line</shortDescription>
+        <value>Línea extendida</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Extension</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Extension</shortDescription>
+        <value>Extension</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Filter_Placeholder</fullName>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Filter Placeholder</shortDescription>
+        <value>Nombre de la campaña</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Filter_services</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Filter_services</shortDescription>
+        <value>Filtrar servicios</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Inbound</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Inbound</shortDescription>
+        <value>Inbound</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Introduce_number</fullName>
+        <categories>thinkConnect-SIN-USO</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Introduce number</shortDescription>
+        <value>Introduce Number</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Label_ANI</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Label ANI</shortDescription>
+        <value>Caller #</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Label_DNIS</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Label DNIS</shortDescription>
+        <value>Dialed #</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Last_calls</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Last calls</shortDescription>
+        <value>Last calls</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Line_call</fullName>
+        <categories>thinkConnect-SIN-USO</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Line call</shortDescription>
+        <value>Call</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Line_callFrom</fullName>
+        <categories>thinkConnect-SIN-USO</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Line callFrom</shortDescription>
+        <value>Call From</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Line_callTo</fullName>
+        <categories>thinkConnect-SIN-USO</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Line callTo</shortDescription>
+        <value>Calling To</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Line_conference</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Line conference</shortDescription>
+        <value>Conference</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Line_name</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Line name</shortDescription>
+        <value>Line</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Line_number</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Line number</shortDescription>
+        <value>Number</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Link_call_to_service</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Link_call_to_service</shortDescription>
+        <value>Enlazar llamada a servicio</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Loading</fullName>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Loading</shortDescription>
+        <value>Cargando</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Loading_thinkConnect</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Loading_thinkConnect</shortDescription>
+        <value>Cargando thinkConnect</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Log_Comment</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Log Comment</shortDescription>
+        <value>Comments</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Log_Name</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Log Name</shortDescription>
+        <value>Name</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Log_Related</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Log Related</shortDescription>
+        <value>Related to</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Log_Subject</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Log Subject</shortDescription>
+        <value>Subject</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Logged_as</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Logged as</shortDescription>
+        <value>User</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Login_Extension</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Login Extension</shortDescription>
+        <value>Ext</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Login_Password</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Login Password</shortDescription>
+        <value>Password</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Login_Username</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Login Username</shortDescription>
+        <value>Username</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Login_in</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Login_in</shortDescription>
+        <value>Login in</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Login_site</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Login_site</shortDescription>
+        <value>Sitio</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Login_team</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Login_team</shortDescription>
+        <value>Equipo</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Logout</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Logout</shortDescription>
+        <value>Logout</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Logout_reason</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Logout_reason</shortDescription>
+        <value>Logout reason</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Multiple_records</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Multiple records</shortDescription>
+        <value>Multiple records found</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Multiple_result</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Multiple result</shortDescription>
+        <value>Multiple Result</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_No_Campaigns</fullName>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone No Campaigns</shortDescription>
+        <value>No tiene campañas disponibles</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_No_Number_To_Schedule</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone No Number To Schedule</shortDescription>
+        <value>There is no available number to reschedule the call</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_No_calls_today</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone No calls today</shortDescription>
+        <value>No calls today</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_No_result</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone No result</shortDescription>
+        <value>No Result</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Notification_close</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Notification_close</shortDescription>
+        <value>Cerrar</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Opened</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Opened</shortDescription>
+        <value>Opened</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Outbound</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Outbound</shortDescription>
+        <value>Outbound</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Party_device</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Party device</shortDescription>
+        <value>Party dev</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Pause_Control</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Pause_Control</shortDescription>
+        <value>Pausar grabación</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Play_Control</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Play_Control</shortDescription>
+        <value>Continuar grabación</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Preview_Campaign</fullName>
+        <categories>thinkConnect-SIN-USO</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Preview Campaign</shortDescription>
+        <value>Preview Campaign</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Preview_accept</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Preview_accept</shortDescription>
+        <value>Aceptar preview</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Preview_reject</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Preview_reject</shortDescription>
+        <value>Rechazar preview</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Queue</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Queue</shortDescription>
+        <value>Queue</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Ready_on_logout</fullName>
+        <categories>thinkConnect-SIN-USO</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Ready_on_logout</shortDescription>
+        <value>You can&apos;t be ready on logout</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Recording_Control</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Recording_Control</shortDescription>
+        <value>Grabación Llamada</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Search</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Search</shortDescription>
+        <value>Search</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Search_or_number</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Search_or_number</shortDescription>
+        <value>Búsqueda o número</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Segment</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Segment</shortDescription>
+        <value>Segment</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Select_Option</fullName>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Select Option</shortDescription>
+        <value>Seleccione una opción</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Side_bar_message</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Side bar message</shortDescription>
+        <value>thinkConnect is not available on the side bar</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Skill</fullName>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Skill</shortDescription>
+        <value>Habilidad</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Status</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Status</shortDescription>
+        <value>Status</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Status_Held</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Status Held</shortDescription>
+        <value>Held</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Status_Ringing</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Status Ringing</shortDescription>
+        <value>Ringing</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Status_Standby</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Status Standby</shortDescription>
+        <value>Standby</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Status_Transferred</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Status_Transferred</shortDescription>
+        <value>Transferida</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Status_cleared</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Status_cleared</shortDescription>
+        <value>Colgada</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Status_onCall</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Status onCall</shortDescription>
+        <value>Established</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Stop_Control</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Stop_Control</shortDescription>
+        <value>Terminar grabación</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Task_updated</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Task updated</shortDescription>
+        <value>Task updated</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Transfer</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Transfer</shortDescription>
+        <value>Transferir</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Transfer_between_lines</fullName>
+        <categories>thinkConnect-SIN-USO</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Transfer between lines</shortDescription>
+        <value>Transfer between lines</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Transfer_blind</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Transfer blind</shortDescription>
+        <value>Blind Transfer</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Transfer_consult</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Transfer consult</shortDescription>
+        <value>Consult Transfer</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Transfer_line</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Transfer line</shortDescription>
+        <value>Transfer line</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Transfer_number</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Transfer_number</shortDescription>
+        <value>Número de teléfono</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Transfer_options</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Transfer options</shortDescription>
+        <value>Transfer Options</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Transfer_select_option</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Transfer select option</shortDescription>
+        <value>Select Option</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Update_Task</fullName>
+        <categories>thinkConnect</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Softphone Update Task</shortDescription>
+        <value>Update Task</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_VDN</fullName>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone VDN</shortDescription>
+        <value>VDN</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_VDN_Desc</fullName>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone VDN Desc</shortDescription>
+        <value>Desc.VDN</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_Wrong_extension</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_Wrong_extension</shortDescription>
+        <value>La extensión es inválida</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_clicktodial_alert</fullName>
+        <categories>thinkConnect Softphone_clicktodial_alert</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone clicktodial alert</shortDescription>
+        <value>El cliente ## no quiere volver a ser llamado. ¿Estás seguro de querer realizar la llamada?</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_finish_session_transaction</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Finish session transaction</shortDescription>
+        <value>Finalizar transacción</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_multiline_options</fullName>
+        <categories>thinkConnect Softphone_multiline_options</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone multiline options</shortDescription>
+        <value>Opciones de multi-línea</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_service_state_description_SS_EMPTY</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_service_state_description_SS_EMPTY</shortDescription>
+        <value>El servicio está iniciado pero no hay registros relacionados a los que llamar en este momento, por lo que no se generarán nuevas llamadas desde este servicio</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_service_state_description_SS_HOURS</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_service_state_description_SS_HOURS</shortDescription>
+        <value>El servicio no se encuentra dentro de las horas configuradas de llamada, por lo que no se generarán nuevas llamadas desde este servicio</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_service_state_description_SS_PAUSED</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_service_state_description_SS_PAUSED</shortDescription>
+        <value>El servicio se encuentra pausado por razones administrativas, por lo que no se generarán nuevas llamadas desde este servicio</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_service_state_description_SS_PHANTOM</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_service_state_description_SS_PHANTOM</shortDescription>
+        <value>No existen extensiones fantasma libres para generar llamadas Preview en este servicio</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_service_state_description_SS_STARTED</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_service_state_description_SS_STARTED</shortDescription>
+        <value>El servicio se ha iniciado y el agente puede gestionar contactos de este servicio</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_service_state_description_SS_STOPPED</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_service_state_description_SS_STOPPED</shortDescription>
+        <value>El servicio se encuentra detenido y el agente no puede recibir contactos de este servicio</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_state_AFTER_CALL_WORK</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_state_AFTER_CALL_WORK</shortDescription>
+        <value>Trabajo tras llamada</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_state_AVAILABLE</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_state_AVAILABLE</shortDescription>
+        <value>Disponible</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_state_LOGIN</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_state_LOGIN</shortDescription>
+        <value>Sesión iniciada</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_state_LOGOUT</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_state_LOGOUT</shortDescription>
+        <value>Sesión cerrada</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_state_RINGING</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_state_RINGING</shortDescription>
+        <value>Sonando...</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_state_SERVICING_CONTACT</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_state_SERVICING_CONTACT</shortDescription>
+        <value>Atendiendo contacto</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_state_STARTED</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_state_STARTED</shortDescription>
+        <value>Disponible</value>
+    </labels>
+    <labels>
+        <fullName>Softphone_state_STOPPED</fullName>
+        <categories>thinkConnect</categories>
+        <language>es</language>
+        <protected>true</protected>
+        <shortDescription>Softphone_state_STOPPED</shortDescription>
+        <value>Parado</value>
+    </labels>
+</CustomLabels>

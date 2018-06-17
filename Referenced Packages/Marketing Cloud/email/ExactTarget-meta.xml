@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailFolder xmlns="http://soap.sforce.com/2006/04/metadata">
+    <accessType>Shared</accessType>
+    <name>ExactTarget</name>
+    <publicFolderAccess>ReadOnly</publicFolderAccess>
+    <sharedTo>
+        <group>Administradores</group>
+        <group>CCPO_Agentes</group>
+        <group>CCPO_Supervisores</group>
+    </sharedTo>
+</EmailFolder>

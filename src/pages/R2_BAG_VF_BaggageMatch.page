@@ -1,0 +1,265 @@
+<apex:page StandardController="R1_Incident__c" extensions="R2_WT_BaggageHistory_CTRL" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+  <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <head>
+      <meta charset="utf-8"/>
+      <title>Historico MATCH</title>
+      <apex:slds />
+    </head>
+    <body>
+      <div class="slds-scope">
+        <apex:form id="formularioMatch">
+          <div class="slds-box">
+            <div class="slds-m-bottom_medium">
+              <h2 class="slds-form-element__label" style="font-size: 0.8rem; line-height: 1.25;">
+                Historico Match
+              </h2>
+              <div class="slds-button-group" style="display: inline-block;">
+                <div class="slds-button-group" role="group">
+                  <apex:actionFunction action="{!prepareROHAux}" name="readSelectedROH" reRender="modalPanelROH, scriptMatch" oncomplete="alert('ROH correctamente requerido, por favor refresque el PIR (DAH)');">
+                    <apex:param name="selection" assignTo="{!selection}" value=""/>
+                  </apex:actionFunction>
+                  <apex:actionFunction action="{!processROH}" name="processSelectedROH" immediate="true" reRender="modalPanelROH">
+                    <apex:param name="selectionFull" assignTo="{!selectionFull}" value=""/>
+                  </apex:actionFunction>
+                  <apex:actionFunction action="{!readDOHAux}" name="readSelectedDOH" immediate="true" reRender="modalPanelDOH">
+                    <apex:param name="selection" assignTo="{!selection}" value=""/>
+                  </apex:actionFunction>
+
+                  <apex:commandButton styleClass="slds-button slds-button_neutral" id="bag-match-button-match" value="Match" action="{!readRecordId}"/>
+                  <button class="slds-button slds-button_neutral doh" id="bag-match-button-doh" type="button" onclick="selectMatchDOH()" disabled="true">DOH/DFW
+                  </button>
+                  <button class="slds-button slds-button_neutral" id="bag-match-button-roh" type="button" onclick="processMatchROH();" disabled="true" >ROH/RFW</button>
+                </div>
+              </div>
+            </div>
+            <apex:variable var="row_index" value="{!0}"/>
+            <div>
+              <apex:dataTable id="dataTable" value="{!historyMatch}" var="item" rowClasses="odd,even" styleClass="slds-table slds-table_bordered slds-table_cell-buffer" rendered="{! !(ISBLANK(historyMatch))}">
+                <!-- <apex:variable var="openned" value="false"/>-->
+                <apex:column >
+                  <svg onclick="toggleExtraData(this, {!row_index}); return false;" style="{!IF(item.size > 1, '', 'display:none')}" id="svg_section_1" class="slds-button__icon" aria-hidden="true">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#chevronright')}"/>
+                  </svg>
+                </apex:column>
+                <apex:column >
+                  <div onclick="selectRow(this)" id="extra-data-div-{!row_index}">
+                    <apex:outputText value="{!item[0]}" style="font-size: 0.7rem"/>
+                    <span id="extra-data-{!row_index}" style="display:none">
+                      <apex:repeat value="{!item}" var="line" first="1">
+                        <!--rendered="{! openned == 'true'}"-->
+                        <br/><apex:outputText value="{!line}" style="padding-left: 1.5rem; font-size: 0.7rem"/>
+                      </apex:repeat>
+                    </span>
+                    <apex:variable var="row_index" value="{!row_index+1}"/>
+                  </div>
+                </apex:column>
+              </apex:dataTable>
+            </div>
+            <div class="slds-m-vertical_xx-large" style="text-align:center;">
+              <apex:outputText value="Nothing to Display" rendered="{!ISBLANK(historyMatch)}" styleClass="slds-text-heading_small" style="width: 100%"/>
+            </div>
+            <apex:outputPanel id="modalPanelDOH" layout="block">
+              <div id="modalDOH" class="modal" style="{!IF(NOT(ISBLANK(responseDOH)), 'display:block', 'display:none')}">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <span class="close" onclick="hideModal()">&times;</span>
+                  <div class="modal-body">
+                    <apex:outputText value="Nothing to Display" rendered="{!ISBLANK(responseDOH)}" styleClass="slds-text-heading_small" style="width: 100%"/>
+                    <p>{!responseDOH}</p>
+                  </div>
+                </div>
+              </div>
+            </apex:outputPanel>
+            <apex:outputPanel id="modalPanelROH" layout="block">
+              <div id="modalROH" class="modal"  style="{!IF(showROH == true, 'display:block', 'display:none')}">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <span class="close" onclick="hideModal()">&times;</span>
+                  <div class="modal-body">
+                    <div class="slds-text-body_regular">Petición de envío de equipaje sobrante. Por favor, complete en su caso los campos necesarios y pulse "ROH/RFW"</div>
+                    <div class="grid-roh padded">
+                      <apex:image url="{!URLFOR($Resource.BaggageImages, 'ImagenesMaletas/RD.gif')}" styleClass="colorCodes"/>
+                      <apex:image url="{!URLFOR($Resource.BaggageImages, 'ImagenesMaletas/Ct03.JPG')}"/>
+                    </div>
+                    <div class="slds-box grid-roh">
+                      <label class="slds-form-element__label" style="{!IF(NOT(ISBLANK(tn)), 'display:block', 'display:none')}">TN</label>
+                      <apex:input label="TN" type="text" styleClass="slds-input" html-placeholder="{!tn}" disabled="true" rendered="{!NOT(ISBLANK(tn))}"/>
+                      <label class="slds-form-element__label"  style="{!IF(NOT(ISBLANK(ct)), 'display:block', 'display:none')}">CT</label>
+                      <apex:input label="CT" type="text" styleClass="slds-input" html-placeholder="{!ct}" disabled="true" rendered="{!NOT(ISBLANK(ct))}"/>
+                      <label class="slds-form-element__label"  style="{!IF(NOT(ISBLANK(bi)), 'display:block', 'display:none')}">BI</label>
+                      <apex:input label="BI" type="text" styleClass="slds-input" html-placeholder="{!bi}" disabled="true" rendered="{!NOT(ISBLANK(bi))}"/>
+                      <label class="slds-form-element__label"  style="{!IF(NOT(ISBLANK(pirSelected)), 'display:block', 'display:none')}">OHD/FWD</label>
+                      <apex:input label="OHD/FWD" type="text" styleClass="slds-input" html-placeholder="{!pirSelected}" disabled="true" rendered="{!NOT(ISBLANK(pirSelected))}"/>
+                      <label class="slds-form-element__label"  style="{!IF(NOT(ISBLANK(nm)), 'display:block', 'display:none')}">NM</label>
+                      <apex:input label="NM" type="text" styleClass="slds-input" html-placeholder="{!nm}" disabled="true" rendered="{!NOT(ISBLANK(nm))}"/>
+
+                      <label class="slds-form-element__label">FI</label>
+                      <apex:input label="FI" type="text" styleClass="slds-input" value="{!fi}"/>
+                      <label class="slds-form-element__label">SI01</label>
+                      <apex:input label="SI01" type="text" styleClass="slds-input" value="{!si01}"/>
+                      <label class="slds-form-element__label">SI02</label>
+                      <apex:input label="SI02" type="text" styleClass="slds-input" value="{!si02}"/>
+                      <!-- variables: {!fi} - {!si01} - {!si02} -->
+                      <label class="slds-form-element__label"  style="{!IF(NOT(ISBLANK(xt)), 'display:block', 'display:none')}">XT</label>
+                      <apex:input label="XT" type="text" styleClass="slds-input" html-placeholder="{!xt}" disabled="true" rendered="{!NOT(ISBLANK(xt))}"/>
+                      <label class="slds-form-element__label"  style="{!IF(NOT(ISBLANK(fw)), 'display:block', 'display:none')}">FW</label>
+                      <apex:input label="FW" type="text" styleClass="slds-input" html-placeholder="{!fw}" disabled="true" rendered="{!NOT(ISBLANK(fw))}"/>
+                      <label class="slds-form-element__label"  style="{!IF(NOT(ISBLANK(fd)), 'display:block', 'display:none')}">FD</label>
+                      <apex:input label="FD" type="text" styleClass="slds-input" html-placeholder="{!fd}" disabled="true" rendered="{!NOT(ISBLANK(fd))}"/>
+                      <label class="slds-form-element__label"  style="{!IF(NOT(ISBLANK(fo)), 'display:block', 'display:none')}">FO</label>
+                      <apex:input label="FO" type="text" styleClass="slds-input" html-placeholder="{!fo}" disabled="true" rendered="{!NOT(ISBLANK(fo))}"/>
+                      <label class="slds-form-element__label"  style="{!IF(NOT(ISBLANK(fb)), 'display:block', 'display:none')}">FB</label>
+                      <apex:input label="FB" type="text" styleClass="slds-input" html-placeholder="{!fb}" disabled="true" rendered="{!NOT(ISBLANK(fb))}"/>
+                      <label class="slds-form-element__label"  style="{!IF(NOT(ISBLANK(fs)), 'display:block', 'display:none')}">FS</label>
+                      <apex:input label="FS" type="text" styleClass="slds-input" html-placeholder="{!fs}" disabled="true" rendered="{!NOT(ISBLANK(fs))}"/>
+                      <label class="slds-form-element__label"  style="{!IF(NOT(ISBLANK(rl)), 'display:block', 'display:none')}">RL</label>
+                      <apex:input label="RL" type="text" styleClass="slds-input" html-placeholder="{!rl}" disabled="true" rendered="{!NOT(ISBLANK(rl))}"/>
+                      <label class="slds-form-element__label"  style="{!IF(NOT(ISBLANK(ag)), 'display:block', 'display:none')}">AG</label>
+                      <apex:input label="AG" type="text" styleClass="slds-input" html-placeholder="{!ag}" disabled="true" rendered="{!NOT(ISBLANK(ag))}"/>
+                    </div>
+                  </div>
+                  <button class="slds-button slds-button_neutral" id="bag-match-button-roh" type="button" onclick="selectMatchROH()" >ROH/RFW</button>
+                </div>    
+              </div>
+            </apex:outputPanel>
+          </div>
+
+        </apex:form>
+
+        <!-- <apex:form id="trash"></apex:form> -->
+        <script id="scriptMatch">
+          // j$ = jQuery.noConflict();
+          var urldown = "<use xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#chevrondown')}\"/>"
+          var urlright = "<use xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"{!URLFOR($Resource.SLDS_IB, '/assets/icons/utility-sprite/svg/symbols.svg#chevronright')}\"/>"
+          var divSelected
+          function toggleExtraData(svg, row_index) {
+            var extraDataDiv = document.getElementById(`extra-data-${row_index}`);
+            if (extraDataDiv.style.display === 'none') {
+              extraDataDiv.style.display = ''
+              svg.innerHTML = urldown
+            } else {
+              extraDataDiv.style.display = 'none'
+              svg.innerHTML = urlright
+            }
+          }
+          function selectMatchROH() {
+            console.log('selectMatchROH');
+            console.log(divSelected.firstChild.innerText)
+            readSelectedROH('' + divSelected.firstChild.innerText)
+          }
+          function processMatchROH() {
+            console.log('processMatchROH');
+            console.log(divSelected.childNodes[1].nextSibling.innerText)
+            processSelectedROH('' + divSelected.childNodes[1].nextSibling.innerText)
+          }
+          function selectMatchDOH() {
+            readSelectedDOH('' + divSelected.firstChild.innerHTML)
+          }
+          function showModalROH(){
+            document.getElementById("modalROH").style.display = "block";
+          }
+          function hideModal(){
+            document.getElementById("modalDOH").style.display = "none";
+            document.getElementById("modalROH").style.display = "none";
+          }
+          function selectRow(div) {
+            divSelected = div
+            selectedMatched = document.getElementsByClassName('selectedMatch')
+            newRow = div.parentNode.parentNode
+            selectedRow = -1
+            same = selectedMatched[0] == newRow
+            if (selectedMatched.length > 0) {
+              selectedMatched[0].classList.remove("selectedMatch")
+            }
+            if (!same) {
+              div.parentNode.parentNode.classList.add("selectedMatch")
+              selectedRow = div.id.replace('extra-data-div-', '')
+            }
+            buttonDOH = document.getElementById("bag-match-button-doh");
+            buttonROH = document.getElementById("bag-match-button-roh");
+            if (selectedRow == -1) {
+              buttonDOH.setAttribute('disabled', true)
+              buttonROH.setAttribute('disabled', true)
+            } else {
+              buttonDOH.removeAttribute('disabled')
+              buttonROH.removeAttribute('disabled')
+            }
+          }
+
+          function callController() {
+            sforce.console.openPrimaryTab(null, `/apex/BoolkingIDCases?bookingId=${bookingId}`, true, 'Cases with Booking Id')
+          }
+
+        </script>
+        <style>
+        .padded{
+          padding-left: 17px;
+        }
+        .colorCodes{
+          transform: rotate(90deg) translate(87px,84px);
+        }
+        .grid-roh{
+          width: 50%;
+          float: left;
+          display: inline-block;
+        }
+          /* The Modal (background) */
+          .modal {
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+            padding-top: 100px;
+            /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0,0,0);
+            /* Fallback color */
+            background-color: rgba(0,0,0,0.4);
+            /* Black w/ opacity */
+          }
+          /* Modal Content */
+          .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            margin-top: -50px;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+          }
+          .modal-body{
+            width: 100%;
+            word-wrap: break-word;
+          }
+          /* The Close Button */
+          .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+          }
+          .close:focus,
+          .close:hover {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+          }
+          .selectedMatch {
+            background: #ffffb3;
+          }
+          .selectedMatch:hover {
+            background: #CCCC00 !important;
+          }
+
+        </style>
+      </div>
+    </body>
+  </html>
+</apex:page>

@@ -1,0 +1,275 @@
+<apex:page standardController="R1_Incident__c" extensions="R2_TTY_Messages_CTRL" standardStylesheets="false" showHeader="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <title>Mensaje TTY</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Import the Design System style sheet --> 
+  <apex:slds />
+  <style>
+    body{
+      background: #fff;
+    }
+    .slds-form-element{
+      margin-bottom: 20px;
+    }
+    .slds-form-element__help{
+      opacity: 0.8;
+    }
+    .field-input-custom{
+      max-width: 70%;
+    }
+    .field-required{
+      color: red !important;
+    }
+    .text-area-custom{
+      min-height: 150px;
+    }
+    .sinMargen{
+      margin: 0;
+      margin-top: 7px; /* revisar */
+      padding: 2px;
+    }
+  </style>
+  
+</head>
+<body>
+  <apex:form >
+    <script type="text/javascript">
+    /*---------------------------------------------------------------------------------------------------------------------
+    Author:         Alberto Puerto Collado
+    Company:        Accenture
+    Description:    shows the response of WT.. etc
+    IN:             
+    OUT:            
+
+    History: 
+     <Date>                     <Author>                         <Change Description>
+    14/11/2017             Alberto Puerto Collado                  Initial Version
+    ----------------------------------------------------------------------------------------------------------------------*/
+     function callingModal(string, loading){
+        var text = string;
+        //sforce.debug.trace=true;
+
+        //_************CREATING MODAL PR:***************
+        //HTML: Creating ELEMENTS
+        var wrapper = document.createElement("div");
+        wrapper.id = "Wrapper";
+        wrapper.addEventListener("click", closeModal, false); 
+        var div = document.createElement("div");
+        div.id = "modal_custom";
+        var wrapperTexto = document.createElement("div");
+        wrapperTexto.id = "Texto_Det_Passenger";
+        var wrap_Variable = document.createElement("div");
+        wrap_Variable.id = "Datos_Recibidos_PR";
+        var title = document.createElement("h1");
+        var titText = document.createTextNode("Conectando con WorldTracer:");
+        var parraf = document.createElement("pre"); //pre instead p (preformat text)
+        if(loading == 1){
+            var divSpinner = document.createElement("div");
+            divSpinner.id = "divSpinner";
+            divSpinner.className = "slds-spinner slds-spinner_medium";
+            divSpinner.position = "fixed";
+            var spanSpin = document.createElement("span");
+            spanSpin.id = "spanSpin";
+            spanSpin.className ="slds-assistive-text";
+            var spanSpinTextin = document.createTextNode("Conectando con WorldTracer");
+            spanSpin.appendChild(spanSpinTextin);
+            var aSpin = document.createElement("div");
+            aSpin.id = "aSpin";
+            aSpin.className = "slds-spinner__dot-a";
+            var bSpin = document.createElement("div");
+            bSpin.id = "bSpin";
+            bSpin.className = "slds-spinner__dot-b";
+            divSpinner.appendChild(spanSpin);
+            divSpinner.appendChild(aSpin);
+            divSpinner.appendChild(bSpin);
+            div.appendChild(divSpinner);
+        }
+        var contenido = document.createTextNode(text);
+
+        var boton = document.createElement("button");
+        boton.style.id= "Exit_button";
+        boton.innerHTML= "Cerrar";
+        boton.addEventListener("click", closeModal, false); 
+
+        //DOM: structure
+        div.appendChild(wrapperTexto);
+        wrapperTexto.appendChild(title);
+        wrapperTexto.appendChild(wrap_Variable);
+        wrap_Variable.appendChild(parraf);
+        wrapperTexto.appendChild(boton);
+        title.appendChild(titText);
+        parraf.appendChild(contenido);
+
+        //CSS
+        wrapper.style.position= "fixed";
+        wrapper.style.zIndex= "8888";
+        wrapper.style.background= "black";
+        wrapper.style.opacity= "0.5";
+        wrapper.style.height= "100%";
+        wrapper.style.width= "100%";
+
+        div.style.position= "fixed";
+        div.style.boxSizing = "border-box";
+        div.style.border= "2px solid grey";
+        div.style.zIndex= "9999";
+        div.style.background= "white";
+        div.style.minHeight= "20%";
+        div.style.maxHeight= "80%";
+        div.style.maxWidth= "80%";
+        div.style.align= "center";
+        div.style.textAlign= "center";
+        div.style.fontSize= "1.3rem";
+        //div.style.overflow= "auto"; //better only scroll on wrap_Variable
+        div.style.margin= "auto";
+        div.style.left= "50%";
+        div.style.top= "50%";
+        //transform for all browsers
+        div.style.webkitTransform = "translate(-50%, -50%)";
+        div.style.webkitTransform = "translate(-50%, -50%)";
+        div.style.MozTransform = "translate(-50%, -50%)";
+        div.style.msTransform = "translate(-50%, -50%)";
+        div.style.OTransform = "translate(-50%, -50%)";
+        div.style.transform = "translate(-50%, -50%)";
+
+        wrapperTexto.style.padding= "0.6em";
+
+        wrap_Variable.style.height= "70vh";
+        wrap_Variable.style.overflow= "auto";
+        wrap_Variable.marginBottom= "5vh";
+
+        parraf.style.textAlign= "left";
+        parraf.style.fontSize= "1.1rem";
+
+        boton.style.position= "fixed";
+        boton.style.bottom= "0";
+        boton.style.align= "center";
+        boton.style.fontSize= "1rem";
+        //transform for all browsers
+        boton.style.webkitTransform = "translate(-50%, -10%)";
+        boton.style.webkitTransform = "translate(-50%, -10%)";
+        boton.style.MozTransform = "translate(-50%, -10%)";
+        boton.style.msTransform = "translate(-50%, -10%)";
+        boton.style.OTransform = "translate(-50%, -10%)";
+        boton.style.transform = "translate(-50%, -10%)";
+
+        //DOM: Insert
+        if(!document.getElementById("modal_custom")){
+            document.body.insertBefore(wrapper, document.body.firstChild);
+            document.body.insertBefore(div, document.body.firstChild);
+        }
+        //Auxiliary function to close modal called from two addEventListeners (wrapper & boton)
+        function closeModal() {
+            document.body.removeChild(wrapper);
+            document.body.removeChild(div);
+        }
+    }
+    function informeMuestra(){
+        var resp = '{!response}';
+        console.log('{!response}');
+        modalAF();
+    } 
+
+  </script>
+        <!-- <apex:outputText value="{!response}"></apex:outputText> -->
+
+<!--         <apex:actionFunction name="informePIR" action="{!informePIR}" reRender="form1" oncomplete="informeMuestra()"/>  -->
+
+        <apex:actionFunction name="modalAF" oncomplete="callingModal('{!response}');" reRender="form1"/>
+
+
+    </apex:form>
+  <!-- REQUIRED SLDS WRAPPER -->
+  <div class="slds-scope">
+  <apex:form >
+
+
+  <div class="slds-box">
+
+    <div class="slds-box slds-m-bottom_medium">
+      <div class="slds-button-group" role="group">
+        <apex:commandButton styleClass="slds-button slds-button_brand" action="{!submit}" value="Ejecutar TTY en WT"/>
+        <!-- <apex:commandButton styleClass="slds-button slds-button_neutral" value="Cancelar" onClick="closeMe();"/> -->
+        <!-- <apex:commandButton styleClass="slds-button slds-button_neutral" value="Ir a enviar un PXF" onClick="cambiarAPXF();return false;"/> -->
+       <!--  <apex:commandButton styleClass="slds-button slds-button_neutral" value="Ir a enviar PXF" oncomplete="informeMuestra();" reRender="false" />
+        <apex:commandButton styleClass="slds-button slds-button_neutral" value="Ir a DSL (Display Station List)"/> -->
+      </div>
+    </div>
+
+
+    <div class="slds-box">
+      <div class="slds-form slds-form_stacked">
+
+        <div class="slds-grid">
+          <div class="slds-col slds-m-right_medium">
+          <div class="slds-form-element slds-col slds-size--8-of-8 slds-small-size--1-of-1 slds-medium-size--4-of-4">
+            <label class="slds-form-element__label field-required" for="id-inputTX">Tx (Direcciones Telemáticas):</label>
+            <div class="slds-form-element__control">
+              <apex:input type="text" id="id-inputTX" value="{!inputTX}" styleClass="slds-input field-input-custom" onfocus="this.select();"/>
+            </div>
+            <div class="slds-form-element__help slds-col slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4">Indique hasta 5 direcciones telemáticas destinatarias del mensaje separadas por "/" (Ejemplo: FRAKKQQ)</div>
+          </div>
+
+          <div class="slds-grid">
+            <div class="slds-grid "> <!-- slds-size--4-of-8 slds-small-size--1-of-1 slds-medium-size--2-of-4 -->
+              <div class="slds-form-element slds-col slds-size--2-of-8 slds-small-size--1-of-2 slds-medium-size--1-of-4 sinMargen">
+                <label class="slds-form-element__label" for="id-copyTo1">Copiar mensaje a PIR nº1:</label>
+                <div class="slds-form-element__control">
+                  <apex:input type="text" id="id-copyTo1" value="{!copyTo1}" styleClass="slds-input"/>
+                </div>       
+              </div>
+              <div class="slds-form-element slds-col slds-size--2-of-8 slds-small-size--1-of-2 slds-medium-size--1-of-4 sinMargen">
+                <label class="slds-form-element__label" for="id-copyTo2">Copiar mensaje a PIR nº2:</label>
+                <div class="slds-form-element__control">
+                  <apex:input type="text" id="id-copyTo2" value="{!copyTo2}" styleClass="slds-input"/>
+                </div>
+              </div>
+                <div class="slds-form-element slds-col slds-size--2-of-8 slds-small-size--1-of-2 slds-medium-size--1-of-4 sinMargen">
+                <label class="slds-form-element__label" for="id-copyTo3">Copiar mensaje a PIR nº3:</label>
+                <div class="slds-form-element__control">
+                  <apex:input type="text" id="id-copyTo3" value="{!copyTo3}" styleClass="slds-input"/>
+                </div>
+              </div>
+                <div class="slds-form-element slds-col slds-size--2-of-8 slds-small-size--1-of-2 slds-medium-size--1-of-4 sinMargen">
+                  <label class="slds-form-element__label" for="id-copyTo4">Copiar mensaje a PIR nº4:</label>
+                  <div class="slds-form-element__control">
+                    <apex:input type="text" id="id-copyTo4" value="{!copyTo4}" styleClass="slds-input"/>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-grid ">
+            <div class="slds-form-element__help slds-col slds-size--8-of-8 slds-small-size--2-of-2 slds-medium-size--4-of-4" style="padding: 0; margin:0;">Indique en los campos correspondientes cada PIR a enviar copia del mensaje. Ejemplos: AHL MADIB1234, OHD BCNIB1234, DDP BILIB1234
+            </div>  
+          </div>
+
+
+          <div class="slds-form-element slds-m-top_medium">
+            <div class="slds-form-element__control">
+              <apex:inputTextarea value="{!messageTextarea}" styleClass="slds-textarea text-area-custom"></apex:inputTextarea>
+            </div>
+          </div>
+
+          <div class="slds-form-element slds-m-top_medium">
+            <div class="slds-form-element__control">
+              <div class="slds-form-element__help">Respuesta de World Tracer    
+                <apex:outputText value="{!response}" styleClass="slds-textarea text-area-custom disabledCustom"></apex:outputText>
+              </div>
+            </div>
+          </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+</div>
+</apex:form>
+</div>
+  <!-- / REQUIRED SLDS WRAPPER -->
+</body>
+</html>
+</apex:page>

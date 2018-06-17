@@ -1,0 +1,16 @@
+<apex:page controller="R2_CLS_GuPostPreviewer_CTRL" action="{!formatearBody}" standardStylesheets="false">
+        <head>
+        <style>
+            body { font-family: 'Arial Unicode MS' !important; }
+        </style>
+        </head>
+        <body>
+<apex:form >
+<h1>Vista Previa de Carta</h1>
+<apex:inputTextarea richText="true" value="{!bodyPreview}" style="overflow:scroll;"  rows="30"/>
+<apex:commandlink action="{!generarPDF}" target="_blank" style="float: right">
+            <apex:commandButton value="Generar PDF"/>
+        </apex:commandLink>
+</apex:form>
+</body>
+</apex:page>

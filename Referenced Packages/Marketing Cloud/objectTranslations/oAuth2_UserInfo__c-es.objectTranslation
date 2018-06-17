@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>ET4AE oAuth2 User Information</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>ET4AE oAuth2 User Information</value>
+    </caseValues>
+    <fields>
+        <label><!-- Expiration Date/Time --></label>
+        <name>Expiration_Date_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Access Token --></label>
+        <name>access_token__c</name>
+    </fields>
+    <fields>
+        <label><!-- Expires In --></label>
+        <name>expires_in__c</name>
+    </fields>
+    <fields>
+        <label><!-- Instance URL --></label>
+        <name>instance_url__c</name>
+    </fields>
+    <fields>
+        <label><!-- Issued At --></label>
+        <name>issued_at__c</name>
+    </fields>
+    <fields>
+        <label><!-- Legacy Token --></label>
+        <name>legacy_token__c</name>
+    </fields>
+    <fields>
+        <label><!-- Refresh Token --></label>
+        <name>refresh_token__c</name>
+    </fields>
+    <fields>
+        <label><!-- State --></label>
+        <name>state__c</name>
+    </fields>
+    <gender>Neuter</gender>
+</CustomObjectTranslation>

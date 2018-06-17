@@ -1,0 +1,61 @@
+<apex:page >
+
+    <script src="/support/console/39.0/integration.js" type="text/javascript"></script>
+
+    <style>
+        .empty {
+            background-color: orange;
+        }
+        .filled {
+            background-color: lightgreen;
+        }
+    </style>
+
+    <div id="main">
+    <p>URL: {!$CurrentPage.url}</p>
+    <p><apex:outputText rendered="{!$CurrentPage.parameters.calledon == 'open'}">TEST URL: /apex/customPop?calledon=open&amp;recordid={recordid}&amp;ani={ani}&amp;dnis={dnis}&amp;cid={cid}&amp;calltype={calltype}&amp;tabid={tabid}&amp;taskid={taskid}&amp;uui={uui}&amp;campaignid={campaignid}&amp;contextid={contextid}&amp;contactname={contact.FirstName}&amp;sources={sources}</apex:outputText><apex:outputText rendered="{!$CurrentPage.parameters.calledon == 'close'}">TEST URL: /apex/customPop?calledon=close&amp;recordid={recordid}&amp;ani={ani}&amp;dnis={dnis}&amp;cid={cid}&amp;calltype={calltype}&amp;tabid={tabid}&amp;taskid={taskid}&amp;uui={uui}&amp;campaignid={campaignid}&amp;contextid={contextid}&amp;contactname={contact.FirstName}&amp;sources={sources}</apex:outputText></p>
+    <p>TIMESTAMP: <b>{!$CurrentPage.parameters.TimeStamp}</b></p>
+    <p class="{!IF($CurrentPage.parameters.calledon == '', 'empty', 'filled')}">CALLED ON: {!$CurrentPage.parameters.calledon}</p>
+    <p class="{!IF($CurrentPage.parameters.uui == '', 'empty', 'filled')}">UUI: {!$CurrentPage.parameters.uui}</p>
+    <p class="{!IF($CurrentPage.parameters.ani == '', 'empty', 'filled')}">ANI: {!$CurrentPage.parameters.ani}</p>
+    <p class="{!IF($CurrentPage.parameters.dnis == '', 'empty', 'filled')}">DNIS: {!$CurrentPage.parameters.dnis}</p>
+    <p class="{!IF($CurrentPage.parameters.cid == '', 'empty', 'filled')}">CID: {!$CurrentPage.parameters.cid}</p>
+    <p class="{!IF($CurrentPage.parameters.calltype == '', 'empty', 'filled')}">CALLTYPE: {!$CurrentPage.parameters.calltype}</p>
+    <p class="{!IF($CurrentPage.parameters.taskid == '', 'empty', 'filled')}">TASKID: {!$CurrentPage.parameters.taskid}</p>
+    <p class="{!IF($CurrentPage.parameters.tabid == '', 'empty', 'filled')}">TABID: {!$CurrentPage.parameters.tabid}</p>
+    <p class="{!IF($CurrentPage.parameters.campaignid == '', 'empty', 'filled')}">CAMPAIGNID: {!$CurrentPage.parameters.campaignid}</p>
+    <p class="{!IF($CurrentPage.parameters.contactname == '', 'empty', 'filled')}">CONTACT.NAME: {!$CurrentPage.parameters.contactname}</p>
+    <p class="{!IF($CurrentPage.parameters.contextid == '', 'empty', 'filled')}">CONTEXTID: {!$CurrentPage.parameters.contextid}</p>
+    <p class="{!IF($CurrentPage.parameters.recordId == '', 'empty', 'filled')}">RECORDID: {!$CurrentPage.parameters.recordId}</p>
+    <p class="{!IF($CurrentPage.parameters.sources == '', 'empty', 'filled')}">SOURCES: {!$CurrentPage.parameters.sources}</p>
+    <p class="{!IF($CurrentPage.parameters.vdn == '', 'empty', 'filled')}">VDN: {!$CurrentPage.parameters.vdn}</p>
+    </div>
+
+    <script>
+
+        var resid;
+        var subid;
+
+        sforce.console.getFocusedPrimaryTabId(getprimaryTabId);
+
+        /*function getprimaryTabId(response)
+        {
+            resid = response.id;
+            sforce.console.getFocusedSubtabId(getSubtabId);
+        }
+
+        function getSubtabId(response)
+        {
+            subid = response.id;
+            sforce.console.openSubtab(resid, '/500/e?', true, '', '', afterSubtabOpen);
+        }
+
+        function afterSubtabOpen(response)
+        {
+            sforce.console.openSubtab(resid, '/0060Y0000031cIo', true, '', subid);
+        }*/
+
+    </script>
+
+
+</apex:page>

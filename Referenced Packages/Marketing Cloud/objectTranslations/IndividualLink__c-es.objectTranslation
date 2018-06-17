@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Detalle del nivel de vínculo individual</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Detalles del nivel de vínculo individual</value>
+    </caseValues>
+    <fields>
+        <label>Id. de vínculo de Marketing Cloud</label>
+        <name>ExactTargetLinkID__c</name>
+    </fields>
+    <fields>
+        <label>Resultado del correo electrónico individual</label>
+        <name>Individual_Email_Result__c</name>
+        <relationshipLabel>Detalles del nivel de vínculo individual</relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- The date and time this link was last clicked by this subscriber --></help>
+        <label>Clic por última vez</label>
+        <name>Last_Clicked__c</name>
+    </fields>
+    <fields>
+        <label>URL de vínculo</label>
+        <name>LinkURL__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of times this link has been clicked by this subscriber --></help>
+        <label>Número total de clics</label>
+        <name>NumberOfTotalClicks__c</name>
+    </fields>
+    <fields>
+        <label>Id. de vínculo único</label>
+        <name>Unique_Link_ID__c</name>
+    </fields>
+    <gender>Masculine</gender>
+    <layouts>
+        <layout>Individual Link Level Detail Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <nameFieldLabel>Nombre del vínculo</nameFieldLabel>
+</CustomObjectTranslation>
