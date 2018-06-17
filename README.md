@@ -1,2 +1,0 @@
-# SFDC-NIITKA
-NIIT Dev SFDC
