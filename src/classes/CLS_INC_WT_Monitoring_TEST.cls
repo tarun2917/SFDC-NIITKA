@@ -17,7 +17,7 @@ private class CLS_INC_WT_Monitoring_TEST {
     Description:    monitoring wt uses
     IN:
     OUT:
-
+	It is Testing
     History:
      <Date>                     <Author>                         <Change Description>
     09/05/2018             Alberto Puerto Collado                  Initial Version
