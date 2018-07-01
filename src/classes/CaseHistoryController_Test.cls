@@ -18,7 +18,7 @@ private class CaseHistoryController_Test {
     IN:             
     OUT:            
 
-    History: 
+    History: This is a test in testing branch for Git
      <Date>                     <Author>                         <Change Description>
     10/10/2017             Rubén Pingarrón Jerez                   Initial Version
     ----------------------------------------------------------------------------------------------------------------------*/
