@@ -1,9 +1,9 @@
 /*---------------------------------------------------------------------------------------------------------------------
 Author:         Rubén Pingarrón Jerez
 Company:        Accenture
-//Description:  
-//IN:             
-OUT:            
+Description:  
+IN:             
+OUT:           
 
 History: 
 <Date>                     <Author>                         <Change Description>
